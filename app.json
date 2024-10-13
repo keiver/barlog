@@ -31,6 +31,12 @@
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "7f60ae97-1452-4ac3-bd20-cd4c41f9595c"
+      }
+    },
+    "owner": "keiverh"
   }
 }

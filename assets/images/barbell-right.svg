@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="150" viewBox="0 0 500 150">
+    <defs>
+        <linearGradient id="chromeGradient" x1="0%" x2="0%" y1="0%" y2="100%">
+            <stop offset="0%" style="stop-color:#757778"/>
+            <stop offset="9.609%" style="stop-color:#757778"/>
+            <stop offset="19.218%" style="stop-color:#adadb9"/>
+            <stop offset="26.547%" style="stop-color:#adadb9"/>
+            <stop offset="33.876%" style="stop-color:#e9eff3"/>
+            <stop offset="40.717%" style="stop-color:#e9eff3"/>
+            <stop offset="47.557%" style="stop-color:#9fa4b6"/>
+            <stop offset="50.814%" style="stop-color:#9fa4b6"/>
+            <stop offset="54.072%" style="stop-color:#b8becc"/>
+            <stop offset="57.003%" style="stop-color:#b8becc"/>
+            <stop offset="59.935%" style="stop-color:#c6cbd2"/>
+            <stop offset="70.358%" style="stop-color:#c6cbd2"/>
+            <stop offset="80.782%" style="stop-color:#b1b1be"/>
+            <stop offset="90.391%" style="stop-color:#b1b1be"/>
+            <stop offset="100%" style="stop-color:#767779"/>
+        </linearGradient>
+        <linearGradient id="fadeGradient" x1="0%" x2="100%" y1="0%" y2="0%">
+            <stop offset="0%" style="stop-color:#000"/>
+            <stop offset="10%" style="stop-color:#ddd"/>
+            <stop offset="100%" style="stop-color:#ddd"/>
+        </linearGradient>
+        <pattern id="knurlingPattern" width="4" height="4" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+            <path fill="#ddd" d="M0 0h2v4H0z" opacity=".4"/>
+            <path fill="#ddd" d="M0 0h4v2H0z" opacity=".4"/>
+        </pattern>
+    </defs>
+    <g id="shadowContainer" transform="translate(0 75)">
+        <g>
+            <path fill="url(#chromeGradient)" stroke="#8a8a8a" stroke-width=".5" d="M0-14h245v28H0z"/>
+            <path fill="url(#knurlingPattern)" d="M0-10h45v20H0zM50-10h195v20H50z"/>
+            <g id="sleeveContents" transform="translate(245)">
+                <path fill="url(#chromeGradient)" stroke="#8a8a8a" stroke-width=".5" d="M0-35h30v70H0zM30-25h225v50H30z"/>
+                <g id="plates" transform="translate(30)">
+                    
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

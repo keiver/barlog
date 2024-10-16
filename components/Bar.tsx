@@ -1,162 +1,224 @@
-import * as React from "react"
-import {View, StyleSheet, Animated, Dimensions} from "react-native"
-import {Colors} from "@/constants/Colors"
-import {ThemedText} from "./ThemedText"
+import * as React from "react";
+import { View, StyleSheet, Animated, Dimensions } from "react-native";
+import { Colors } from "@/constants/Colors";
+import Red from "@/assets/images/plates/red.svg";
+import Blue from "@/assets/images/plates/blue.svg";
+import Yellow from "@/assets/images/plates/yellow.svg";
+import Green from "@/assets/images/plates/green.svg";
+import White from "@/assets/images/plates/white.svg";
+import Gray from "@/assets/images/plates/gray.svg";
+import Purple from "@/assets/images/plates/purple.svg";
+import BarbelRight from "@/assets/images/barbell-right.svg";
+import { ThemedText } from "./ThemedText";
 
 interface BarbellProps {
-  platesPerSide: Record<number, number>
-  barType?: string
-  weightUnit?: string
-  barWeight?: number
+  platesPerSide: Record<number, number>;
+  barType?: string;
+  weightUnit?: string;
+  barWeight?: number;
 }
 
-const plateColors: Record<number, string> = {
-  45: "#ff0000", // Red (25 kg / 55 lb)
-  35: "#0000ff", // Blue (20 kg / 44 lb)
-  25: "#ffff00", // Yellow (15 kg / 33 lb)
-  15: "#00ff00", // Green (10 kg / 22 lb)
-  10: "#ff69b4", // Pink (5 kg / 11 lb)
-  5: "#9b59b6", // Purple (official CrossFit color for smaller plates)
-  2.5: "#a0a0a0", // Gray (2.5 kg / 5.5 lb)
-  1.25: "#ffffff" // White (1.25 kg / 2.75 lb)
+interface Plate {
+  weightKg: number;
+  color: string;
+  width: number; // Example width values in cm, please adjust as necessary
+  label: string;
 }
 
-/**
- * The official CrossFit plate colors follow the International Weightlifting Federation (IWF) standards.
- * CrossFit competitions commonly use kilogram-based plate colors, but they are often converted to pounds.
- * The IWF standard color codes are:
- * - Red: 25 kg (55 lb)
- * - Blue: 20 kg (44 lb)
- * - Yellow: 15 kg (33 lb)
- * - Green: 10 kg (22 lb)
- * Smaller plates have varying colors, with purple being popular for smaller sizes in CrossFit.
- */
+const plateWidths: Record<number, number> = {
+  55: 30,
+  45: 30,
+  35: 30,
+  25: 30,
+  15: 30,
+  10: 25,
+  5: 16,
+  2.5: 14,
+};
 
-class BarbellLoader {
-  private static instance: BarbellLoader
-  private platesPerSide: Record<number, number> = {}
+const plateImages: Record<number, React.FC<React.SVGProps<SVGSVGElement>>> = {
+  55: Red,
+  45: Blue,
+  35: Yellow,
+  25: Green,
+  15: White,
+  10: Gray,
+  5: Purple,
+  2.5: Red,
+};
 
-  private constructor() {}
+const plates: Plate[] = Object.entries({
+  55: "#d32f2f", // Red (25 kg / 55 lb)
+  45: "#1976d2", // Blue (20 kg / 45 lb)
+  35: "#fbc02d", // Yellow (15 kg / 35 lb)
+  25: "#388e3c", // Green (10 kg / 25 lb)
+  15: "#ffffff", // White (5 kg / 11 lb)
+  10: "#a0a0a0", // Gray (2.5 kg / 5.5 lb)
+  5: "#9b59b6", // Purple (commonly used for smaller plates in CrossFit)
+  2.5: "#000000", // Black (1.25 kg / 2.75 lb)
+}).map(([weight, color]) => {
+  const weightKg = parseFloat(weight);
+  const weightLb = (weightKg * 2.20462).toFixed(2);
 
-  static getInstance(): BarbellLoader {
-    if (!BarbellLoader.instance) {
-      BarbellLoader.instance = new BarbellLoader()
-    }
-    return BarbellLoader.instance
-  }
+  return {
+    weightKg,
+    color,
+    width: plateWidths[weightKg],
+    label: `${weightKg} kg / ${weightLb} lb`,
+  };
+});
 
-  loadPlates(newPlates: Record<number, number>) {
-    this.platesPerSide = {...this.platesPerSide, ...newPlates}
-  }
-
-  unloadPlates() {
-    this.platesPerSide = {}
-  }
-
-  getPlatesPerSide(): Record<number, number> {
-    return this.platesPerSide
-  }
-}
-
-const Barbell: React.FC<BarbellProps> = ({platesPerSide, barType = "Standard", weightUnit = "lb", barWeight = 45}) => {
-  const animatedValues = React.useRef(Object.keys(platesPerSide).map(() => new Animated.Value(0))).current
+const Barbell: React.FC<BarbellProps> = ({
+  platesPerSide,
+  barType = "Standard",
+  weightUnit = "lb",
+  barWeight = 45,
+}) => {
+  const animatedValues = React.useRef(plates.map(() => new Animated.Value(0))).current;
 
   React.useEffect(() => {
     Animated.stagger(
       100,
-      animatedValues.map(value =>
+      animatedValues.map((value) =>
         Animated.timing(value, {
           toValue: 1,
           duration: 500,
-          useNativeDriver: true
+          useNativeDriver: true,
         })
       )
-    )?.start()
-  }, [platesPerSide])
+    )?.start();
+  }, [platesPerSide]);
 
   const renderPlates = (weight: number, index: number) => {
-    const numberOfPlates = platesPerSide[weight] || 0
-    return Array.from({length: numberOfPlates}).map((_, plateIndex) => (
-      <Animated.View key={`${weight}-${plateIndex}`} style={[styles.plate, {backgroundColor: plateColors[weight]}, {transform: [{scale: animatedValues[index]}]}]}>
+    const plate = plates.find((plate) => plate.weightKg === weight);
+    if (!plate) return null;
+
+    const numberOfPlates = platesPerSide[weight] || 0;
+    return Array.from({ length: numberOfPlates }).map((_, plateIndex) => (
+      <Animated.View
+        key={`${weight}-${plateIndex}`}
+        style={[
+          styles.plate,
+          { backgroundColor: plate.color, width: plate.width },
+          { transform: [{ scale: animatedValues[index] }] },
+        ]}
+      >
         <ThemedText>{weight}</ThemedText>
       </Animated.View>
-    ))
-  }
+    ));
+  };
+
+  const renderSvgs = (weight: number, index: number) => {
+    const numberOfPlates = platesPerSide[weight] || 0;
+    const height = Dimensions.get("window").height;
+
+    const plate = plates.find((plate) => plate.weightKg === weight);
+    if (!plate) return null;
+
+    return Array.from({ length: numberOfPlates }).map((_, plateIndex) => {
+      const C = plateImages[weight];
+
+      return (
+        <C
+          key={`${weight}-${plateIndex}`}
+          width={plate.width}
+          height={height}
+          style={styles.plateImage}
+        />
+      );
+    });
+  };
 
   const totalWeight =
-    Object.keys(platesPerSide).reduce((acc, weight) => {
-      const numberOfPlates = platesPerSide[Number(weight)] || 0
-      return acc + numberOfPlates * Number(weight) * 2
-    }, 0) + barWeight
+    plates.reduce((acc, plate) => {
+      const numberOfPlates = platesPerSide[plate.weightKg] || 0;
+      return acc + numberOfPlates * plate.weightKg * 2;
+    }, 0) + barWeight;
 
-  //platesPerSide = {"1.25": 0, "10": 0, "15": 1, "2.5": 1, "25": 0, "35": 0, "45": 1, "5": 1}
-  const p = React.useMemo(
+  const sortedWeights = React.useMemo(
     () =>
-      Object.keys(platesPerSide)
-        .map(Number)
+      plates
+        .map((plate) => plate.weightKg)
         .sort((a, b) => b - a)
-        ?.reverse(),
+        .reverse(),
     [platesPerSide]
-  )
+  );
 
   return (
-    <View style={styles.container}>
-      <View style={styles.bar} />
+    <View
+      style={styles.container}
+      pointerEvents="none"
+    >
+      {/* <View style={styles.bar} /> */}
+      <BarbelRight
+        style={styles.barRight}
+        width={500}
+        height={150}
+      />
       <View style={styles.platesContainer}>
-        {p.map((weight, index) => {
-          return <React.Fragment key={weight}>{renderPlates(Number(weight), index)}</React.Fragment>
-        })}
+        {sortedWeights.map((weight, index) => (
+          <React.Fragment key={weight}>{renderSvgs(weight, index)}</React.Fragment>
+        ))}
       </View>
-      <View style={styles.barShort} />
-      {/* 
-      <View style={styles.labelContainer}>
-        <ThemedText style={styles.label}>{`${barType} Bar`}</ThemedText>
-        <ThemedText style={styles.label}>{`Weight Unit: ${weightUnit}`}</ThemedText>
-        <ThemedText style={styles.label}>{`Total Weight: ${totalWeight} ${weightUnit}`}</ThemedText>
-      </View> */}
+      {/* <View style={styles.barShort} /> */}
     </View>
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
+    position: "absolute",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    marginVertical: 20
+    width: Dimensions.get("window").width,
   },
   bar: {
     width: 70,
     height: 10,
-    backgroundColor: "#34495e" // Wet Asphalt
+    backgroundColor: "#34495e",
   },
   barShort: {
     width: 20,
-    height: 10,
-    backgroundColor: "#34495e" // Wet Asphalt
+    height: 15,
+    backgroundColor: "#34495e",
+    borderTopEndRadius: 3,
+    borderBottomEndRadius: 3,
+  },
+  barRight: {
+    position: "absolute",
+    left: -190,
+    top: Dimensions.get("window").height / 2 - 75,
   },
   platesContainer: {
     flexDirection: "row-reverse",
-    alignItems: "flex-start"
+    alignItems: "flex-end",
+    justifyContent: "flex-end",
+    height: "100%",
+    left: 86,
+    width: Dimensions.get("window").width,
   },
   plate: {
-    width: 20,
     height: 100,
     marginHorizontal: 2,
     borderRadius: 5,
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   labelContainer: {
     position: "absolute",
     bottom: -50,
-    alignItems: "center"
+    alignItems: "center",
   },
   label: {
     fontSize: 14,
-    color: "#2c3e50" // Midnight Blue
-  }
-})
+    color: "#2c3e50", // Midnight Blue
+  },
+  plateImage: {
+    marginHorizontal: -2.8,
+    marginTop: -2.8,
+    marginBottom: -2.8,
+  },
+});
 
-export {BarbellLoader}
-export default Barbell
+export default Barbell;

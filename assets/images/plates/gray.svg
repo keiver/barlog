@@ -1,0 +1,44 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg" width="30" height="200" viewBox="0 0 30 200">
+  <defs>
+    <linearGradient id="grayGradient" x1="0%" x2="0%" y1="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#757778"/>
+			<stop offset="9.609%" style="stop-color:#757778"/>
+			<stop offset="19.218%" style="stop-color:#adadb9"/>
+			<stop offset="26.547%" style="stop-color:#adadb9"/>
+			<stop offset="33.876%" style="stop-color:#e9eff3"/>
+			<stop offset="40.717%" style="stop-color:#e9eff3"/>
+			<stop offset="47.557%" style="stop-color:#9fa4b6"/>
+			<stop offset="50.814%" style="stop-color:#9fa4b6"/>
+			<stop offset="54.072%" style="stop-color:#b8becc"/>
+			<stop offset="57.003%" style="stop-color:#b8becc"/>
+			<stop offset="59.935%" style="stop-color:#c6cbd2"/>
+			<stop offset="70.358%" style="stop-color:#c6cbd2"/>
+			<stop offset="80.782%" style="stop-color:#b1b1be"/>
+			<stop offset="90.391%" style="stop-color:#b1b1be"/>
+			<stop offset="100%" style="stop-color:#767779"/>
+    </linearGradient>
+    <g id="pr">
+      <rect width="25" height="200" y="0" fill="url(#grayGradient)" rx="8" ry="8"/>
+      <rect width="21" height="200" x="2" y="0" fill="transparent" stroke="#48514F" stroke-opacity=".5" stroke-width="4" rx="8" ry="8"/>
+    </g>
+    <filter id="dropshadow" width="150%" height="150%" y="-0.1">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5"/>
+      <feOffset dy="5" result="offsetblur"/>
+      <feComponentTransfer>
+        <feFuncA slope=".5" type="linear"/>
+      </feComponentTransfer>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <g id="shadowContainer" filter="url(#dropshadow)">
+    <g id="sleeveContents" transform="translate(2.5, 0)">
+      <g id="plates">
+        <use href="#pr"/>
+      </g>
+    </g>
+  </g>
+</svg>

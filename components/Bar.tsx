@@ -58,13 +58,14 @@ const plates: Plate[] = Object.entries({
   2.5: "#000000", // Black (1.25 kg / 2.75 lb)
 }).map(([weight, color]) => {
   const weightKg = parseFloat(weight);
-  const weightLb = (weightKg * 2.20462).toFixed(2);
+  const weightKgLabel = (parseFloat(weight) / 2.20462).toFixed(2);
+  const weightLb = (parseFloat(weight) * 2.20462).toFixed(2);
 
   return {
     weightKg,
     color,
     width: plateWidths[weightKg],
-    label: `${weightKg} kg / ${weightLb} lb`,
+    label: `${weightKgLabel} kg / ${weightLb} lb`,
   };
 });
 
@@ -117,7 +118,7 @@ const Barbell: React.FC<BarbellProps> = ({
 
     return Array.from({ length: numberOfPlates }).map((_, plateIndex) => {
       const C = plateImages[weight];
-
+      console.log("%ccomponents/Bar.tsx:121 plate", "color: #007acc;", plate);
       return (
         <C
           key={`${weight}-${plateIndex}`}

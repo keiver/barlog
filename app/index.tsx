@@ -11,6 +11,8 @@ import { ThemedRoundButton } from "@/components/SettingsIcon";
 import BarbellImage from "@/assets/images/plates/red.svg";
 import usePlateset from "@/hooks/usePlateset";
 
+import storage from "@/app/libs/localStorage";
+
 export type PlateSet = Record<number, number>;
 
 const samplePlateSet: PlateSet = {
@@ -24,23 +26,29 @@ const samplePlateSet: PlateSet = {
   1.25: 0,
 };
 
-const barbellWeight = 45; // Barbell weight in pounds
+// const barbellWeight = 45; // Barbell weight in pounds
 
 export default function HomeScreen() {
   const { plates, loadPlates, unloadPlates } = usePlateset();
   const [lastCallTime, setLastCallTime] = React.useState<number | null>(null);
+  const [barbellWeight, setBarbellWeight] = React.useState<number>(0);
+  const [unit, setUnit] = React.useState<string>("kg");
+
+  const client = storage.getInstance();
 
   useEffect(() => {
-    // loadPlates(plates);
-
-    // animate value to 95lb
-    const targetWeight = 95;
-    const newPlates = calculatePlates(targetWeight);
-    loadPlates(newPlates);
-
-    return () => {
-      unloadPlates();
-    };
+    Promise.all([
+      client.getData("barbellWeight").then((value) => {
+        if (value) {
+          setBarbellWeight(parseFloat(value));
+        }
+      }),
+      client.getData("unit").then((value) => {
+        if (value) {
+          setUnit(value);
+        }
+      }),
+    ]);
   }, []);
 
   const calculatePlates = (targetWeight: number): PlateSet => {
@@ -92,9 +100,11 @@ export default function HomeScreen() {
       <Slider
         onValueChanged={throttledGetScrollValue}
         animateCallback={clicked}
+        unit={unit}
+        barbellWeight={barbellWeight}
       />
       <Barbell platesPerSide={plates} />
-      <ThemedRoundButton onPress={clicked} />
+      {/* <ThemedRoundButton onPress={clicked} /> */}
     </ThemedView>
   );
 }

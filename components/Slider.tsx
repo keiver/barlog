@@ -11,27 +11,42 @@ import { useThemeColor } from "@/hooks/useThemeColor";
 export type SliderProps = {
   onValueChanged: (value: number) => void;
   animateCallback?: (toValue: number) => void;
+  unit?: string;
+  barbellWeight?: number;
 };
 
-const Slider: React.FC<SliderProps> = ({ onValueChanged }: SliderProps) => {
+const Slider: React.FC<SliderProps> = ({ onValueChanged, unit }: SliderProps) => {
   const [value, setValue] = React.useState(0);
   const ref = React.useRef<RNVSliderRef>(null);
-  // Icon render
+
+  const convert = React.useMemo(() => {
+    if (unit === "kg") {
+      return (value: number) => `${value} kg`;
+    }
+    return (value: number) => `${value} lb`;
+  }, [unit]);
+
   const renderIcon = () => {
     return (
-      <View style={styles.renderContainer}>
+      <View style={[styles.renderContainer, value < 100 ? styles.onTop : {}]}>
         <Animated.Text>
           <MaterialCommunityIcons
             adjustsFontSizeToFit
-            name="weight-pound"
+            name={unit === "kg" ? "weight-kilogram" : "weight-pound"}
             size={44}
             color="red"
           />
         </Animated.Text>
-        <ThemedText style={styles.renderContainerText}>{value}</ThemedText>
+        <ThemedText
+          type="title"
+          style={styles.renderContainerText}
+        >
+          {convert(value)}
+        </ThemedText>
       </View>
     );
   };
+
   const onChangeValue = React.useCallback((newValue: number) => {
     setValue(newValue);
   }, []);
@@ -61,19 +76,20 @@ const Slider: React.FC<SliderProps> = ({ onValueChanged }: SliderProps) => {
           }}
           onChange={onChangeValue}
           onComplete={onComplete}
-          showIndicator={false}
+          showIndicator={true}
           width={width}
           height={height}
           borderRadius={0}
           maximumTrackTintColor={maximumTrackTintColor}
           minimumTrackTintColor={minimumTrackTintColor}
+          renderIndicator={renderIcon}
         />
       </View>
       <View
         style={styles.contentBox}
         pointerEvents="none"
       >
-        <ThemedText type="huge">{value}</ThemedText>
+        {/* <ThemedText type="huge">{value}</ThemedText> */}
       </View>
     </GestureHandlerRootView>
   );
@@ -102,18 +118,20 @@ const styles = StyleSheet.create({
   },
   renderContainer: {
     display: "flex",
-    alignItems: "center",
+    alignItems: "flex-end",
     justifyContent: "center",
     position: "absolute",
+    height: 100,
+    width: Dimensions.get("window").width - 20,
+  },
+  onTop: {
     bottom: 0,
-    height: 200,
-    // left: 80,
-    // marginRight: 10
   },
   renderContainerText: {
-    fontSize: 20,
+    fontSize: 24,
     color: "red",
-    fontWeight: "bold",
+    fontWeight: "700",
+    transform: [{ translateX: 1 }],
   },
   contentBox: {
     position: "absolute",

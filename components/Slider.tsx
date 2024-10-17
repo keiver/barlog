@@ -15,15 +15,15 @@ export type SliderProps = {
   barbellWeight?: number;
 };
 
-const Slider: React.FC<SliderProps> = ({ onValueChanged, unit }: SliderProps) => {
+const Slider = React.forwardRef<RNVSliderRef, SliderProps>(({ onValueChanged, unit }: SliderProps, ref) => {
   const [value, setValue] = React.useState(0);
-  const ref = React.useRef<RNVSliderRef>(null);
+  const localRef = React.useRef<RNVSliderRef>(null);
 
   const convert = React.useMemo(() => {
     if (unit === "kg") {
-      return (value: number) => `${value} kg`;
+      return (value: number) => `${value}`;
     }
-    return (value: number) => `${value} lb`;
+    return (value: number) => `${value}`;
   }, [unit]);
 
   const renderIcon = () => {
@@ -59,11 +59,14 @@ const Slider: React.FC<SliderProps> = ({ onValueChanged, unit }: SliderProps) =>
   const maximumTrackTintColor = useThemeColor({}, "maximumTrackTintColor");
   const minimumTrackTintColor = useThemeColor({}, "minimumTrackTintColor");
 
+  // Use forwarded ref if provided, otherwise fallback to localRef
+  const sliderRef = (ref as React.RefObject<RNVSliderRef>) || localRef;
+
   return (
     <GestureHandlerRootView style={styles.flexOne}>
       <View style={styles.container}>
         <RnVerticalSlider
-          ref={ref}
+          ref={sliderRef}
           value={value}
           disabled={false}
           min={0}
@@ -93,18 +96,17 @@ const Slider: React.FC<SliderProps> = ({ onValueChanged, unit }: SliderProps) =>
       </View>
     </GestureHandlerRootView>
   );
-};
+});
 
 export default Slider;
 
 const styles = StyleSheet.create({
   flexOne: {
     flex: 1,
-    position: "relative",
+    position: "absolute",
   },
   container: {
-    position: "relative",
-
+    position: "absolute",
     display: "flex",
     alignItems: "flex-start",
     justifyContent: "center",
@@ -128,10 +130,12 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   renderContainerText: {
-    fontSize: 24,
+    fontSize: 23,
     color: "red",
     fontWeight: "700",
-    transform: [{ translateX: 1 }],
+    width: 50,
+    transform: [{ translateX: 3 }],
+    textAlign: "center",
   },
   contentBox: {
     position: "absolute",

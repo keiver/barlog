@@ -12,6 +12,7 @@ import BarbellImage from "@/assets/images/plates/red.svg";
 import usePlateset from "@/hooks/usePlateset";
 
 import storage from "@/app/libs/localStorage";
+import { RNVSliderRef } from "rn-vertical-slider";
 
 export type PlateSet = Record<number, number>;
 
@@ -23,16 +24,16 @@ const samplePlateSet: PlateSet = {
   10: 0,
   5: 0,
   2.5: 0,
-  1.25: 0,
 };
 
-// const barbellWeight = 45; // Barbell weight in pounds
+const initialBarbellWeight = 45; // Barbell weight in pounds
 
 export default function HomeScreen() {
   const { plates, loadPlates, unloadPlates } = usePlateset();
   const [lastCallTime, setLastCallTime] = React.useState<number | null>(null);
-  const [barbellWeight, setBarbellWeight] = React.useState<number>(0);
+  const [barbellWeight, setBarbellWeight] = React.useState<number>(initialBarbellWeight);
   const [unit, setUnit] = React.useState<string>("kg");
+  const sliderRef = React.useRef<RNVSliderRef>(null);
 
   const client = storage.getInstance();
 
@@ -51,6 +52,18 @@ export default function HomeScreen() {
     ]);
   }, []);
 
+  React.useEffect(() => {
+    // animate adding a new plate of 25 lbs
+    loadPlates({ ...samplePlateSet, 25: 1 });
+
+    // set slider value to 95
+    sliderRef.current?.setValue?.(95);
+
+    return () => {
+      unloadPlates();
+    };
+  }, []);
+
   const calculatePlates = (targetWeight: number): PlateSet => {
     if (targetWeight < barbellWeight) {
       return { ...samplePlateSet };
@@ -58,12 +71,13 @@ export default function HomeScreen() {
 
     // Subtract the barbell weight from the target weight to determine the total weight for plates
     let remainingWeight = (targetWeight - barbellWeight) / 2; // divide by 2 as we calculate for one side
-    const availablePlates = [45, 35, 25, 15, 10, 5, 2.5, 1.25];
+    const availablePlates = [45, 35, 25, 15, 10, 5, 2.5];
     const newPlates: PlateSet = { ...samplePlateSet };
 
     for (let i = 0; i < availablePlates.length; i++) {
       const plate = availablePlates[i];
       const count = Math.floor(remainingWeight / plate);
+
       if (count > 0) {
         newPlates[plate] = count;
         remainingWeight -= plate * count;
@@ -102,6 +116,7 @@ export default function HomeScreen() {
         animateCallback={clicked}
         unit={unit}
         barbellWeight={barbellWeight}
+        ref={sliderRef}
       />
       <Barbell platesPerSide={plates} />
       {/* <ThemedRoundButton onPress={clicked} /> */}

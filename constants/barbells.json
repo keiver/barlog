@@ -1,0 +1,76 @@
+{
+  "barbells": [
+    {
+      "name": "Standard Barbell",
+      "weight": {
+        "lbs": 45,
+        "kg": 20
+      },
+      "length": {
+        "feet": 7,
+        "meters": 2.2
+      },
+      "description": "This is the most commonly used barbell in gyms, suited for squats, deadlifts, bench press, etc. It typically has a diameter of 28-29mm and is compatible with Olympic-sized plates."
+    },
+    {
+      "name": "Olympic Barbell (20kg)",
+      "weight": {
+        "lbs": 44,
+        "kg": 20
+      },
+      "length": {
+        "feet": 7.2,
+        "meters": 2.2
+      },
+      "description": "Used in Olympic weightlifting for movements like the snatch and clean & jerk. This bar is heavier and longer compared to other variations."
+    },
+    {
+      "name": "Olympic Barbell (15kg)",
+      "weight": {
+        "lbs": 33,
+        "kg": 15
+      },
+      "length": {
+        "feet": 6.5,
+        "meters": 2.0
+      },
+      "description": "Used in Olympic weightlifting for movements like the snatch and clean & jerk. This bar is lighter and shorter compared to other variations."
+    },
+    {
+      "name": "EZ Curl Bar",
+      "weight": {
+        "lbs": 18,
+        "kg": 8
+      },
+      "length": {
+        "feet": 4,
+        "meters": 1.2
+      },
+      "description": "A shorter bar with a zigzag shape designed to reduce stress on the wrists during bicep curls and triceps exercises."
+    },
+    {
+      "name": "Powerlifting Barbell",
+      "weight": {
+        "lbs": 45,
+        "kg": 20
+      },
+      "length": {
+        "feet": 7,
+        "meters": 2.2
+      },
+      "description": "Specifically designed for powerlifting exercises (squat, bench press, and deadlift), these bars are stiffer to reduce whip and improve stability during heavy lifts."
+    },
+    {
+      "name": "Deadlift Bar",
+      "weight": {
+        "lbs": 45,
+        "kg": 20
+      },
+      "length": {
+        "feet": 7.5,
+        "meters": 2.3
+      },
+      "description": "Designed specifically for deadlifting, with a longer length and more flex (whip) to assist with pulling heavy loads off the floor."
+    }
+  ]
+}

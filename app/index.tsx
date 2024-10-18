@@ -1,18 +1,19 @@
 import React, { useEffect, useCallback } from "react";
-import { Image, StyleSheet, Platform, SafeAreaView, useWindowDimensions, Dimensions } from "react-native";
+import { StyleSheet, TextInput } from "react-native";
 
-import { HelloWave } from "@/components/HelloWave";
-import ParallaxScrollView from "@/components/ParallaxScrollView";
-import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import Slider from "@/components/Slider";
 import Barbell from "@/components/Bar";
 import { ThemedRoundButton } from "@/components/SettingsIcon";
-import BarbellImage from "@/assets/images/plates/red.svg";
 import usePlateset from "@/hooks/usePlateset";
 
 import storage from "@/app/libs/localStorage";
 import { RNVSliderRef } from "rn-vertical-slider";
+import CustomModal from "@/components/Modal";
+import { ThemedText } from "@/components/ThemedText";
+import SettingsUnit from "@/components/SettingsUnit";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import SettingsBarbellWeight from "@/components/SettingsBarbellWeight";
 
 export type PlateSet = Record<number, number>;
 
@@ -34,6 +35,7 @@ export default function HomeScreen() {
   const [barbellWeight, setBarbellWeight] = React.useState<number>(initialBarbellWeight);
   const [unit, setUnit] = React.useState<string>("kg");
   const sliderRef = React.useRef<RNVSliderRef>(null);
+  const [modalVisible, setModalVisible] = React.useState(false);
 
   const client = storage.getInstance();
 
@@ -106,7 +108,7 @@ export default function HomeScreen() {
   const throttledGetScrollValue = useCallback(throttle(handleScrollValue, 400), [lastCallTime]);
 
   const clicked = React.useCallback(() => {
-    //
+    setModalVisible(true);
   }, []);
 
   return (
@@ -118,13 +120,58 @@ export default function HomeScreen() {
         barbellWeight={barbellWeight}
         ref={sliderRef}
       />
-      <Barbell platesPerSide={plates} />
-      {/* <ThemedRoundButton onPress={clicked} /> */}
+      <Barbell
+        platesPerSide={plates}
+        unit={unit}
+        collapsed={modalVisible}
+      />
+      <ThemedRoundButton
+        onPress={clicked}
+        barbellWeight={barbellWeight}
+        unit={unit}
+      />
+      <CustomModal
+        isVisible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        title="Settings"
+        buttonLabel="Save"
+        onButtonPress={() => {
+          setModalVisible(false);
+        }}
+      >
+        <ThemedText type="label">Unit</ThemedText>
+        <SettingsUnit />
+        <ThemedText
+          type="label"
+          style={styles.barbellLabel}
+        >
+          Barbell Weight
+        </ThemedText>
+
+        {/* From the barbells listed, four common or close weights are:
+
+45 lbs (20 kg) – Standard Barbell, Powerlifting Barbell, and Deadlift Bar
+44 lbs (20 kg) – Olympic Barbell (20kg)
+33 lbs (15 kg) – Olympic Barbell (15kg)
+18 lbs (8 kg) – EZ Curl Bar
+These weights are common across various barbell types or are close to one another in terms of weight for gym usage. */}
+
+        <SettingsBarbellWeight
+          onPress={(size) => {
+            alert(size);
+          }}
+          sizes={[45, 44, 33, 18]}
+        />
+      </CustomModal>
     </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
+  input: {
+    borderBottomColor: "gray",
+    borderBottomWidth: 1,
+  },
   container: {
     flex: 1,
     padding: 0,
@@ -132,5 +179,8 @@ const styles = StyleSheet.create({
   },
   bar: {
     position: "absolute",
+  },
+  barbellLabel: {
+    marginTop: 20,
   },
 });

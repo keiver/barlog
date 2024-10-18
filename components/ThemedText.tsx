@@ -1,59 +1,78 @@
-import {Text, type TextProps, StyleSheet} from "react-native"
+import { Text, type TextProps, StyleSheet } from "react-native";
 
-import {useThemeColor} from "@/hooks/useThemeColor"
+import { useThemeColor } from "@/hooks/useThemeColor";
+import { transform } from "@babel/core";
 
 export type ThemedTextProps = TextProps & {
-  lightColor?: string
-  darkColor?: string
-  type?: "default" | "title" | "defaultSemiBold" | "subtitle" | "link" | "huge"
-  shadowColor?: string
-}
+  lightColor?: string;
+  darkColor?: string;
+  type?: "default" | "title" | "defaultSemiBold" | "subtitle" | "link" | "huge" | "label";
+  shadowColor?: string;
+  vertical?: boolean;
+};
 
-export function ThemedText({style, lightColor, darkColor, type = "default", shadowColor, ...rest}: ThemedTextProps) {
-  const color = useThemeColor({light: lightColor, dark: darkColor}, "text")
+export function ThemedText({
+  style,
+  lightColor,
+  darkColor,
+  type = "default",
+  shadowColor,
+  vertical,
+  ...rest
+}: ThemedTextProps) {
+  const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
 
   return (
     <Text
       style={[
-        {color},
+        { color },
         type === "default" ? styles.default : undefined,
         type === "title" ? styles.title : undefined,
         type === "defaultSemiBold" ? styles.defaultSemiBold : undefined,
         type === "subtitle" ? styles.subtitle : undefined,
         type === "link" ? styles.link : undefined,
         type === "huge" ? styles.huge : undefined,
+        type === "label" ? styles.label : undefined,
+        vertical ? styles.vertical : undefined,
+
         style,
-        shadowColor ? {textShadowColor: shadowColor, textShadowOffset: {width: -2, height: 4}, textShadowRadius: 6} : undefined
+        shadowColor
+          ? { textShadowColor: shadowColor, textShadowOffset: { width: -2, height: 4 }, textShadowRadius: 6 }
+          : undefined,
       ]}
       {...rest}
     />
-  )
+  );
 }
 
 const styles = StyleSheet.create({
   default: {
     fontSize: 16,
     lineHeight: 24,
-    fontWeight: "300"
+    fontWeight: "300",
   },
   defaultSemiBold: {
     fontSize: 16,
     lineHeight: 24,
-    fontWeight: "600"
+    fontWeight: "600",
   },
   title: {
     fontSize: 32,
     fontWeight: "bold",
-    lineHeight: 32
+    lineHeight: 32,
   },
   subtitle: {
     fontSize: 20,
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   link: {
     lineHeight: 30,
     fontSize: 16,
-    color: "#0a7ea4"
+  },
+  label: {
+    lineHeight: 50,
+    fontWeight: "500",
+    fontSize: 18,
   },
   huge: {
     lineHeight: 90,
@@ -63,9 +82,12 @@ const styles = StyleSheet.create({
     shadowColor: "white",
     shadowOffset: {
       width: -2,
-      height: 4
+      height: 4,
     },
     shadowOpacity: 0.25,
-    shadowRadius: 6
-  }
-})
+    shadowRadius: 6,
+  },
+  vertical: {
+    transform: [{ rotate: "90deg" }],
+  },
+});

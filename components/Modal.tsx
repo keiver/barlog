@@ -1,0 +1,148 @@
+import React from "react";
+import {
+  Modal,
+  View,
+  Text,
+  Button,
+  StyleSheet,
+  TouchableOpacity,
+  ImageBackground,
+  Dimensions,
+  TouchableWithoutFeedback,
+} from "react-native";
+import { ThemedText } from "./ThemedText";
+import { BlurView } from "expo-blur";
+import Plate25 from "../assets/images/plates/25.svg";
+import { ThemedRoundButton } from "./SettingsIcon";
+import { TabBarIcon } from "./navigation/TabBarIcon";
+import { useColorScheme } from "react-native";
+import { tintColorLight } from "@/constants/Colors";
+
+interface CustomModalProps {
+  isVisible: boolean;
+  onClose: () => void;
+  title: string;
+  children: React.ReactNode;
+  buttonLabel?: string;
+  onButtonPress?: () => void;
+}
+
+const CustomModal: React.FC<CustomModalProps> = ({
+  isVisible,
+  onClose,
+  title,
+  children,
+  buttonLabel = "Save",
+  onButtonPress,
+}) => {
+  const { width, height } = Dimensions.get("window");
+
+  const colorScheme = useColorScheme();
+  const backgroundColor = colorScheme === "dark" ? "#000000ab" : "#ffffffab";
+  const closeIconColor = colorScheme === "dark" ? "#ffffff" : "#000000";
+  return (
+    <Modal
+      animationType="slide"
+      hardwareAccelerated={true}
+      statusBarTranslucent={true}
+      transparent={true}
+      visible={isVisible}
+      onRequestClose={onClose}
+    >
+      <TouchableWithoutFeedback onPress={onClose}>
+        <ImageBackground style={styles.centeredView}>
+          <BlurView
+            intensity={50}
+            tint="default"
+            style={[styles.modalView, { backgroundColor }]}
+          >
+            <ThemedText style={styles.modalTitle}>{title}</ThemedText>
+            <TouchableOpacity
+              style={styles.modalCloseIcon}
+              onPress={onButtonPress || onClose}
+            >
+              <TabBarIcon
+                name="close"
+                color={closeIconColor}
+              />
+            </TouchableOpacity>
+            <View style={styles.modalContent}>{children}</View>
+            {/* <TouchableOpacity
+              style={styles.button}
+              onPress={onButtonPress ? onButtonPress : onClose}
+            >
+              <ThemedText
+                type="subtitle"
+                style={styles.buttonText}
+              >
+                {buttonLabel}
+              </ThemedText>
+            </TouchableOpacity> */}
+          </BlurView>
+        </ImageBackground>
+      </TouchableWithoutFeedback>
+    </Modal>
+  );
+};
+
+const styles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
+    overflow: "hidden",
+  },
+  modalView: {
+    position: "relative",
+    padding: 35,
+    borderRadius: 20,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    overflow: "hidden",
+    height: Dimensions.get("window").height * 0.6,
+    width: Dimensions.get("window").width * 0.9,
+  },
+  modalTitle: {
+    marginTop: 5,
+    textAlign: "left",
+    fontWeight: "500",
+    fontSize: 22,
+    marginBottom: 15,
+  },
+  modalCloseIcon: {
+    position: "absolute",
+    top: 34,
+    right: 34,
+  },
+  modalContent: {
+    marginBottom: 20,
+  },
+  button: {
+    position: "absolute",
+    bottom: 35,
+    right: 38,
+    backgroundColor: tintColorLight,
+    fontSize: 40,
+    borderRadius: 10,
+    paddingTop: 10,
+    paddingBottom: 10,
+    paddingLeft: 20,
+    paddingRight: 20,
+    elevation: 2,
+  },
+  buttonText: {
+    // color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+    color: "#151718",
+    // textTransform: "uppercase",
+  },
+});
+
+export default CustomModal;

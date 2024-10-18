@@ -1,11 +1,11 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import * as React from "react";
-import { Dimensions, SafeAreaView, StyleSheet, Text, useWindowDimensions, View } from "react-native";
+import { Dimensions, SafeAreaView, StyleSheet, Text, useColorScheme, useWindowDimensions, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
 import RnVerticalSlider, { RNVSliderRef } from "rn-vertical-slider";
 import { ThemedText } from "./ThemedText";
-import { Colors } from "@/constants/Colors";
+import { Colors, tintColorDark, tintColorLight } from "@/constants/Colors";
 import { useThemeColor } from "@/hooks/useThemeColor";
 
 export type SliderProps = {
@@ -18,6 +18,13 @@ export type SliderProps = {
 const Slider = React.forwardRef<RNVSliderRef, SliderProps>(({ onValueChanged, unit }: SliderProps, ref) => {
   const [value, setValue] = React.useState(0);
   const localRef = React.useRef<RNVSliderRef>(null);
+  const [key, setKey] = React.useState(React.useId());
+  const scheme = useColorScheme();
+  // rerender when color scheme changes
+  React.useEffect(() => {
+    const random = Math.random();
+    setKey(random.toString());
+  }, [scheme]);
 
   const convert = React.useMemo(() => {
     if (unit === "kg") {
@@ -25,27 +32,6 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(({ onValueChanged, un
     }
     return (value: number) => `${value}`;
   }, [unit]);
-
-  const renderIcon = () => {
-    return (
-      <View style={[styles.renderContainer, value < 100 ? styles.onTop : {}]}>
-        <Animated.Text>
-          <MaterialCommunityIcons
-            adjustsFontSizeToFit
-            name={unit === "kg" ? "weight-kilogram" : "weight-pound"}
-            size={44}
-            color="red"
-          />
-        </Animated.Text>
-        <ThemedText
-          type="title"
-          style={styles.renderContainerText}
-        >
-          {convert(value)}
-        </ThemedText>
-      </View>
-    );
-  };
 
   const onChangeValue = React.useCallback((newValue: number) => {
     setValue(newValue);
@@ -58,14 +44,35 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(({ onValueChanged, un
   const { height, width } = useWindowDimensions();
   const maximumTrackTintColor = useThemeColor({}, "maximumTrackTintColor");
   const minimumTrackTintColor = useThemeColor({}, "minimumTrackTintColor");
-
-  // Use forwarded ref if provided, otherwise fallback to localRef
+  const isDark = useColorScheme() === "dark";
   const sliderRef = (ref as React.RefObject<RNVSliderRef>) || localRef;
+
+  const renderIcon = () => {
+    return (
+      <View style={[styles.renderContainer, value < 100 ? styles.onTop : {}]}>
+        <Animated.Text>
+          <MaterialCommunityIcons
+            adjustsFontSizeToFit
+            name={unit === "kg" ? "weight-kilogram" : "weight-pound"}
+            size={44}
+            color={!isDark ? Colors.light.shadowColor : tintColorDark}
+          />
+        </Animated.Text>
+        <ThemedText
+          type="title"
+          style={[styles.renderContainerText, { color: !isDark ? Colors.light.shadowColor : tintColorDark }]}
+        >
+          {convert(value)}
+        </ThemedText>
+      </View>
+    );
+  };
 
   return (
     <GestureHandlerRootView style={styles.flexOne}>
       <View style={styles.container}>
         <RnVerticalSlider
+          key={key}
           ref={sliderRef}
           value={value}
           disabled={false}
@@ -131,7 +138,6 @@ const styles = StyleSheet.create({
   },
   renderContainerText: {
     fontSize: 23,
-    color: "red",
     fontWeight: "700",
     width: 50,
     transform: [{ translateX: 3 }],
@@ -144,5 +150,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     height: Dimensions.get("window").height,
     width: Dimensions.get("window").width,
+    paddingBottom: 44,
   },
 });

@@ -11,8 +11,9 @@ import Plate2P5 from "@/assets/images/plates/2_5.svg";
 interface BarbellProps {
   platesPerSide: Record<number, number>;
   barType?: string;
-  weightUnit?: string;
+  unit?: string;
   barWeight?: number;
+  collapsed?: boolean;
 }
 
 interface Plate {
@@ -36,8 +37,9 @@ const plateImages: Record<number, React.FC<React.SVGProps<SVGSVGElement>>> = {
 const Barbell: React.FC<BarbellProps> = ({
   platesPerSide,
   barType = "Standard",
-  weightUnit = "lb",
+  unit = "lb",
   barWeight = 45,
+  collapsed = false,
 }) => {
   const weightsInPounds = Object.keys(plateImages).map((weight) => parseFloat(weight));
 
@@ -72,7 +74,7 @@ const Barbell: React.FC<BarbellProps> = ({
   const COLLAPSED_HEIGHT = -191;
 
   const getMarginTop = (weight: number, index: number) => {
-    if (false) {
+    if (collapsed) {
       return COLLAPSED_HEIGHT;
     }
 
@@ -87,7 +89,7 @@ const Barbell: React.FC<BarbellProps> = ({
 
     return Array.from({ length: numberOfPlates }).map((_, plateIndex) => {
       const Component = plate.image;
-
+      console.log("%ccomponents/Bar.tsx:92 unit", "color: #007acc;", unit);
       return (
         <Animated.View
           pointerEvents={"auto"}
@@ -98,11 +100,8 @@ const Barbell: React.FC<BarbellProps> = ({
               transform: [
                 { scale: animatedValues[index] },
                 { rotateX: `${45}deg` },
-                { rotateZ: `${weightUnit === "lb" ? 280 : 70}deg` }, // lbs
-                // { rotateZ: `${70}deg` }, // kgs
-                // { rotate: `${215}deg` }, // lbs
-                // { rotate: `${15}deg` }, // kgs
-                { rotate: `${weightUnit === "lb" ? 285 : 15}deg` }, // kgs
+                // { rotateZ: `${unit === "lb" ? 70 : 70}deg` },
+                { rotate: `${unit !== "lb" ? 180 : 290}deg` },
               ],
               marginTop: getMarginTop(weight, plateIndex),
               // marginTop: COLLAPSED_HEIGHT,
@@ -135,14 +134,14 @@ const Barbell: React.FC<BarbellProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    position: "relative", // No longer absolute to ensure proper stacking vertically
+    position: "relative",
     flexDirection: "column-reverse",
     alignItems: "center",
     justifyContent: "flex-start",
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
     paddingBottom: 10,
-    bottom: 10,
+    bottom: 20,
   },
   plateContainer: {
     alignItems: "center",

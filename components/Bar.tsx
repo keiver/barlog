@@ -71,6 +71,14 @@ const Barbell: React.FC<BarbellProps> = ({
 
   const COLLAPSED_HEIGHT = -191;
 
+  const getMarginTop = (weight: number, index: number) => {
+    if (false) {
+      return COLLAPSED_HEIGHT;
+    }
+
+    return -165;
+  };
+
   const renderPlates = (weight: number, index: number) => {
     const plate = plates.find((plate) => plate.weightLb === weight);
     if (!plate) return null;
@@ -90,17 +98,13 @@ const Barbell: React.FC<BarbellProps> = ({
               transform: [
                 { scale: animatedValues[index] },
                 { rotateX: `${45}deg` },
-                // { rotateZ: `${75}deg` },
-                // { rotateZ: `${75}deg` },
-                { rotate: `${85}deg` },
-                // {
-                //   translateY: animatedValues[index].interpolate({
-                //     inputRange: [0, 1],
-                //     outputRange: [0, -1 * plateIndex],
-                //   }),
-                // },
+                { rotateZ: `${weightUnit === "lb" ? 280 : 70}deg` }, // lbs
+                // { rotateZ: `${70}deg` }, // kgs
+                // { rotate: `${215}deg` }, // lbs
+                // { rotate: `${15}deg` }, // kgs
+                { rotate: `${weightUnit === "lb" ? 285 : 15}deg` }, // kgs
               ],
-              marginTop: weight < 25 ? -100 : -135,
+              marginTop: getMarginTop(weight, plateIndex),
               // marginTop: COLLAPSED_HEIGHT,
             },
           ]}
@@ -112,11 +116,8 @@ const Barbell: React.FC<BarbellProps> = ({
   };
 
   const sortedWeights = React.useMemo(
-    () =>
-      plates
-        .map((plate) => plate.weightLb)
-        .sort((a, b) => b - a)
-        .reverse(),
+    () => plates.map((plate) => plate.weightLb).sort((a, b) => b - a),
+    // .reverse(),,
     [platesPerSide]
   );
 
@@ -135,12 +136,13 @@ const Barbell: React.FC<BarbellProps> = ({
 const styles = StyleSheet.create({
   container: {
     position: "relative", // No longer absolute to ensure proper stacking vertically
-    flexDirection: "column",
+    flexDirection: "column-reverse",
     alignItems: "center",
-    justifyContent: "flex-end",
+    justifyContent: "flex-start",
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
-    paddingBottom: 35,
+    paddingBottom: 10,
+    bottom: 10,
   },
   plateContainer: {
     alignItems: "center",

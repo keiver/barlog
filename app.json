@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "barup",
-    "slug": "barup",
+    "name": "barlog",
+    "slug": "barlog",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "barup",
+    "scheme": "barlog",
     "userInterfaceStyle": "automatic",
     "splash": {
       "image": "./assets/images/splash.png",
@@ -14,14 +14,14 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.keiverh.barup"
+      "bundleIdentifier": "dev.keiver.barlog"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.keiverh.barup"
+      "package": "dev.keiver.barlog"
     },
     "web": {
       "bundler": "metro",

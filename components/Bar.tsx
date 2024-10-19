@@ -99,9 +99,9 @@ const Barbell: React.FC<BarbellProps> = ({
             {
               transform: [
                 { scale: animatedValues[index] },
-                // { rotateX: `${45}deg` },
-                // { rotateZ: `${unit === "lb" ? 70 : 70}deg` },
-                { rotate: `${unit === "lb" ? 190 : 340}deg` },
+                { rotateX: `50deg` },
+                { rotateZ: `${unit === "lb" ? 245 : 0}deg` },
+                // { rotate: `${unit === "lb" ? 290 : 360}deg` },
                 // { scaleY: -1 },
                 // { scaleX: -1 },
               ],
@@ -142,8 +142,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
-    paddingBottom: 10,
-    bottom: 20,
+    bottom: Dimensions.get("window").height * 0.05,
   },
   plateContainer: {
     alignItems: "center",

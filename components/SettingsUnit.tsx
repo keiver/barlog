@@ -14,18 +14,19 @@ type WeightIconProps = {
 
 const WeightIcon: React.FC<WeightIconProps> = ({ unit, selected, onPress }) => {
   const isDark = useColorScheme() === "dark";
+  const color = isDark ? tintColorDark : tintColorLight;
 
   const getColor = React.useCallback(() => {
     if (selected) {
-      return "red";
+      return tintColorLight;
     }
 
-    return isDark ? tintColorDark : Colors.light.shadowColor;
-  }, [selected, isDark]);
+    return isDark ? "white" : "black";
+  }, [selected]);
 
   const renderIcon = () => {
     return (
-      <View style={styles.iconContainer}>
+      <View style={[styles.iconContainer, { shadowColor: isDark ? "yellow" : "black" }]}>
         <GestureHandlerRootView>
           <TouchableOpacity
             onPress={onPress}
@@ -88,6 +89,14 @@ const styles = StyleSheet.create({
     width: 100,
     height: 40,
     padding: 0,
+    shadowColor: "black",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   unitText: {
     fontSize: 18,

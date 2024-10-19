@@ -14,6 +14,8 @@ import { ThemedText } from "@/components/ThemedText";
 import SettingsUnit from "@/components/SettingsUnit";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import SettingsBarbellWeight from "@/components/SettingsBarbellWeight";
+import { GestureHandlerRootView, TouchableOpacity } from "react-native-gesture-handler";
+import { keys } from "@/constants/Storage";
 
 export type PlateSet = Record<number, number>;
 
@@ -106,10 +108,10 @@ export default function HomeScreen() {
 
   function describePlateSet(plateSet: PlateSet): string {
     return Object.entries(plateSet)
-      .filter(([_, count]) => count > 0) // Filter out plates with 0 count
-      .sort(([a], [b]) => parseFloat(b) - parseFloat(a)) // Sort by weight in descending order
-      .map(([weight, count]) => `${weight}x${count}`) // Format each weight and count
-      .join(" . "); // Join the results with ' . '
+      .filter(([_, count]) => count > 0)
+      .sort(([a], [b]) => parseFloat(b) - parseFloat(a))
+      .map(([weight, count]) => `${weight}×${count}`)
+      .join(" · ");
   }
 
   const handleScrollValue = (value: number) => {
@@ -126,7 +128,7 @@ export default function HomeScreen() {
   const onUnitClicked = React.useCallback(
     async (u: string) => {
       setUnit(u);
-      await client.storeData("unit", u);
+      await client.storeData(keys.UNIT, u);
     },
     [setUnit]
   );
@@ -161,7 +163,12 @@ export default function HomeScreen() {
           setModalVisible(false);
         }}
       >
-        <ThemedText type="label">Unit</ThemedText>
+        <ThemedText
+          type="label"
+          style={styles.barbellLabel}
+        >
+          Unit
+        </ThemedText>
         <SettingsUnit
           unit={unit}
           onPress={onUnitClicked}
@@ -172,14 +179,14 @@ export default function HomeScreen() {
         >
           Barbell Weight
         </ThemedText>
-
         <SettingsBarbellWeight
           onPress={(size) => {
-            alert(size);
+            setBarbellWeight(size);
+            client.storeData(keys.BARBELL_WEIGHT, size.toString());
           }}
           sizes={[45, 44, 33, 18]}
+          barbellWeight={barbellWeight}
         />
-
         <ThemedText type="label">Slider</ThemedText>
       </CustomModal>
     </ThemedView>
@@ -195,11 +202,23 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 0,
     paddingTop: 0,
+    position: "relative",
   },
   bar: {
     position: "absolute",
   },
   barbellLabel: {
     marginTop: 20,
+  },
+  addIcon: {
+    position: "absolute",
+    bottom: 8,
+    right: 0,
+    color: "gray",
+  },
+  addIconContainer: {
+    position: "absolute",
+    height: 44,
+    width: 44,
   },
 });

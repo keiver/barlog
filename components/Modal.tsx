@@ -2,8 +2,6 @@ import React from "react";
 import {
   Modal,
   View,
-  Text,
-  Button,
   StyleSheet,
   TouchableOpacity,
   ImageBackground,
@@ -12,8 +10,6 @@ import {
 } from "react-native";
 import { ThemedText } from "./ThemedText";
 import { BlurView } from "expo-blur";
-import Plate25 from "../assets/images/plates/25.svg";
-import { ThemedRoundButton } from "./SettingsIcon";
 import { TabBarIcon } from "./navigation/TabBarIcon";
 import { useColorScheme } from "react-native";
 import { tintColorLight } from "@/constants/Colors";
@@ -104,11 +100,11 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width * 0.9,
   },
   modalTitle: {
+    paddingTop: 10,
     marginTop: 5,
     textAlign: "left",
-    fontWeight: "500",
-    fontSize: 22,
-    marginBottom: 15,
+    fontWeight: "400",
+    fontSize: 28,
   },
   modalCloseIcon: {
     position: "absolute",

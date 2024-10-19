@@ -142,7 +142,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
-    bottom: Dimensions.get("window").height * 0.05,
+    bottom: Dimensions.get("window").height * 0.015,
   },
   plateContainer: {
     alignItems: "center",

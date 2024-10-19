@@ -49,23 +49,28 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
     const isDark = useColorScheme() === "dark";
     const sliderRef = (ref as React.RefObject<RNVSliderRef>) || localRef;
 
+    const getColor = React.useCallback(() => {
+      if (value < 130) {
+        return isDark ? tintColorDark : tintColorLight;
+      }
+
+      return !isDark ? Colors.light.shadowColor : tintColorDark;
+    }, [isDark, value]);
+
     const renderIcon = () => {
       return (
-        <View style={[styles.renderContainer, value < 100 ? styles.onTop : {}]}>
+        <View style={[styles.renderContainer, value < 130 ? styles.onTop : {}]}>
           <Animated.Text>
             <MaterialCommunityIcons
               adjustsFontSizeToFit
               name={unit === "lb" ? "weight-pound" : "weight-kilogram"}
               size={44}
-              color={!isDark && value > 100 ? Colors.light.shadowColor : minimumTrackTintColor}
+              color={getColor()}
             />
           </Animated.Text>
           <ThemedText
             type="title"
-            style={[
-              styles.renderContainerText,
-              { color: !isDark && value > 100 ? Colors.light.shadowColor : minimumTrackTintColor },
-            ]}
+            style={[styles.renderContainerText, { color: getColor() }]}
           >
             {convert(value)}
           </ThemedText>
@@ -81,7 +86,7 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
             ref={sliderRef}
             value={value}
             disabled={false}
-            min={barbellWeight || 0}
+            min={0}
             max={800}
             step={1}
             animationConfig={{
@@ -142,7 +147,6 @@ const styles = StyleSheet.create({
   },
   onTop: {
     bottom: 0,
-    color: "white",
   },
   renderContainerText: {
     fontSize: 23,

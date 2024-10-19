@@ -68,7 +68,7 @@ export function ThemedRoundButton({
         >
           <View style={styles.barIndicator}>
             <ThemedText
-              lightColor="#7CFC00"
+              lightColor="#00FF00"
               type="small"
               style={[styles.label, { fontFamily: "NovaSquare_400Regular" }]}
             >
@@ -153,5 +153,12 @@ const styles = StyleSheet.create({
         translateX: 25,
       },
     ],
+    shadowColor: "black",
+    shadowOffset: {
+      width: -2,
+      height: 4,
+    },
+    shadowOpacity: 0.5,
+    shadowRadius: 6,
   },
 });

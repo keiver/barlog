@@ -2,6 +2,7 @@
   "expo": {
     "name": "barlog",
     "slug": "barlog",
+    "description": "Easy preview of barbell plate set",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -34,7 +35,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "7f60ae97-1452-4ac3-bd20-cd4c41f9595c"
+        "projectId": "01d0347d-50df-48bf-acf6-2bbd36c9f9d5"
       }
     },
     "owner": "keiverh"

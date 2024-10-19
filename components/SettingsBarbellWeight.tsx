@@ -5,6 +5,8 @@ import { ThemedText } from "./ThemedText";
 import { ThemedView } from "./ThemedView";
 import { Colors } from "@/constants/Colors";
 
+import localStorage from "@/app/libs/localStorage";
+
 interface SettingsBarbellWeightProps {
   sizes: number[];
   onPress: (size: number) => void;
@@ -12,13 +14,15 @@ interface SettingsBarbellWeightProps {
 }
 
 const SettingsBarbellWeight: React.FC<SettingsBarbellWeightProps> = ({ barbellWeight, sizes, onPress }) => {
-  const [adding, setAdding] = React.useState(false);
   const inputRef = React.useRef<TextInput>(null);
   const isDark = useColorScheme() === "dark";
+  const client = localStorage.getInstance();
 
   const onBlur = (e: any) => {
-    console.log("%ccomponents/SettingsBarbellWeight.tsx:16 e", "color: #007acc;", e);
-    setAdding(false);
+    const inputValue = e.nativeEvent?.text || e.target?.value || "";
+
+    client.storeData("barbellWeight", inputValue);
+    inputRef.current?.blur();
   };
 
   return (

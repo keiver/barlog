@@ -147,13 +147,15 @@ export default function HomeScreen() {
         unit={unit}
         collapsed={barbelCollapsed} // TODO: Implement collapsible barbell
       />
-      <ThemedRoundButton
-        onPress={clicked}
-        barbellWeight={barbellWeight}
-        unit={unit}
-        onLogClicked={() => setBarbelCollapsed(() => !barbelCollapsed)}
-        logs={describePlateSet(plates)}
-      />
+      {!modalVisible ? (
+        <ThemedRoundButton
+          onPress={clicked}
+          barbellWeight={barbellWeight}
+          unit={unit}
+          onLogClicked={() => setBarbelCollapsed(() => !barbelCollapsed)}
+          logs={describePlateSet(plates)}
+        />
+      ) : null}
       <CustomModal
         isVisible={modalVisible}
         onClose={() => setModalVisible(false)}
@@ -187,7 +189,7 @@ export default function HomeScreen() {
           sizes={[45, 44, 33, 18]}
           barbellWeight={barbellWeight}
         />
-        <ThemedText type="label">Slider</ThemedText>
+        {/* <ThemedText type="label">Slider</ThemedText> */}
       </CustomModal>
     </ThemedView>
   );

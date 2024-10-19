@@ -15,96 +15,101 @@ export type SliderProps = {
   barbellWeight?: number;
 };
 
-const Slider = React.forwardRef<RNVSliderRef, SliderProps>(({ onValueChanged, unit }: SliderProps, ref) => {
-  const [value, setValue] = React.useState(0);
-  const localRef = React.useRef<RNVSliderRef>(null);
-  const [key, setKey] = React.useState(React.useId());
-  const scheme = useColorScheme();
+const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
+  ({ onValueChanged, unit, barbellWeight }: SliderProps, ref) => {
+    const [value, setValue] = React.useState(0);
+    const localRef = React.useRef<RNVSliderRef>(null);
+    const [key, setKey] = React.useState(React.useId());
+    const scheme = useColorScheme();
 
-  React.useEffect(() => {
-    const random = Math.random();
-    setKey(random.toString());
-  }, [scheme, unit]);
+    React.useEffect(() => {
+      const random = Math.random();
+      setKey(random.toString());
+    }, [scheme, unit]);
 
-  const convert = React.useMemo(() => {
-    if (unit === "lb") {
-      return (value: number) => `${value}`;
-    }
+    const convert = React.useMemo(() => {
+      if (unit === "lb") {
+        return (value: number) => `${value}`;
+      }
 
-    return (value: number) => `${parseInt((value * 0.453592).toFixed(0))}`;
-  }, [unit]);
+      return (value: number) => `${parseInt((value * 0.453592).toFixed(0))}`;
+    }, [unit]);
 
-  const onChangeValue = React.useCallback((newValue: number) => {
-    setValue(newValue);
-  }, []);
+    const onChangeValue = React.useCallback((newValue: number) => {
+      setValue(newValue);
+    }, []);
 
-  const onComplete = React.useCallback((newValue: number) => {
-    onValueChanged(newValue);
-  }, []);
+    const onComplete = React.useCallback((newValue: number) => {
+      onValueChanged(newValue);
+    }, []);
 
-  const { height, width } = useWindowDimensions();
-  const maximumTrackTintColor = useThemeColor({}, "maximumTrackTintColor");
-  const minimumTrackTintColor = useThemeColor({}, "minimumTrackTintColor");
-  const isDark = useColorScheme() === "dark";
-  const sliderRef = (ref as React.RefObject<RNVSliderRef>) || localRef;
+    const { height, width } = useWindowDimensions();
+    const maximumTrackTintColor = useThemeColor({}, "maximumTrackTintColor");
+    const minimumTrackTintColor = useThemeColor({}, "minimumTrackTintColor");
+    const isDark = useColorScheme() === "dark";
+    const sliderRef = (ref as React.RefObject<RNVSliderRef>) || localRef;
 
-  const renderIcon = () => {
+    const renderIcon = () => {
+      return (
+        <View style={[styles.renderContainer, value < 100 ? styles.onTop : {}]}>
+          <Animated.Text>
+            <MaterialCommunityIcons
+              adjustsFontSizeToFit
+              name={unit === "lb" ? "weight-pound" : "weight-kilogram"}
+              size={44}
+              color={!isDark && value > 100 ? Colors.light.shadowColor : minimumTrackTintColor}
+            />
+          </Animated.Text>
+          <ThemedText
+            type="title"
+            style={[
+              styles.renderContainerText,
+              { color: !isDark && value > 100 ? Colors.light.shadowColor : minimumTrackTintColor },
+            ]}
+          >
+            {convert(value)}
+          </ThemedText>
+        </View>
+      );
+    };
+
     return (
-      <View style={[styles.renderContainer, value < 100 ? styles.onTop : {}]}>
-        <Animated.Text>
-          <MaterialCommunityIcons
-            adjustsFontSizeToFit
-            name={unit === "lb" ? "weight-pound" : "weight-kilogram"}
-            size={44}
-            color={!isDark ? Colors.light.shadowColor : tintColorDark}
+      <GestureHandlerRootView style={styles.flexOne}>
+        <View style={styles.container}>
+          <RnVerticalSlider
+            key={key}
+            ref={sliderRef}
+            value={value}
+            disabled={false}
+            min={barbellWeight || 0}
+            max={800}
+            step={1}
+            animationConfig={{
+              duration: 1000,
+              dampingRatio: 0.4,
+              stiffness: 100,
+            }}
+            onChange={onChangeValue}
+            onComplete={onComplete}
+            showIndicator={true}
+            width={width}
+            height={height}
+            borderRadius={0}
+            maximumTrackTintColor={maximumTrackTintColor}
+            minimumTrackTintColor={minimumTrackTintColor}
+            renderIndicator={renderIcon}
           />
-        </Animated.Text>
-        <ThemedText
-          type="title"
-          style={[styles.renderContainerText, { color: !isDark ? Colors.light.shadowColor : tintColorDark }]}
+        </View>
+        <View
+          style={styles.contentBox}
+          pointerEvents="none"
         >
-          {convert(value)}
-        </ThemedText>
-      </View>
+          {/* <ThemedText type="huge">{value}</ThemedText> */}
+        </View>
+      </GestureHandlerRootView>
     );
-  };
-
-  return (
-    <GestureHandlerRootView style={styles.flexOne}>
-      <View style={styles.container}>
-        <RnVerticalSlider
-          key={key}
-          ref={sliderRef}
-          value={value}
-          disabled={false}
-          min={0}
-          max={800}
-          step={5}
-          animationConfig={{
-            duration: 1000,
-            dampingRatio: 0.4,
-            stiffness: 100,
-          }}
-          onChange={onChangeValue}
-          onComplete={onComplete}
-          showIndicator={true}
-          width={width}
-          height={height}
-          borderRadius={0}
-          maximumTrackTintColor={maximumTrackTintColor}
-          minimumTrackTintColor={minimumTrackTintColor}
-          renderIndicator={renderIcon}
-        />
-      </View>
-      <View
-        style={styles.contentBox}
-        pointerEvents="none"
-      >
-        {/* <ThemedText type="huge">{value}</ThemedText> */}
-      </View>
-    </GestureHandlerRootView>
-  );
-});
+  }
+);
 
 export default Slider;
 
@@ -137,6 +142,7 @@ const styles = StyleSheet.create({
   },
   onTop: {
     bottom: 0,
+    color: "white",
   },
   renderContainerText: {
     fontSize: 23,

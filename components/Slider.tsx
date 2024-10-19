@@ -20,17 +20,18 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(({ onValueChanged, un
   const localRef = React.useRef<RNVSliderRef>(null);
   const [key, setKey] = React.useState(React.useId());
   const scheme = useColorScheme();
-  // rerender when color scheme changes
+
   React.useEffect(() => {
     const random = Math.random();
     setKey(random.toString());
-  }, [scheme]);
+  }, [scheme, unit]);
 
   const convert = React.useMemo(() => {
-    if (unit === "kg") {
+    if (unit === "lb") {
       return (value: number) => `${value}`;
     }
-    return (value: number) => `${value}`;
+
+    return (value: number) => `${parseInt((value * 0.453592).toFixed(0))}`;
   }, [unit]);
 
   const onChangeValue = React.useCallback((newValue: number) => {
@@ -53,7 +54,7 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(({ onValueChanged, un
         <Animated.Text>
           <MaterialCommunityIcons
             adjustsFontSizeToFit
-            name={unit === "kg" ? "weight-kilogram" : "weight-pound"}
+            name={unit === "lb" ? "weight-pound" : "weight-kilogram"}
             size={44}
             color={!isDark ? Colors.light.shadowColor : tintColorDark}
           />
@@ -127,8 +128,9 @@ const styles = StyleSheet.create({
   },
   renderContainer: {
     display: "flex",
-    alignItems: "flex-end",
+    alignItems: "flex-start",
     justifyContent: "center",
+    left: 10,
     position: "absolute",
     height: 100,
     width: Dimensions.get("window").width - 20,
@@ -140,7 +142,7 @@ const styles = StyleSheet.create({
     fontSize: 23,
     fontWeight: "700",
     width: 50,
-    transform: [{ translateX: 3 }],
+    transform: [{ translateX: -3 }],
     textAlign: "center",
   },
   contentBox: {

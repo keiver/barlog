@@ -17,6 +17,7 @@ import { ThemedRoundButton } from "./SettingsIcon";
 import { TabBarIcon } from "./navigation/TabBarIcon";
 import { useColorScheme } from "react-native";
 import { tintColorLight } from "@/constants/Colors";
+import ParallaxScrollView from "./ParallaxScrollView";
 
 interface CustomModalProps {
   isVisible: boolean;
@@ -40,6 +41,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
   const colorScheme = useColorScheme();
   const backgroundColor = colorScheme === "dark" ? "#000000ab" : "#ffffffab";
   const closeIconColor = colorScheme === "dark" ? "#ffffff" : "#000000";
+
   return (
     <Modal
       animationType="slide"
@@ -66,18 +68,11 @@ const CustomModal: React.FC<CustomModalProps> = ({
                 color={closeIconColor}
               />
             </TouchableOpacity>
-            <View style={styles.modalContent}>{children}</View>
-            {/* <TouchableOpacity
-              style={styles.button}
-              onPress={onButtonPress ? onButtonPress : onClose}
-            >
-              <ThemedText
-                type="subtitle"
-                style={styles.buttonText}
-              >
-                {buttonLabel}
-              </ThemedText>
-            </TouchableOpacity> */}
+            <ParallaxScrollView style={styles.scrollView}>
+              <React.Fragment>
+                <View style={styles.modalContent}>{children}</View>
+              </React.Fragment>
+            </ParallaxScrollView>
           </BlurView>
         </ImageBackground>
       </TouchableWithoutFeedback>
@@ -95,7 +90,7 @@ const styles = StyleSheet.create({
   },
   modalView: {
     position: "relative",
-    padding: 35,
+    padding: 25,
     borderRadius: 20,
     shadowOffset: {
       width: 0,
@@ -142,6 +137,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#151718",
     // textTransform: "uppercase",
+  },
+  scrollView: {
+    flex: 1,
+    padding: 0,
+    backgroundColor: "transparent",
   },
 });
 

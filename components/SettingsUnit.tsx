@@ -3,7 +3,6 @@ import * as React from "react";
 import { SafeAreaView, StyleSheet, View, Text, useColorScheme } from "react-native";
 import Animated from "react-native-reanimated";
 import { Colors, tintColorDark, tintColorLight } from "@/constants/Colors";
-import storageClient from "@/app/libs/localStorage";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
@@ -48,39 +47,23 @@ const WeightIcon: React.FC<WeightIconProps> = ({ unit, selected, onPress }) => {
   return <>{renderIcon()}</>;
 };
 
-const SettingsUnit: React.FC = () => {
-  const [storedUnit, setStoredUnit] = React.useState<string | null>();
+export type Props = {
+  onPress: (unit: "lb" | "kb" | string) => void;
+  unit: "lb" | "kb" | string;
+};
 
-  const c = storageClient.getInstance();
-
-  React.useEffect(() => {
-    c.getData("unit").then((u) => {
-      console.log("%ccomponents/SettingsUnit.tsx:58 u", "color: #007acc;", u);
-      if (u) {
-        setStoredUnit(u);
-      }
-    });
-  }, [setStoredUnit]);
-
-  const onPress = React.useCallback(
-    (n: string) => {
-      setStoredUnit(n);
-    },
-    [storedUnit, setStoredUnit]
-  );
-  console.log("%ccomponents/SettingsUnit.tsx:71 storedUnit", "color: #007acc;", storedUnit);
+const SettingsUnit: React.FC<Props> = ({ onPress, unit }: Props) => {
   return (
     <SafeAreaView style={styles.container}>
       <WeightIcon
         unit="lb"
-        selected={storedUnit === "lb"}
+        selected={unit === "lb"}
         onPress={() => onPress("lb")}
       />
-
       <WeightIcon
         unit="kg"
         onPress={() => onPress("kb")}
-        selected={storedUnit === "kb"}
+        selected={unit === "kb"}
       />
     </SafeAreaView>
   );
@@ -103,9 +86,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     margin: 10,
     width: 100,
-    height: 80,
-    fontSize: 58,
-    padding: 20,
+    height: 40,
+    padding: 0,
   },
   unitText: {
     fontSize: 18,

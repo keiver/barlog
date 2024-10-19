@@ -6,7 +6,7 @@ import { transform } from "@babel/core";
 export type ThemedTextProps = TextProps & {
   lightColor?: string;
   darkColor?: string;
-  type?: "default" | "title" | "defaultSemiBold" | "subtitle" | "link" | "huge" | "label";
+  type?: "default" | "title" | "defaultSemiBold" | "subtitle" | "link" | "huge" | "label" | "small";
   shadowColor?: string;
   vertical?: boolean;
 };
@@ -33,6 +33,7 @@ export function ThemedText({
         type === "link" ? styles.link : undefined,
         type === "huge" ? styles.huge : undefined,
         type === "label" ? styles.label : undefined,
+        type === "small" ? styles.small : undefined,
         vertical ? styles.vertical : undefined,
 
         style,
@@ -69,10 +70,15 @@ const styles = StyleSheet.create({
     lineHeight: 30,
     fontSize: 16,
   },
+  small: {
+    fontSize: 8,
+  },
   label: {
-    lineHeight: 50,
+    lineHeight: 40,
     fontWeight: "500",
     fontSize: 18,
+    marginBottom: 15,
+    marginTop: 15,
   },
   huge: {
     lineHeight: 90,

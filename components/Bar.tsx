@@ -37,7 +37,7 @@ const plateImages: Record<number, React.FC<React.SVGProps<SVGSVGElement>>> = {
 const Barbell: React.FC<BarbellProps> = ({
   platesPerSide,
   barType = "Standard",
-  unit = "lb",
+  unit,
   barWeight = 45,
   collapsed = false,
 }) => {
@@ -78,7 +78,7 @@ const Barbell: React.FC<BarbellProps> = ({
       return COLLAPSED_HEIGHT;
     }
 
-    return -165;
+    return -155;
   };
 
   const renderPlates = (weight: number, index: number) => {
@@ -89,7 +89,7 @@ const Barbell: React.FC<BarbellProps> = ({
 
     return Array.from({ length: numberOfPlates }).map((_, plateIndex) => {
       const Component = plate.image;
-      console.log("%ccomponents/Bar.tsx:92 unit", "color: #007acc;", unit);
+
       return (
         <Animated.View
           pointerEvents={"auto"}
@@ -99,9 +99,11 @@ const Barbell: React.FC<BarbellProps> = ({
             {
               transform: [
                 { scale: animatedValues[index] },
-                { rotateX: `${45}deg` },
+                // { rotateX: `${45}deg` },
                 // { rotateZ: `${unit === "lb" ? 70 : 70}deg` },
-                { rotate: `${unit !== "lb" ? 180 : 290}deg` },
+                { rotate: `${unit === "lb" ? 190 : 340}deg` },
+                // { scaleY: -1 },
+                // { scaleX: -1 },
               ],
               marginTop: getMarginTop(weight, plateIndex),
               // marginTop: COLLAPSED_HEIGHT,

@@ -16,15 +16,27 @@ const SettingsBarbellWeight: React.FC<SettingsBarbellWeightProps> = ({ sizes, on
           key={index}
           onPress={() => onPress(size)}
           style={styles.item}
+          hitSlop={10}
         >
-          <ThemedText>{size}</ThemedText>
+          <ThemedText style={styles.itemSize}>{size}</ThemedText>
           <Ionicons
             name="barbell-sharp"
-            size={size}
+            size={size === 18 ? 30 : size}
             color="black"
           />
         </TouchableOpacity>
       ))}
+      <TouchableOpacity
+        onPress={() => alert("Add new size")}
+        style={styles.addIcon}
+        hitSlop={10}
+      >
+        <Ionicons
+          name="add-circle"
+          size={40}
+          color="gray"
+        />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -33,14 +45,29 @@ const styles = StyleSheet.create({
   centeredView: {
     display: "flex",
     flexDirection: "row",
-    gap: 30,
-    alignContent: "center",
-    justifyContent: "center",
+    gap: 40,
+    alignContent: "space-evenly",
+    justifyContent: "flex-start",
     height: "auto",
+    width: "100%",
+    textAlign: "center",
   },
   item: {
     alignContent: "center",
     justifyContent: "center",
+  },
+  itemSize: {
+    fontSize: 16,
+    marginBottom: -7,
+    fontWeight: "700",
+    textAlign: "center",
+    marginLeft: -2,
+  },
+  addIcon: {
+    position: "absolute",
+    bottom: 8,
+    right: 0,
+    color: "gray",
   },
 });
 

@@ -33,9 +33,10 @@ export default function HomeScreen() {
   const { plates, loadPlates, unloadPlates } = usePlateset();
   const [lastCallTime, setLastCallTime] = React.useState<number | null>(null);
   const [barbellWeight, setBarbellWeight] = React.useState<number>(initialBarbellWeight);
-  const [unit, setUnit] = React.useState<string>("kg");
+  const [unit, setUnit] = React.useState<string>("lb");
   const sliderRef = React.useRef<RNVSliderRef>(null);
   const [modalVisible, setModalVisible] = React.useState(false);
+  const [barbelCollapsed, setBarbelCollapsed] = React.useState(false);
 
   const client = storage.getInstance();
 
@@ -66,29 +67,32 @@ export default function HomeScreen() {
     };
   }, []);
 
-  const calculatePlates = (targetWeight: number): PlateSet => {
-    if (targetWeight < barbellWeight) {
-      return { ...samplePlateSet };
-    }
-
-    // Subtract the barbell weight from the target weight to determine the total weight for plates
-    let remainingWeight = (targetWeight - barbellWeight) / 2; // divide by 2 as we calculate for one side
-    const availablePlates = [45, 35, 25, 15, 10, 5, 2.5];
-    const newPlates: PlateSet = { ...samplePlateSet };
-
-    for (let i = 0; i < availablePlates.length; i++) {
-      const plate = availablePlates[i];
-      const count = Math.floor(remainingWeight / plate);
-
-      if (count > 0) {
-        newPlates[plate] = count;
-        remainingWeight -= plate * count;
-        remainingWeight = parseFloat(remainingWeight.toFixed(2)); // Fix floating-point precision issues
+  const calculatePlates = React.useCallback(
+    (targetWeight: number): PlateSet => {
+      if (targetWeight < barbellWeight) {
+        return { ...samplePlateSet };
       }
-    }
 
-    return newPlates;
-  };
+      // Subtract the barbell weight from the target weight to determine the total weight for plates
+      let remainingWeight = (targetWeight - barbellWeight) / 2; // divide by 2 as we calculate for one side
+      const availablePlates = [45, 35, 25, 15, 10, 5, 2.5];
+      const newPlates: PlateSet = { ...samplePlateSet };
+
+      for (let i = 0; i < availablePlates.length; i++) {
+        const plate = availablePlates[i];
+        const count = Math.floor(remainingWeight / plate);
+
+        if (count > 0) {
+          newPlates[plate] = count;
+          remainingWeight -= plate * count;
+          remainingWeight = parseFloat(remainingWeight.toFixed(2)); // Fix floating-point precision issues
+        }
+      }
+
+      return newPlates;
+    },
+    [barbellWeight]
+  );
 
   const throttle = (func: (value: number) => void, limit: number) => {
     return (value: number) => {
@@ -100,6 +104,14 @@ export default function HomeScreen() {
     };
   };
 
+  function describePlateSet(plateSet: PlateSet): string {
+    return Object.entries(plateSet)
+      .filter(([_, count]) => count > 0) // Filter out plates with 0 count
+      .sort(([a], [b]) => parseFloat(b) - parseFloat(a)) // Sort by weight in descending order
+      .map(([weight, count]) => `${weight}x${count}`) // Format each weight and count
+      .join(" . "); // Join the results with ' . '
+  }
+
   const handleScrollValue = (value: number) => {
     const newPlates = calculatePlates(value);
     loadPlates(newPlates);
@@ -110,6 +122,14 @@ export default function HomeScreen() {
   const clicked = React.useCallback(() => {
     setModalVisible(true);
   }, []);
+
+  const onUnitClicked = React.useCallback(
+    async (u: string) => {
+      setUnit(u);
+      await client.storeData("unit", u);
+    },
+    [setUnit]
+  );
 
   return (
     <ThemedView style={styles.container}>
@@ -123,12 +143,14 @@ export default function HomeScreen() {
       <Barbell
         platesPerSide={plates}
         unit={unit}
-        collapsed={modalVisible}
+        collapsed={barbelCollapsed} // TODO: Implement collapsible barbell
       />
       <ThemedRoundButton
         onPress={clicked}
         barbellWeight={barbellWeight}
         unit={unit}
+        onLogClicked={() => setBarbelCollapsed(() => !barbelCollapsed)}
+        logs={describePlateSet(plates)}
       />
       <CustomModal
         isVisible={modalVisible}
@@ -140,7 +162,10 @@ export default function HomeScreen() {
         }}
       >
         <ThemedText type="label">Unit</ThemedText>
-        <SettingsUnit />
+        <SettingsUnit
+          unit={unit}
+          onPress={onUnitClicked}
+        />
         <ThemedText
           type="label"
           style={styles.barbellLabel}
@@ -148,20 +173,14 @@ export default function HomeScreen() {
           Barbell Weight
         </ThemedText>
 
-        {/* From the barbells listed, four common or close weights are:
-
-45 lbs (20 kg) – Standard Barbell, Powerlifting Barbell, and Deadlift Bar
-44 lbs (20 kg) – Olympic Barbell (20kg)
-33 lbs (15 kg) – Olympic Barbell (15kg)
-18 lbs (8 kg) – EZ Curl Bar
-These weights are common across various barbell types or are close to one another in terms of weight for gym usage. */}
-
         <SettingsBarbellWeight
           onPress={(size) => {
             alert(size);
           }}
           sizes={[45, 44, 33, 18]}
         />
+
+        <ThemedText type="label">Slider</ThemedText>
       </CustomModal>
     </ThemedView>
   );

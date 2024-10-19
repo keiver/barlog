@@ -4,6 +4,7 @@ import { TabBarIcon } from "./navigation/TabBarIcon";
 import { ThemedText } from "./ThemedText";
 import { ThemedView } from "./ThemedView";
 import { BlurView } from "expo-blur";
+import { useFonts, NovaSquare_400Regular } from "@expo-google-fonts/nova-square";
 
 export type ThemedButtonProps = {
   onPress: () => void;
@@ -13,7 +14,8 @@ export type ThemedButtonProps = {
   style?: ViewStyle;
   barbellWeight?: number;
   unit?: string;
-  description?: string;
+  logs?: string;
+  onLogClicked?: () => void;
 };
 
 export function ThemedRoundButton({
@@ -23,54 +25,78 @@ export function ThemedRoundButton({
   style,
   barbellWeight,
   unit,
-  description,
+  logs = "",
+  onLogClicked,
 }: ThemedButtonProps) {
   const colorScheme = useColorScheme();
   const backgroundColor = colorScheme !== "dark" ? "#000000ab" : "#000000ab";
+  let [fontsLoaded] = useFonts({
+    NovaSquare_400Regular,
+  });
 
   return (
-    <TouchableOpacity
-      onPress={onPress}
-      hitSlop={10}
-      style={[styles.container, style]}
-    >
+    <TouchableOpacity style={[styles.container, style]}>
       <BlurView
         intensity={50}
         tint="default"
         style={[styles.modalView, { backgroundColor }]}
       >
-        <View style={styles.barIndicator}>
-          <TabBarIcon
-            name="settings-outline"
-            color={iconColor}
-            style={styles.icon}
-            size={18}
-          />
-          <ThemedText
-            lightColor="white"
-            type="link"
-          >
-            {" "}
-            Settings
-          </ThemedText>
-        </View>
-        {description ? <ThemedText> | </ThemedText> : null}
-        <ThemedText>{description}</ThemedText>
-        <View style={styles.barIndicator}>
-          <TabBarIcon
-            name="barbell-outline"
-            color={iconColor}
-            style={styles.icon}
-            size={24}
-          />
-          <ThemedText
-            type="link"
-            lightColor="white"
-          >
-            {" "}
-            {barbellWeight} {unit}
-          </ThemedText>
-        </View>
+        <TouchableOpacity
+          onPress={onPress}
+          hitSlop={10}
+        >
+          <View style={styles.barIndicator}>
+            <TabBarIcon
+              name="settings-outline"
+              color={iconColor}
+              style={styles.icon}
+              size={18}
+            />
+            <ThemedText
+              lightColor="white"
+              type="default"
+              style={[styles.label, { fontFamily: "NovaSquare_400Regular" }]}
+            >
+              Settings
+            </ThemedText>
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={onLogClicked}
+          hitSlop={10}
+        >
+          <View style={styles.barIndicator}>
+            <ThemedText
+              lightColor="#7CFC00"
+              type="small"
+              style={[styles.label, { fontFamily: "NovaSquare_400Regular" }]}
+            >
+              {logs || ""}
+            </ThemedText>
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={onPress}
+          hitSlop={10}
+        >
+          <View style={styles.barIndicator}>
+            <TabBarIcon
+              name="barbell-outline"
+              color={iconColor}
+              style={styles.icon}
+              size={18}
+            />
+            <ThemedText
+              type="default"
+              lightColor="white"
+              style={[styles.label, { fontFamily: "NovaSquare_400Regular" }]}
+            >
+              {barbellWeight} {unit}
+            </ThemedText>
+          </View>
+        </TouchableOpacity>
       </BlurView>
     </TouchableOpacity>
   );
@@ -79,7 +105,8 @@ export function ThemedRoundButton({
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    bottom: 0,
+    top: 0,
+    right: 0,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
@@ -89,29 +116,42 @@ const styles = StyleSheet.create({
     paddingRight: 0,
     paddingLeft: 0,
     borderRadius: 0,
-    height: 54,
-    // width: Dimensions.get("window").width,
-    overflow: "hidden",
+    // minHeight: Dimensions.get("window").height,
+    // overflow: "hidden",
+    // transform: [
+    //   { rotate: "270deg" },
+    //   { translateY: Dimensions.get("window").width / 2.12 },
+    //   { translateX: -Dimensions.get("window").width / 1.3 },
+    // ],
   },
   icon: {
-    // transform: [{ translateY: -28 }],
+    transform: [{ translateY: -2 }, { rotate: "90deg" }],
   },
   barIndicator: {
-    flexDirection: "row",
+    flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
     gap: 5,
+    height: Dimensions.get("window").height / 3, // number of buttons
   },
   modalView: {
     padding: 0,
     borderRadius: 0,
     overflow: "hidden",
-    height: 54,
-    width: Dimensions.get("window").width,
-    flexDirection: "row",
-    justifyContent: "space-between",
+    height: Dimensions.get("window").height,
+    width: 24,
+    flexDirection: "column",
+    justifyContent: "center",
     alignItems: "center",
-    paddingRight: 44,
-    paddingLeft: 44,
+  },
+  label: {
+    fontSize: 16,
+    width: "100%",
+    transform: [
+      { rotate: "90deg" },
+      {
+        translateX: 25,
+      },
+    ],
   },
 });

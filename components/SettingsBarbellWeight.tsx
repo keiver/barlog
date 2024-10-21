@@ -3,7 +3,7 @@ import { View, TouchableOpacity, StyleSheet, TextInput, useColorScheme } from "r
 import { Ionicons } from "@expo/vector-icons";
 import { ThemedText } from "./ThemedText";
 import { ThemedView } from "./ThemedView";
-import { Colors } from "@/constants/Colors";
+import { Colors, tintColorLight } from "@/constants/Colors";
 
 import localStorage from "@/app/libs/localStorage";
 
@@ -11,9 +11,10 @@ interface SettingsBarbellWeightProps {
   sizes: number[];
   onPress: (size: number) => void;
   barbellWeight?: number;
+  unit?: string;
 }
 
-const SettingsBarbellWeight: React.FC<SettingsBarbellWeightProps> = ({ barbellWeight, sizes, onPress }) => {
+const SettingsBarbellWeight: React.FC<SettingsBarbellWeightProps> = ({ barbellWeight, sizes, onPress, unit }) => {
   const inputRef = React.useRef<TextInput>(null);
   const isDark = useColorScheme() === "dark";
   const client = localStorage.getInstance();
@@ -27,21 +28,22 @@ const SettingsBarbellWeight: React.FC<SettingsBarbellWeightProps> = ({ barbellWe
 
   return (
     <View style={styles.centeredView}>
-      {sizes?.map((size, index) => (
-        <TouchableOpacity
-          key={index}
-          onPress={() => onPress(size)}
-          style={styles.item}
-          hitSlop={10}
-        >
-          {/* <ThemedText style={styles.itemSize}>{size}</ThemedText> */}
-          <Ionicons
-            name="barbell-sharp"
-            size={size === 18 ? 30 : size}
-            color={barbellWeight === size ? "orange" : isDark ? "white" : "black"}
-          />
-        </TouchableOpacity>
-      ))}
+      {sizes?.map((size, index) => {
+        return (
+          <TouchableOpacity
+            key={index}
+            onPress={() => onPress(size)}
+            style={styles.item}
+            hitSlop={10}
+          >
+            <Ionicons
+              name="barbell-sharp"
+              size={size === 18 ? 30 : size}
+              color={barbellWeight === size ? tintColorLight : isDark ? "white" : "black"}
+            />
+          </TouchableOpacity>
+        );
+      })}
       <TextInput
         ref={inputRef}
         style={styles.addInput}
@@ -89,6 +91,14 @@ const styles = StyleSheet.create({
   item: {
     alignContent: "center",
     justifyContent: "center",
+    shadowColor: "black",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
   itemSize: {
     fontSize: 16,
@@ -112,7 +122,9 @@ const styles = StyleSheet.create({
     borderLeftWidth: 1,
     borderRightColor: "gray",
     borderRightWidth: 1,
-    minWidth: 50,
+    // minWidth: 50,
+    width: 80,
+    textAlign: "center",
     fontSize: 16,
     fontWeight: "600",
     margin: 10,

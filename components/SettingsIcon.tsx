@@ -38,6 +38,10 @@ export function ThemedRoundButton({
     NovaSquare_400Regular,
   });
 
+  const getBarbellWeightByUnit = React.useCallback(() => {
+    return barbellWeight;
+  }, [barbellWeight, unit]);
+
   return (
     <TouchableOpacity style={[styles.container, style]}>
       <BlurView
@@ -98,7 +102,7 @@ export function ThemedRoundButton({
               lightColor="white"
               style={[styles.label, { fontFamily: "NovaSquare_400Regular" }]}
             >
-              {barbellWeight} {unit}
+              {getBarbellWeightByUnit()} {unit}
             </ThemedText>
           </View>
         </TouchableOpacity>

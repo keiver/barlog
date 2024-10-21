@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback } from "react";
-import { StyleSheet, TextInput } from "react-native";
+import { StyleSheet } from "react-native";
 
 import { ThemedView } from "@/components/ThemedView";
 import Slider from "@/components/Slider";
@@ -12,11 +12,8 @@ import { RNVSliderRef } from "rn-vertical-slider";
 import CustomModal from "@/components/Modal";
 import { ThemedText } from "@/components/ThemedText";
 import SettingsUnit from "@/components/SettingsUnit";
-import Ionicons from "@expo/vector-icons/Ionicons";
 import SettingsBarbellWeight from "@/components/SettingsBarbellWeight";
-import { GestureHandlerRootView, TouchableOpacity } from "react-native-gesture-handler";
 import { keys } from "@/constants/Storage";
-import { BW } from "@/components/BW";
 
 export type PlateSet = Record<number, number>;
 
@@ -60,11 +57,13 @@ export default function HomeScreen() {
   }, []);
 
   React.useEffect(() => {
-    // animate adding a new plate of 25 lbs
-    loadPlates({ ...samplePlateSet, 25: 1 });
+    setTimeout(() => {
+      // animate adding a new plate of 25 lbs
+      loadPlates({ ...samplePlateSet, 25: 1 });
 
-    // set slider value to 95
-    sliderRef.current?.setValue?.(95);
+      // set slider value to 95
+      sliderRef.current?.setValue?.(95);
+    }, 1000);
 
     return () => {
       unloadPlates();
@@ -108,13 +107,22 @@ export default function HomeScreen() {
     };
   };
 
-  const describePlateSet = React.useCallback((plateSet: PlateSet) => {
-    return Object.entries(plateSet)
-      .filter(([_, count]) => count > 0)
-      .sort(([a], [b]) => parseFloat(b) - parseFloat(a))
-      .map(([weight, count]) => `${weight}×${count}`)
-      .join(" · ");
-  }, []);
+  const describePlateSet = React.useCallback(
+    (plateSet: PlateSet) => {
+      return Object.entries(plateSet)
+        .filter(([_, count]) => count > 0)
+        .sort(([a], [b]) => parseFloat(b) - parseFloat(a))
+        .map(([weight, count]) => {
+          let displayWeight = parseFloat(weight);
+          if (unit === "kg") {
+            displayWeight = parseFloat((displayWeight * 0.453592).toFixed(1)); // Convert to kg
+          }
+          return `${displayWeight} × ${count}`;
+        })
+        .join(" · ");
+    },
+    [unit]
+  );
 
   const handleScrollValue = React.useCallback(
     (v: number) => {
@@ -134,9 +142,20 @@ export default function HomeScreen() {
   const onUnitClicked = React.useCallback(
     async (u: string) => {
       setUnit(u);
+      let newBarbellWeight = 0;
+
+      if (u === "kg") {
+        newBarbellWeight = 20;
+      }
+
+      if (u === "lb") {
+        newBarbellWeight = 45;
+      }
+
       await client.storeData(keys.UNIT, u);
+      await client.storeData(keys.BARBELL_WEIGHT, newBarbellWeight.toString());
     },
-    [setUnit]
+    [setUnit, unit, barbellWeight]
   );
 
   const onLogClicked = React.useCallback(() => {
@@ -175,8 +194,10 @@ export default function HomeScreen() {
       <Barbell
         platesPerSide={plates}
         unit={unit}
-        collapsed={barbelCollapsed} // TODO: Implement collapsible barbell
+        collapsed={barbelCollapsed}
       />
+
+      {/* // Modal */}
 
       <CustomModal
         isVisible={modalVisible}
@@ -210,6 +231,7 @@ export default function HomeScreen() {
           }}
           sizes={[45, 44, 33, 18]}
           barbellWeight={barbellWeight}
+          unit={unit}
         />
         {/* <ThemedText type="label">Slider</ThemedText> */}
       </CustomModal>

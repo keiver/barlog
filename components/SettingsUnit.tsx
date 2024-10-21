@@ -49,8 +49,8 @@ const WeightIcon: React.FC<WeightIconProps> = ({ unit, selected, onPress }) => {
 };
 
 export type Props = {
-  onPress: (unit: "lb" | "kb" | string) => void;
-  unit: "lb" | "kb" | string;
+  onPress: (unit: "lb" | "kg" | string) => void;
+  unit: "lb" | "kg" | string;
 };
 
 const SettingsUnit: React.FC<Props> = ({ onPress, unit }: Props) => {
@@ -63,8 +63,8 @@ const SettingsUnit: React.FC<Props> = ({ onPress, unit }: Props) => {
       />
       <WeightIcon
         unit="kg"
-        onPress={() => onPress("kb")}
-        selected={unit === "kb"}
+        onPress={() => onPress("kg")}
+        selected={unit === "kg"}
       />
     </SafeAreaView>
   );

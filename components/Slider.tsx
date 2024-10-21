@@ -16,8 +16,8 @@ export type SliderProps = {
 };
 
 const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
-  ({ onValueChanged, unit, barbellWeight }: SliderProps, ref) => {
-    const [value, setValue] = React.useState(0);
+  ({ onValueChanged, unit, barbellWeight = 0 }: SliderProps, ref) => {
+    const [value, setValue] = React.useState(barbellWeight);
     const localRef = React.useRef<RNVSliderRef>(null);
     const [key, setKey] = React.useState(React.useId());
     const scheme = useColorScheme();
@@ -35,19 +35,38 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
       return (value: number) => `${parseInt((value * 0.453592).toFixed(0))}`;
     }, [unit]);
 
-    const onChangeValue = React.useCallback((newValue: number) => {
-      setValue(newValue);
-    }, []);
+    const sliderRef = (ref as React.RefObject<RNVSliderRef>) || localRef;
 
-    const onComplete = React.useCallback((newValue: number) => {
-      onValueChanged(newValue);
-    }, []);
+    const onChangeValue = React.useCallback(
+      (newValue: number) => {
+        if (newValue < barbellWeight) {
+          sliderRef.current?.setValue(barbellWeight);
+          setValue(barbellWeight);
+        } else {
+          setValue(newValue);
+        }
+      },
+      [barbellWeight, sliderRef]
+    );
+
+    const onComplete = React.useCallback(
+      (newValue: number) => {
+        if (newValue < barbellWeight) {
+          sliderRef.current?.setValue(barbellWeight);
+          setValue(barbellWeight);
+          onValueChanged(barbellWeight);
+        } else {
+          setValue(newValue);
+          onValueChanged(newValue);
+        }
+      },
+      [barbellWeight, onValueChanged, sliderRef]
+    );
 
     const { height, width } = useWindowDimensions();
     const maximumTrackTintColor = useThemeColor({}, "maximumTrackTintColor");
     const minimumTrackTintColor = useThemeColor({}, "minimumTrackTintColor");
     const isDark = useColorScheme() === "dark";
-    const sliderRef = (ref as React.RefObject<RNVSliderRef>) || localRef;
 
     const getColor = React.useCallback(() => {
       if (value < 130) {
@@ -104,12 +123,6 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
             minimumTrackTintColor={minimumTrackTintColor}
             renderIndicator={renderIcon}
           />
-        </View>
-        <View
-          style={styles.contentBox}
-          pointerEvents="none"
-        >
-          {/* <ThemedText type="huge">{value}</ThemedText> */}
         </View>
       </GestureHandlerRootView>
     );

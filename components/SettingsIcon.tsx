@@ -5,6 +5,7 @@ import { ThemedText } from "./ThemedText";
 import { ThemedView } from "./ThemedView";
 import { BlurView } from "expo-blur";
 import { useFonts, NovaSquare_400Regular } from "@expo-google-fonts/nova-square";
+import Animated from "react-native-reanimated";
 
 export type ThemedButtonProps = {
   onPress: () => void;
@@ -16,6 +17,7 @@ export type ThemedButtonProps = {
   unit?: string;
   logs?: string;
   onLogClicked?: () => void;
+  locked?: boolean;
 };
 
 export function ThemedRoundButton({
@@ -27,6 +29,7 @@ export function ThemedRoundButton({
   unit,
   logs = "",
   onLogClicked,
+  locked,
 }: ThemedButtonProps) {
   const colorScheme = useColorScheme();
   const backgroundColor = colorScheme !== "dark" ? "#000000ab" : "#000000ab";
@@ -66,15 +69,15 @@ export function ThemedRoundButton({
           onPress={onLogClicked}
           hitSlop={10}
         >
-          <View style={styles.barIndicator}>
+          <Animated.View style={styles.barIndicator}>
             <ThemedText
-              lightColor="#00FF00"
+              lightColor={!locked ? "#00FF00" : "#FF0000"}
               type="small"
               style={[styles.label, { fontFamily: "NovaSquare_400Regular" }]}
             >
               {logs || ""}
             </ThemedText>
-          </View>
+          </Animated.View>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -146,7 +149,9 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
-    width: "100%",
+    width: Dimensions.get("window").height / 3 + 100,
+    // minWidth: 100,
+    textAlign: "center",
     transform: [
       { rotate: "90deg" },
       {

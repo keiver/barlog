@@ -45,7 +45,6 @@
     "react-native-screens": "3.31.1",
     "react-native-svg": "15.2.0",
     "react-native-svg-transformer": "^1.5.0",
-    "react-native-web": "~0.19.10",
     "rn-vertical-slider": "^4.4.0"
   },
   "devDependencies": {

@@ -16,6 +16,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import SettingsBarbellWeight from "@/components/SettingsBarbellWeight";
 import { GestureHandlerRootView, TouchableOpacity } from "react-native-gesture-handler";
 import { keys } from "@/constants/Storage";
+import { BW } from "@/components/BW";
 
 export type PlateSet = Record<number, number>;
 
@@ -39,6 +40,7 @@ export default function HomeScreen() {
   const sliderRef = React.useRef<RNVSliderRef>(null);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [barbelCollapsed, setBarbelCollapsed] = React.useState(false);
+  const [value, onValueChanged] = React.useState(0);
 
   const client = storage.getInstance();
 
@@ -106,17 +108,22 @@ export default function HomeScreen() {
     };
   };
 
-  function describePlateSet(plateSet: PlateSet): string {
+  const describePlateSet = React.useCallback((plateSet: PlateSet) => {
     return Object.entries(plateSet)
       .filter(([_, count]) => count > 0)
       .sort(([a], [b]) => parseFloat(b) - parseFloat(a))
       .map(([weight, count]) => `${weight}×${count}`)
       .join(" · ");
-  }
+  }, []);
 
-  const handleScrollValue = (value: number) => {
-    const newPlates = calculatePlates(value);
+  const handleScrollValue = (v: number) => {
+    if (barbelCollapsed) {
+      return sliderRef.current?.setValue?.(value);
+    }
+
+    const newPlates = calculatePlates(v);
     loadPlates(newPlates);
+    onValueChanged(v);
   };
 
   const throttledGetScrollValue = useCallback(throttle(handleScrollValue, 400), [lastCallTime]);
@@ -133,29 +140,38 @@ export default function HomeScreen() {
     [setUnit]
   );
 
+  const onLogClicked = React.useCallback(() => {
+    return setBarbelCollapsed(() => !barbelCollapsed);
+  }, [barbelCollapsed, setBarbelCollapsed]);
+
+  const logs = React.useMemo(() => describePlateSet(plates), [plates, describePlateSet]);
+
   return (
     <ThemedView style={styles.container}>
       <Slider
         onValueChanged={throttledGetScrollValue}
-        animateCallback={clicked}
         unit={unit}
         barbellWeight={barbellWeight}
         ref={sliderRef}
       />
-      <Barbell
-        platesPerSide={plates}
-        unit={unit}
-        collapsed={barbelCollapsed} // TODO: Implement collapsible barbell
-      />
+
       {!modalVisible ? (
         <ThemedRoundButton
           onPress={clicked}
           barbellWeight={barbellWeight}
           unit={unit}
-          onLogClicked={() => setBarbelCollapsed(() => !barbelCollapsed)}
-          logs={describePlateSet(plates)}
+          onLogClicked={onLogClicked}
+          logs={logs}
+          locked={barbelCollapsed}
         />
       ) : null}
+
+      <Barbell
+        platesPerSide={plates}
+        unit={unit}
+        collapsed={barbelCollapsed} // TODO: Implement collapsible barbell
+      />
+
       <CustomModal
         isVisible={modalVisible}
         onClose={() => setModalVisible(false)}

@@ -1,5 +1,7 @@
 import * as React from "react";
-import { View, StyleSheet, Animated, Dimensions } from "react-native";
+import { View, StyleSheet, Animated, LayoutAnimation, Dimensions, Platform, UIManager } from "react-native";
+
+// Import your plate SVG components here
 import Plate45 from "@/assets/images/plates/45.svg";
 import Plate35 from "@/assets/images/plates/35.svg";
 import Plate25 from "@/assets/images/plates/25.svg";
@@ -34,101 +36,104 @@ const plateImages: Record<number, React.FC<React.SVGProps<SVGSVGElement>>> = {
   2.5: Plate2P5,
 };
 
+// Enable LayoutAnimation on Android
+if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
+
 const Barbell: React.FC<BarbellProps> = ({
   platesPerSide,
   barType = "Standard",
-  unit,
+  unit = "lb",
   barWeight = 45,
   collapsed = false,
 }) => {
-  const weightsInPounds = Object.keys(plateImages).map((weight) => parseFloat(weight));
+  const weightsInPounds = React.useMemo(() => Object.keys(plateImages).map((weight) => parseFloat(weight)), []);
 
-  const plates: Plate[] = weightsInPounds.map((w) => {
-    const weightLb = w;
-    const weightKg = parseFloat((w * 0.453592).toFixed(2));
+  // Create the plates array with weight information and images
+  const plates: Plate[] = React.useMemo(
+    () =>
+      weightsInPounds.map((w) => {
+        const weightLb = w;
+        const weightKg = parseFloat((w * 0.453592).toFixed(2));
 
-    return {
-      weightLb,
-      weightKg,
-      label: `${weightKg} kg / ${weightLb} lb`,
-      image: plateImages[weightLb],
-      height: 50, // Example height value in pixels
-    };
-  });
-
-  const animatedValues = React.useRef(plates.map(() => new Animated.Value(0))).current;
-
-  React.useEffect(() => {
-    Animated.stagger(
-      100,
-      animatedValues.map((value) =>
-        Animated.timing(value, {
-          toValue: 1,
-          duration: 500,
-          useNativeDriver: true,
-        })
-      )
-    )?.start();
-  }, [platesPerSide]);
-
-  const COLLAPSED_HEIGHT = -191;
-
-  const getMarginTop = (weight: number, index: number) => {
-    if (collapsed) {
-      return COLLAPSED_HEIGHT;
-    }
-
-    return -155;
-  };
-
-  const renderPlates = (weight: number, index: number) => {
-    const plate = plates.find((plate) => plate.weightLb === weight);
-    if (!plate) return null;
-
-    const numberOfPlates = platesPerSide[weight] || 0;
-
-    return Array.from({ length: numberOfPlates }).map((_, plateIndex) => {
-      const Component = plate.image;
-
-      return (
-        <Animated.View
-          pointerEvents={"auto"}
-          key={`${weight}-${plateIndex}`}
-          style={[
-            styles.plateContainer,
-            {
-              transform: [
-                { scale: animatedValues[index] },
-                { rotateX: `50deg` },
-                { rotateZ: `${unit === "lb" ? 245 : 0}deg` },
-                // { rotate: `${unit === "lb" ? 290 : 360}deg` },
-                // { scaleY: -1 },
-                // { scaleX: -1 },
-              ],
-              marginTop: getMarginTop(weight, plateIndex),
-              // marginTop: COLLAPSED_HEIGHT,
-            },
-          ]}
-        >
-          <Component pointerEvents={"auto"} />
-        </Animated.View>
-      );
-    });
-  };
-
-  const sortedWeights = React.useMemo(
-    () => plates.map((plate) => plate.weightLb).sort((a, b) => b - a),
-    // .reverse(),,
-    [platesPerSide]
+        return {
+          weightLb,
+          weightKg,
+          label: `${weightKg} kg / ${weightLb} lb`,
+          image: plateImages[weightLb],
+          height: 50, // Example height value in pixels
+        };
+      }),
+    [weightsInPounds]
   );
+
+  // Generate a flat list of all plates to render, including duplicates
+  const platesToRender = React.useMemo(() => {
+    let result: Plate[] = [];
+    const sortedWeights = plates.map((plate) => plate.weightLb).sort((a, b) => b - a);
+
+    sortedWeights.forEach((weight) => {
+      const plate = plates.find((p) => p.weightLb === weight);
+      if (plate) {
+        const count = platesPerSide[weight] || 0;
+        for (let i = 0; i < count; i++) {
+          result.push(plate);
+        }
+      }
+    });
+    return result;
+  }, [platesPerSide, plates]);
+
+  // Initialize an animated value for each individual plate
+  const animatedValues = React.useMemo(() => platesToRender.map(() => new Animated.Value(0)), [platesToRender]);
+
+  // Animate each plate individually
+  React.useEffect(() => {
+    const animations = platesToRender.map((_, index) =>
+      Animated.timing(animatedValues[index], {
+        toValue: 1,
+        duration: 25,
+        useNativeDriver: true,
+      })
+    );
+    Animated.stagger(85, animations).start();
+  }, [animatedValues]);
+
+  // Smoothly animate layout changes
+  React.useEffect(() => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
+  }, [collapsed, platesToRender]);
+
+  const COLLAPSED_MARGIN = -191;
+  const EXPANDED_MARGIN = -155;
 
   return (
     <View
       style={styles.container}
       pointerEvents="none"
     >
-      {sortedWeights.map((weight, index) => {
-        return renderPlates(weight, index);
+      {platesToRender.map((plate, index) => {
+        const Component = plate.image;
+        return (
+          <Animated.View
+            pointerEvents="auto"
+            key={`plate-${index}`}
+            style={[
+              styles.plateContainer,
+              {
+                transform: [
+                  { scale: animatedValues[index] },
+                  { rotateX: `50deg` },
+                  { rotateZ: `${unit === "lb" ? 245 : 0}deg` },
+                ],
+                marginTop: collapsed ? COLLAPSED_MARGIN : EXPANDED_MARGIN,
+              },
+            ]}
+          >
+            <Component pointerEvents="auto" />
+          </Animated.View>
+        );
       })}
     </View>
   );

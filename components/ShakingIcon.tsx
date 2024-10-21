@@ -19,10 +19,10 @@ const ShakingIcon = ({ styles }: Props) => {
   useEffect(() => {
     shake.value = withRepeat(
       withSequence(
-        withTiming(-4, { duration: 100 }), // Move left
-        withTiming(3, { duration: 200 }), // Move right
+        withTiming(-2, { duration: 100 }), // Move left
+        withTiming(2, { duration: 200 }), // Move right
         withTiming(0, { duration: 100 }), // Return to center
-        withTiming(0, { duration: 700 }) // Pause for 500ms
+        withTiming(0, { duration: 900 }) // Pause for 500ms
       ),
       -1, // Infinite repeats
       false // Do not reverse the animation
@@ -31,7 +31,7 @@ const ShakingIcon = ({ styles }: Props) => {
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ translateY: shake.value }], // Use translateY for side-to-side movement after rotation
+      transform: [{ translateY: shake.value }],
     };
   });
 

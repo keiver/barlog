@@ -116,15 +116,14 @@ export default function HomeScreen() {
       .join(" · ");
   }, []);
 
-  const handleScrollValue = (v: number) => {
-    if (barbelCollapsed) {
-      return sliderRef.current?.setValue?.(value);
-    }
-
-    const newPlates = calculatePlates(v);
-    loadPlates(newPlates);
-    onValueChanged(v);
-  };
+  const handleScrollValue = React.useCallback(
+    (v: number) => {
+      const newPlates = calculatePlates(v);
+      loadPlates(newPlates);
+      onValueChanged(v);
+    },
+    [barbelCollapsed, calculatePlates, loadPlates, value]
+  );
 
   const throttledGetScrollValue = useCallback(throttle(handleScrollValue, 400), [lastCallTime]);
 
@@ -149,7 +148,14 @@ export default function HomeScreen() {
   return (
     <ThemedView style={styles.container}>
       <Slider
-        onValueChanged={throttledGetScrollValue}
+        onValueChanged={(v) => {
+          if (barbelCollapsed) {
+            sliderRef.current?.setValue?.(value);
+            return;
+          }
+
+          return throttledGetScrollValue(v);
+        }}
         unit={unit}
         barbellWeight={barbellWeight}
         ref={sliderRef}

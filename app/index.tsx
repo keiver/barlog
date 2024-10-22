@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback } from "react";
-import { StyleSheet } from "react-native";
+import { Animated, Dimensions, Easing, StyleSheet } from "react-native";
 
 import { ThemedView } from "@/components/ThemedView";
 import Slider from "@/components/Slider";
@@ -14,6 +14,7 @@ import { ThemedText } from "@/components/ThemedText";
 import SettingsUnit from "@/components/SettingsUnit";
 import SettingsBarbellWeight from "@/components/SettingsBarbellWeight";
 import { keys } from "@/constants/Storage";
+import { SlideCoachMark } from "@/components/SlideCoachMark";
 
 export type PlateSet = Record<number, number>;
 
@@ -38,8 +39,17 @@ export default function HomeScreen() {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [barbelCollapsed, setBarbelCollapsed] = React.useState(false);
   const [value, onValueChanged] = React.useState(0);
+  const [userScrolledOver, setUserScrolledOver] = React.useState(false);
 
   const client = storage.getInstance();
+
+  const load = useCallback(
+    (p: PlateSet, slider: number) => {
+      loadPlates(p);
+      sliderRef.current?.setValue?.(slider);
+    },
+    [loadPlates, sliderRef?.current]
+  );
 
   useEffect(() => {
     Promise.all([
@@ -57,14 +67,18 @@ export default function HomeScreen() {
   }, []);
 
   React.useEffect(() => {
+    // setTimeout(() => {
+    //   load({ ...samplePlateSet, 45: 2, 25: 1 }, 195);
+
+    //   setTimeout(() => {
+    //     load({ ...samplePlateSet, 45: 1 }, 150);
+
+    //   }, 800);
+    // }, 800);
+
     setTimeout(() => {
-      // animate adding a new plate of 25 lbs
-      loadPlates({ ...samplePlateSet, 25: 1 });
-
-      // set slider value to 95
-      sliderRef.current?.setValue?.(95);
-    }, 1000);
-
+      load({ ...samplePlateSet, 25: 1 }, 95);
+    }, 600);
     return () => {
       unloadPlates();
     };
@@ -129,6 +143,11 @@ export default function HomeScreen() {
       const newPlates = calculatePlates(v);
       loadPlates(newPlates);
       onValueChanged(v);
+
+      if (v > Dimensions.get("window").height / 2) {
+        setUserScrolledOver(true);
+        client.storeData(keys.SAW_COACH_MARK, "true");
+      }
     },
     [barbelCollapsed, calculatePlates, loadPlates, value]
   );
@@ -180,16 +199,15 @@ export default function HomeScreen() {
         ref={sliderRef}
       />
 
-      {!modalVisible ? (
-        <ThemedRoundButton
-          onPress={clicked}
-          barbellWeight={barbellWeight}
-          unit={unit}
-          onLogClicked={onLogClicked}
-          logs={logs}
-          locked={barbelCollapsed}
-        />
-      ) : null}
+      <ThemedRoundButton
+        onPress={clicked}
+        barbellWeight={barbellWeight}
+        unit={unit}
+        onLogClicked={onLogClicked}
+        logs={logs}
+        locked={barbelCollapsed}
+        dimmed={modalVisible}
+      />
 
       <Barbell
         platesPerSide={plates}
@@ -235,6 +253,7 @@ export default function HomeScreen() {
         />
         {/* <ThemedText type="label">Slider</ThemedText> */}
       </CustomModal>
+      <SlideCoachMark hidden={userScrolledOver} />
     </ThemedView>
   );
 }

@@ -3,7 +3,7 @@
     "name": "barlog",
     "slug": "barlog",
     "description": "Easy preview of barbell plate set",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/images/icons/appstore.png",
     "scheme": "barlog",
@@ -11,16 +11,19 @@
     "splash": {
       "image": "./assets/images/icons/appstore.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#FFB703"
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "dev.keiver.barlog"
+      "bundleIdentifier": "dev.keiver.barlog",
+      "config": {
+        "usesNonExemptEncryption": false
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icons/playstore.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#FFB703"
       },
       "package": "dev.keiver.barlog"
     },

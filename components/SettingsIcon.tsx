@@ -19,6 +19,7 @@ export type ThemedButtonProps = {
   logs?: string;
   onLogClicked?: () => void;
   locked?: boolean;
+  dimmed?: boolean;
 };
 
 export function ThemedRoundButton({
@@ -31,6 +32,7 @@ export function ThemedRoundButton({
   logs = "",
   onLogClicked,
   locked,
+  dimmed,
 }: ThemedButtonProps) {
   const colorScheme = useColorScheme();
   const backgroundColor = colorScheme !== "dark" ? "#000000ab" : "#000000ab";
@@ -43,15 +45,15 @@ export function ThemedRoundButton({
   }, [barbellWeight, unit]);
 
   return (
-    <TouchableOpacity style={[styles.container, style]}>
+    <TouchableOpacity style={[styles.container, style, dimmed && styles.dimmed]}>
       <BlurView
-        intensity={50}
+        intensity={30}
         tint="default"
         style={[styles.modalView, { backgroundColor }]}
       >
         <TouchableOpacity
           onPress={onPress}
-          hitSlop={10}
+          hitSlop={30}
         >
           <View style={styles.barIndicator}>
             <TabBarIcon
@@ -72,7 +74,7 @@ export function ThemedRoundButton({
 
         <TouchableOpacity
           onPress={onLogClicked}
-          hitSlop={10}
+          hitSlop={30}
         >
           <View style={styles.barIndicator}>
             <ThemedText
@@ -81,14 +83,19 @@ export function ThemedRoundButton({
               style={[styles.label, { fontFamily: "NovaSquare_400Regular" }]}
             >
               {logs || ""}
-              {locked ? <ShakingIcon styles={[styles.iconLock]} /> : null}
+              <ShakingIcon
+                styles={[styles.iconLock]}
+                unlocked={!locked}
+                animated={locked}
+                hidden={!logs}
+              />
             </ThemedText>
           </View>
         </TouchableOpacity>
 
         <TouchableOpacity
           onPress={onPress}
-          hitSlop={10}
+          hitSlop={30}
         >
           <View style={styles.barIndicator}>
             <TabBarIcon
@@ -176,5 +183,8 @@ const styles = StyleSheet.create({
     // transform: [{ rotate: "-90deg" }],
     marginLeft: 15,
     marginBottom: 1,
+  },
+  dimmed: {
+    opacity: 0.5,
   },
 });

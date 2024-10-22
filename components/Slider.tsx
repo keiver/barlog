@@ -1,12 +1,23 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import * as React from "react";
-import { Dimensions, SafeAreaView, StyleSheet, Text, useColorScheme, useWindowDimensions, View } from "react-native";
+import {
+  AccessibilityInfo,
+  Dimensions,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import Animated from "react-native-reanimated";
+import Animated, { ReduceMotion } from "react-native-reanimated";
 import RnVerticalSlider, { RNVSliderRef } from "rn-vertical-slider";
 import { ThemedText } from "./ThemedText";
 import { Colors, tintColorDark, tintColorLight } from "@/constants/Colors";
 import { useThemeColor } from "@/hooks/useThemeColor";
+import { DeviceMotion } from "expo-sensors";
+import { ThemedView } from "./ThemedView";
 
 export type SliderProps = {
   onValueChanged: (value: number) => void;
@@ -21,6 +32,24 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
     const localRef = React.useRef<RNVSliderRef>(null);
     const [key, setKey] = React.useState(React.useId());
     const scheme = useColorScheme();
+    const [reduceMotionEnabled, setReduceMotionEnabled] = React.useState(false);
+
+    React.useEffect(() => {
+      // Check if the user has enabled "Reduce Motion"
+      AccessibilityInfo.isReduceMotionEnabled().then((isEnabled) => {
+        setReduceMotionEnabled(isEnabled);
+      });
+
+      // Listen for changes in the "Reduce Motion" setting
+      const subscription = AccessibilityInfo.addEventListener("reduceMotionChanged", (isEnabled) => {
+        setReduceMotionEnabled(isEnabled);
+      });
+
+      return () => {
+        // Clean up the subscription when the component unmounts
+        subscription?.remove();
+      };
+    }, []);
 
     React.useEffect(() => {
       const random = Math.random();
@@ -40,7 +69,6 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
     const onChangeValue = React.useCallback(
       (newValue: number) => {
         if (newValue < barbellWeight) {
-          sliderRef.current?.setValue(barbellWeight);
           setValue(barbellWeight);
         } else {
           setValue(newValue);
@@ -53,10 +81,8 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
       (newValue: number) => {
         if (newValue < barbellWeight) {
           sliderRef.current?.setValue(barbellWeight);
-          setValue(barbellWeight);
           onValueChanged(barbellWeight);
         } else {
-          setValue(newValue);
           onValueChanged(newValue);
         }
       },
@@ -112,6 +138,8 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
               duration: 1000,
               dampingRatio: 0.4,
               stiffness: 100,
+              reduceMotion: reduceMotionEnabled ? ReduceMotion.Never : ReduceMotion.System,
+              velocity: 3.5,
             }}
             onChange={onChangeValue}
             onComplete={onComplete}
@@ -123,6 +151,7 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
             minimumTrackTintColor={minimumTrackTintColor}
             renderIndicator={renderIcon}
           />
+          <ThemedView style={styles.safeArea} />
         </View>
       </GestureHandlerRootView>
     );
@@ -176,5 +205,12 @@ const styles = StyleSheet.create({
     height: Dimensions.get("window").height,
     width: Dimensions.get("window").width,
     paddingBottom: 44,
+  },
+  safeArea: {
+    position: "absolute",
+    bottom: 0,
+    height: 45,
+    width: Dimensions.get("window").width,
+    backgroundColor: "transparent",
   },
 });

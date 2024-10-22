@@ -97,7 +97,7 @@ const Barbell: React.FC<BarbellProps> = ({
         useNativeDriver: true,
       })
     );
-    Animated.stagger(85, animations).start();
+    Animated.parallel(animations).start();
   }, [animatedValues]);
 
   // Smoothly animate layout changes

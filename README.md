@@ -1,50 +1,35 @@
-# Welcome to your Expo app 👋
+# Description
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Barbell Weight Simulator is the perfect tool for anyone looking to plan their weightlifting sessions with ease. This app helps you visualize how plates would stack on one side of a real barbell, showing the minimum plates required to hit your target weight.
 
-## Get started
+Adjust the target weight with a simple slider that runs the height of your screen and see the plates automatically update. The app supports both pounds and kilograms, and you can even set the barbell's weight for accurate total load calculations. Whether you're training for strength or just want to simulate your next lift, this app makes it easy.
 
-1. Install dependencies
+Key Features:
 
-   ```bash
-   npm install
-   ```
+Simple Slider Control:
+Adjust your target weight easily and watch the plates update in real-time.
 
-2. Start the app
+Minimum Plate Calculation:
+The app shows you the fewest plates needed to reach your target weight.
 
-   ```bash
-    npx expo start
-   ```
+Realistic Plate Display:
+Get a visual representation of how weights stack up on a real barbell.
 
-In the output, you'll find options to open the app in a
+Switch Between Pounds and Kilograms:
+Toggle between units based on your preference.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+Custom Barbell Weight:
+Input your barbell weight and let the app calculate the rest.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+Sleek and Minimal Design:
+Focus on your workout with a clean, distraction-free interface.
 
-## Get a fresh project
+Great for all levels of lifters, from beginners to experienced athletes!
 
-When you're ready, run:
+# Keywords
 
-```bash
-npm run reset-project
-```
+barbell weight, weight simulator, plate calculator, crossfit, training, gym weights, lift planner
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+# Promotional:
 
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+Barbell minimum plates calculator. Adjust weight by sliding up and down, see the minimum plates needed, and switch between lbs and kg—all in a sleek, easy-to-use app.

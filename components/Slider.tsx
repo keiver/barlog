@@ -16,8 +16,8 @@ import RnVerticalSlider, { RNVSliderRef } from "rn-vertical-slider";
 import { ThemedText } from "./ThemedText";
 import { Colors, tintColorDark, tintColorLight } from "@/constants/Colors";
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { DeviceMotion } from "expo-sensors";
 import { ThemedView } from "./ThemedView";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export type SliderProps = {
   onValueChanged: (value: number) => void;
@@ -33,6 +33,8 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
     const [key, setKey] = React.useState(React.useId());
     const scheme = useColorScheme();
     const [reduceMotionEnabled, setReduceMotionEnabled] = React.useState(false);
+
+    const insets = useSafeAreaInsets();
 
     React.useEffect(() => {
       // Check if the user has enabled "Reduce Motion"
@@ -151,7 +153,14 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
             minimumTrackTintColor={minimumTrackTintColor}
             renderIndicator={renderIcon}
           />
-          <ThemedView style={styles.safeArea} />
+          <ThemedView
+            style={[
+              styles.safeArea,
+              {
+                height: insets.bottom,
+              },
+            ]}
+          />
         </View>
       </GestureHandlerRootView>
     );

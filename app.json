@@ -15,10 +15,7 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "dev.keiver.barlog",
-      "config": {
-        "usesNonExemptEncryption": false
-      }
+      "bundleIdentifier": "dev.keiver.barlog"
     },
     "android": {
       "adaptiveIcon": {

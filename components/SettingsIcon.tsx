@@ -74,7 +74,7 @@ export function ThemedRoundButton({
 
         <TouchableOpacity
           onPress={onLogClicked}
-          hitSlop={30}
+          hitSlop={50}
         >
           <View style={styles.barIndicator}>
             <ThemedText
@@ -162,8 +162,10 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 16,
+    // lineHeight: 16,
     width: Dimensions.get("window").height / 3 + 100,
     // minWidth: 100,
+    // height: 19,
     textAlign: "center",
     transform: [
       { rotate: "90deg" },

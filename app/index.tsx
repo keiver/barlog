@@ -15,6 +15,7 @@ import SettingsUnit from "@/components/SettingsUnit";
 import SettingsBarbellWeight from "@/components/SettingsBarbellWeight";
 import { keys } from "@/constants/Storage";
 import { SlideCoachMark } from "@/components/SlideCoachMark";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export type PlateSet = Record<number, number>;
 
@@ -184,81 +185,87 @@ export default function HomeScreen() {
   const logs = React.useMemo(() => describePlateSet(plates), [plates, describePlateSet]);
 
   return (
-    <ThemedView style={styles.container}>
-      <Slider
-        onValueChanged={(v) => {
-          if (barbelCollapsed) {
-            sliderRef.current?.setValue?.(value);
-            return;
-          }
+    <GestureHandlerRootView style={styles.flexOne}>
+      <ThemedView style={styles.container}>
+        <Slider
+          onValueChanged={(v) => {
+            if (barbelCollapsed) {
+              sliderRef.current?.setValue?.(value);
+              return;
+            }
 
-          return throttledGetScrollValue(v);
-        }}
-        unit={unit}
-        barbellWeight={barbellWeight}
-        ref={sliderRef}
-      />
-
-      <ThemedRoundButton
-        onPress={clicked}
-        barbellWeight={barbellWeight}
-        unit={unit}
-        onLogClicked={onLogClicked}
-        logs={logs}
-        locked={barbelCollapsed}
-        dimmed={modalVisible}
-      />
-
-      <Barbell
-        platesPerSide={plates}
-        unit={unit}
-        collapsed={barbelCollapsed}
-      />
-
-      {/* // Modal */}
-
-      <CustomModal
-        isVisible={modalVisible}
-        onClose={() => setModalVisible(false)}
-        title="Settings"
-        buttonLabel="Save"
-        onButtonPress={() => {
-          setModalVisible(false);
-        }}
-      >
-        <ThemedText
-          type="label"
-          style={styles.barbellLabel}
-        >
-          Unit
-        </ThemedText>
-        <SettingsUnit
-          unit={unit}
-          onPress={onUnitClicked}
-        />
-        <ThemedText
-          type="label"
-          style={styles.barbellLabel}
-        >
-          Barbell Weight
-        </ThemedText>
-        <SettingsBarbellWeight
-          onPress={(size) => {
-            setBarbellWeight(size);
-            client.storeData(keys.BARBELL_WEIGHT, size.toString());
+            return throttledGetScrollValue(v);
           }}
-          sizes={[45, 44, 33, 18]}
+          unit={unit}
+          barbellWeight={barbellWeight}
+          ref={sliderRef}
+        />
+
+        <ThemedRoundButton
+          onPress={clicked}
           barbellWeight={barbellWeight}
           unit={unit}
+          onLogClicked={onLogClicked}
+          logs={logs}
+          locked={barbelCollapsed}
+          dimmed={modalVisible}
         />
-        {/* <ThemedText type="label">Slider</ThemedText> */}
-      </CustomModal>
-      <SlideCoachMark hidden={userScrolledOver} />
-    </ThemedView>
+
+        <Barbell
+          platesPerSide={plates}
+          unit={unit}
+          collapsed={barbelCollapsed}
+        />
+
+        {/* // Modal */}
+
+        <CustomModal
+          isVisible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          title="Settings"
+          buttonLabel="Save"
+          onButtonPress={() => {
+            setModalVisible(false);
+          }}
+        >
+          <ThemedText
+            type="label"
+            style={styles.barbellLabel}
+          >
+            Unit
+          </ThemedText>
+          <SettingsUnit
+            unit={unit}
+            onPress={onUnitClicked}
+          />
+          <ThemedText
+            type="label"
+            style={styles.barbellLabel}
+          >
+            Barbell Weight
+          </ThemedText>
+          <SettingsBarbellWeight
+            onPress={(size) => {
+              setBarbellWeight(size);
+              client.storeData(keys.BARBELL_WEIGHT, size.toString());
+            }}
+            sizes={[45, 44, 33, 18]}
+            barbellWeight={barbellWeight}
+            unit={unit}
+          />
+          {/* <ThemedText type="label">View</ThemedText> */}
+          {/* half/full barbell */}
+        </CustomModal>
+        <SlideCoachMark hidden={userScrolledOver} />
+      </ThemedView>
+    </GestureHandlerRootView>
   );
 }
 
 const styles = StyleSheet.create({
+  flexOne: {
+    flex: 1,
+  },
   input: {
     borderBottomColor: "gray",
     borderBottomWidth: 1,

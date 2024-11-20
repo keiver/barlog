@@ -14,7 +14,6 @@ type WeightIconProps = {
 
 const WeightIcon: React.FC<WeightIconProps> = ({ unit, selected, onPress }) => {
   const isDark = useColorScheme() === "dark";
-  const color = isDark ? tintColorDark : tintColorLight;
 
   const getColor = React.useCallback(() => {
     if (selected) {
@@ -22,7 +21,7 @@ const WeightIcon: React.FC<WeightIconProps> = ({ unit, selected, onPress }) => {
     }
 
     return isDark ? "white" : "black";
-  }, [selected]);
+  }, [selected, isDark]);
 
   const renderIcon = () => {
     return (

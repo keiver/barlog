@@ -25,7 +25,7 @@ export type ThemedButtonProps = {
 export function ThemedRoundButton({
   onPress,
   iconColor = "white",
-  borderColor = "transparent",
+  // borderColor = "transparent",
   style,
   barbellWeight,
   unit,
@@ -36,13 +36,18 @@ export function ThemedRoundButton({
 }: ThemedButtonProps) {
   const colorScheme = useColorScheme();
   const backgroundColor = colorScheme !== "dark" ? "#000000ab" : "#000000ab";
-  let [fontsLoaded] = useFonts({
+
+  const [fontsLoaded] = useFonts({
     NovaSquare_400Regular,
   });
 
   const getBarbellWeightByUnit = React.useCallback(() => {
     return barbellWeight;
   }, [barbellWeight, unit]);
+
+  if (!fontsLoaded) {
+    return null;
+  }
 
   return (
     <TouchableOpacity style={[styles.container, style, dimmed && styles.dimmed]}>
@@ -79,17 +84,18 @@ export function ThemedRoundButton({
           <View style={styles.barIndicator}>
             <ThemedText
               lightColor="#00FF00"
+              darkColor="#00FF00"
               type="small"
               style={[styles.label, { fontFamily: "NovaSquare_400Regular" }]}
             >
-              {logs || ""}
-              <ShakingIcon
-                styles={[styles.iconLock]}
-                unlocked={!locked}
-                animated={locked}
-                hidden={!logs}
-              />
+              {logs || ""} {locked ? " ◯ " : ""}
             </ThemedText>
+            {/* <ShakingIcon
+              styles={[styles.iconLock]}
+              unlocked={!locked}
+              animated={locked}
+              hidden={!logs}
+            /> */}
           </View>
         </TouchableOpacity>
 
@@ -151,16 +157,17 @@ const styles = StyleSheet.create({
     height: Dimensions.get("window").height / 3, // number of buttons
   },
   modalView: {
-    padding: 0,
+    paddingLeft: 2,
     borderRadius: 0,
     overflow: "hidden",
     height: Dimensions.get("window").height,
-    width: 24,
+    width: 38,
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
   },
   label: {
+    position: "relative",
     fontSize: 16,
     // lineHeight: 16,
     width: Dimensions.get("window").height / 3 + 100,
@@ -187,6 +194,6 @@ const styles = StyleSheet.create({
     marginBottom: 1,
   },
   dimmed: {
-    opacity: 0.5,
+    opacity: 0.1,
   },
 });

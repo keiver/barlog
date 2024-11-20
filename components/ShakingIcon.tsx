@@ -9,6 +9,7 @@ import Animated, {
 import { TabBarIcon } from "./navigation/TabBarIcon";
 import { StyleSheet } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
+import { ThemedText } from "./ThemedText";
 
 type Props = {
   styles?: any;
@@ -50,12 +51,14 @@ const ShakingIcon = ({ styles, unlocked, animated, hidden }: Props) => {
 
   return (
     <Animated.View style={animatedStyle}>
-      <FontAwesome
+      {/* {unlocked ? <ThemedText>🔓</ThemedText> : <ThemedText>🔒</ThemedText>} */}
+      <ThemedText style={s.iconLock}>{unlocked ? "🔓" : "🔒"}</ThemedText>
+      {/* <FontAwesome
         name={unlocked ? "unlock" : "lock"}
         color="#00FF00"
         style={[s.iconLock, styles, !unlocked && s.lockedState]}
         size={16}
-      />
+      /> */}
     </Animated.View>
   );
 };
@@ -64,9 +67,6 @@ export default ShakingIcon;
 
 const s = StyleSheet.create({
   iconLock: {
-    transform: [{ rotate: "-90deg" }],
-  },
-  lockedState: {
-    transform: [{ rotate: "-90deg" }, { translateX: -1 }],
+    transform: [{ rotate: "-90deg" }, { translateX: -3 }, { translateY: 20 }],
   },
 });

@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback } from "react";
-import { Animated, Dimensions, Easing, StyleSheet } from "react-native";
+import { Dimensions, Platform, StyleSheet } from "react-native";
 
 import { ThemedView } from "@/components/ThemedView";
 import Slider from "@/components/Slider";
@@ -16,6 +16,8 @@ import SettingsBarbellWeight from "@/components/SettingsBarbellWeight";
 import { keys } from "@/constants/Storage";
 import { SlideCoachMark } from "@/components/SlideCoachMark";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Colors, tintColorLight } from "@/constants/Colors";
+import { StatusBar } from "expo-status-bar";
 
 export type PlateSet = Record<number, number>;
 
@@ -186,6 +188,7 @@ export default function HomeScreen() {
 
   return (
     <GestureHandlerRootView style={styles.flexOne}>
+      <StatusBar style="light" />
       <ThemedView style={styles.container}>
         <Slider
           onValueChanged={(v) => {
@@ -216,8 +219,6 @@ export default function HomeScreen() {
           unit={unit}
           collapsed={barbelCollapsed}
         />
-
-        {/* // Modal */}
 
         <CustomModal
           isVisible={modalVisible}
@@ -253,8 +254,6 @@ export default function HomeScreen() {
             barbellWeight={barbellWeight}
             unit={unit}
           />
-          {/* <ThemedText type="label">View</ThemedText> */}
-          {/* half/full barbell */}
         </CustomModal>
         <SlideCoachMark hidden={userScrolledOver} />
       </ThemedView>
@@ -265,6 +264,13 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   flexOne: {
     flex: 1,
+    // android support to avoid white band in the bottom
+    // paddingTop: Platform.OS === "android" ? 50 : 0,
+    // paddingBottom: 0,
+    height: "100%",
+    // minHeight: Dimensions.get("window").height - 50,
+    paddingTop: Platform.OS === "android" ? 50 : 0,
+    backgroundColor: "#2C2C2E",
   },
   input: {
     borderBottomColor: "gray",
@@ -275,6 +281,8 @@ const styles = StyleSheet.create({
     padding: 0,
     paddingTop: 0,
     position: "relative",
+    // backgroundColor: "green",
+    backgroundColor: "#2C2C2E",
   },
   bar: {
     position: "absolute",

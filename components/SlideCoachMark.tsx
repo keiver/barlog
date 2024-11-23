@@ -22,13 +22,13 @@ export function SlideCoachMark(props: SlideCoachMarkProps) {
   const isDark = useColorScheme() === "dark";
   const glowOpacity = useSharedValue(1);
   const movePosition = useSharedValue(0);
-  const [alreadySeen, setAlreadySeen] = React.useState(false);
+  const [alreadySeen, setAlreadySeen] = React.useState(true);
   const client = storage.getInstance();
 
   React.useEffect(() => {
     client.getData(keys.SAW_COACH_MARK).then((value) => {
       if (!!value) {
-        setAlreadySeen(true);
+        setAlreadySeen(false);
       }
     });
   }, [client, setAlreadySeen]);
@@ -54,7 +54,7 @@ export function SlideCoachMark(props: SlideCoachMarkProps) {
     };
   });
 
-  if (props.hidden || alreadySeen) {
+  if (props.hidden || alreadySeen === true || true) {
     return null;
   }
 
@@ -70,13 +70,13 @@ export function SlideCoachMark(props: SlideCoachMarkProps) {
         name="chevron-thin-up"
         size={20}
         color={isDark ? tintColorDark : tintColorLight}
-        style={[styles.smallChevron, { top: -30 }]}
+        style={[styles.chevron, { top: -30 }]}
       />
       <Entypo
         name="chevron-thin-up"
         size={16}
         color={isDark ? tintColorDark : tintColorLight}
-        style={[styles.smallChevron, { top: -60 }]}
+        style={[styles.chevron, { top: -60 }]}
       />
     </Animated.View>
   );

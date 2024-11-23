@@ -2,11 +2,7 @@ import React from "react";
 import { TouchableOpacity, StyleSheet, ViewStyle, Dimensions, View, useColorScheme } from "react-native";
 import { TabBarIcon } from "./navigation/TabBarIcon";
 import { ThemedText } from "./ThemedText";
-import { ThemedView } from "./ThemedView";
 import { BlurView } from "expo-blur";
-import { useFonts, NovaSquare_400Regular } from "@expo-google-fonts/nova-square";
-import Animated from "react-native-reanimated";
-import ShakingIcon from "./ShakingIcon";
 
 export type ThemedButtonProps = {
   onPress: () => void;
@@ -25,7 +21,6 @@ export type ThemedButtonProps = {
 export function ThemedRoundButton({
   onPress,
   iconColor = "white",
-  // borderColor = "transparent",
   style,
   barbellWeight,
   unit,
@@ -37,17 +32,9 @@ export function ThemedRoundButton({
   const colorScheme = useColorScheme();
   const backgroundColor = colorScheme !== "dark" ? "#000000ab" : "#000000ab";
 
-  const [fontsLoaded] = useFonts({
-    NovaSquare_400Regular,
-  });
-
   const getBarbellWeightByUnit = React.useCallback(() => {
     return barbellWeight;
   }, [barbellWeight, unit]);
-
-  if (!fontsLoaded) {
-    return null;
-  }
 
   return (
     <TouchableOpacity style={[styles.container, style, dimmed && styles.dimmed]}>

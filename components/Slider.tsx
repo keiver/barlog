@@ -127,40 +127,62 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
 
     return (
       <GestureHandlerRootView style={styles.flexOne}>
-        <View style={styles.container}>
-          <RnVerticalSlider
-            key={key}
-            ref={sliderRef}
-            value={value}
-            disabled={false}
-            min={0}
-            max={800}
-            step={1}
-            animationConfig={{
-              duration: 1000,
-              dampingRatio: 0.4,
-              stiffness: 100,
-              reduceMotion: reduceMotionEnabled ? ReduceMotion.Never : ReduceMotion.System,
-              velocity: 3.5,
+        <View
+          style={{
+            position: "relative", // Parent container
+            backgroundColor: "transparent",
+          }}
+        >
+          <View
+            style={{
+              position: "absolute",
+              zIndex: 1,
+              elevation: 1,
+              overflow: "visible",
             }}
-            onChange={onChangeValue}
-            onComplete={onComplete}
-            showIndicator={true}
-            width={width}
-            height={height}
-            borderRadius={0}
-            maximumTrackTintColor={maximumTrackTintColor}
-            minimumTrackTintColor={minimumTrackTintColor}
-            renderIndicator={renderIcon}
-          />
-          <ThemedView
-            style={[
-              styles.safeArea,
-              {
-                height: insets.bottom,
-              },
-            ]}
-          />
+          >
+            <View style={styles.container}>
+              <RnVerticalSlider
+                key={key}
+                ref={sliderRef}
+                value={value}
+                disabled={false}
+                min={0}
+                max={800}
+                step={1}
+                animationConfig={{
+                  duration: 1000,
+                  dampingRatio: 0.4,
+                  stiffness: 100,
+                  reduceMotion: reduceMotionEnabled ? ReduceMotion.Never : ReduceMotion.System,
+                  velocity: 3.5,
+                }}
+                onChange={onChangeValue}
+                onComplete={onComplete}
+                showIndicator={true}
+                width={width}
+                height={height}
+                // containerStyle={{
+                //   zIndex: 999,
+                //   elevation: 999,
+                //   position: "relative",
+                //   overflow: "visible",
+                // }}
+                borderRadius={0}
+                maximumTrackTintColor={maximumTrackTintColor}
+                minimumTrackTintColor={minimumTrackTintColor}
+                renderIndicator={renderIcon}
+              />
+              <ThemedView
+                style={[
+                  styles.safeArea,
+                  {
+                    height: insets.bottom,
+                  },
+                ]}
+              />
+            </View>
+          </View>
         </View>
       </GestureHandlerRootView>
     );
@@ -196,6 +218,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     height: 100,
     width: Dimensions.get("window").width - 20,
+    zIndex: 999, // Add this
+    elevation: 999, // Add this for Android
   },
   onTop: {
     bottom: 0,
@@ -206,6 +230,8 @@ const styles = StyleSheet.create({
     width: 50,
     transform: [{ translateX: -3 }],
     textAlign: "center",
+    zIndex: 999, // Add this
+    elevation: 999, // Add this for Android
   },
   contentBox: {
     position: "absolute",

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, StyleSheet, Animated, LayoutAnimation, Dimensions, Platform, UIManager } from "react-native";
+import { View, StyleSheet, Animated, LayoutAnimation, Dimensions, Platform } from "react-native";
 
 // Import your plate SVG components here
 import Plate45 from "@/assets/images/plates/45.svg";
@@ -35,11 +35,6 @@ const plateImages: Record<number, React.FC<React.SVGProps<SVGSVGElement>>> = {
   5: Plate5,
   2.5: Plate2P5,
 };
-
-// Enable LayoutAnimation on Android
-if (Platform.OS === "android" && UIManager.setLayoutAnimationEnabledExperimental) {
-  UIManager.setLayoutAnimationEnabledExperimental(true);
-}
 
 const Barbell: React.FC<BarbellProps> = ({
   platesPerSide,
@@ -92,7 +87,7 @@ const Barbell: React.FC<BarbellProps> = ({
   React.useEffect(() => {
     const animations = platesToRender.map((_, index) =>
       Animated.timing(animatedValues[index], {
-        toValue: 1,
+        toValue: 1 * index,
         duration: 25,
         useNativeDriver: true,
       })
@@ -101,9 +96,11 @@ const Barbell: React.FC<BarbellProps> = ({
   }, [animatedValues]);
 
   // Smoothly animate layout changes
-  React.useEffect(() => {
-    LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
-  }, [collapsed, platesToRender]);
+  // React.useEffect(() => {
+  //   if (Platform.OS === "ios") {
+  //     LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
+  //   }
+  // }, [collapsed, platesToRender]);
 
   const COLLAPSED_MARGIN = -191;
   const EXPANDED_MARGIN = -155;
@@ -123,7 +120,8 @@ const Barbell: React.FC<BarbellProps> = ({
               styles.plateContainer,
               {
                 transform: [
-                  { scale: animatedValues[index] },
+                  { translateY: animatedValues[index] },
+                  // { translateX: animatedValues[index] },
                   { rotateX: `50deg` },
                   { rotateZ: `${unit === "lb" ? 245 : 0}deg` },
                 ],
@@ -139,6 +137,9 @@ const Barbell: React.FC<BarbellProps> = ({
   );
 };
 
+const a = Dimensions.get("window").height * 0.05;
+const i = Dimensions.get("window").height * 0.01;
+
 const styles = StyleSheet.create({
   container: {
     position: "relative",
@@ -147,7 +148,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
-    bottom: Dimensions.get("window").height * 0.015,
+    bottom: Platform.OS === "ios" ? i : a,
   },
   plateContainer: {
     alignItems: "center",

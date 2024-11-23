@@ -1,0 +1,3 @@
+Calculadora de placas mínimas para barra. Ajusta el peso deslizando hacia arriba y abajo, visualiza las placas mínimas necesarias y cambia entre libras y kilogramos — todo en una aplicación elegante y fácil de usar.
+
+¿Barbell placas mínimas necesito para ese peso?

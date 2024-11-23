@@ -29,14 +29,12 @@ const CustomModal: React.FC<CustomModalProps> = ({
   onClose,
   title,
   children,
-  buttonLabel = "Save",
+  // buttonLabel = "Save",
   onButtonPress,
 }) => {
-  const { width, height } = Dimensions.get("window");
-
   const colorScheme = useColorScheme();
-  const backgroundColor = colorScheme === "dark" ? "#000000ab" : "#ffffffab";
-  const closeIconColor = colorScheme === "dark" ? "#ffffff" : "#000000";
+  const backgroundColor = colorScheme === "dark" ? "rgba(0, 0, 0, 0.9)" : "rgba(255, 255, 255, 0.9)";
+  const closeIconColor = colorScheme === "dark" ? "rgba(255, 255, 255, 0.9)" : "rgba(0, 0, 0, 0.9)";
 
   return (
     <Modal
@@ -96,7 +94,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     // elevation: 5,
     overflow: "hidden",
-    maxHeight: Dimensions.get("window").height * 0.42,
+    maxHeight: Dimensions.get("window").height * 0.45,
     height: "100%",
     width: Dimensions.get("window").width * 0.9,
   },

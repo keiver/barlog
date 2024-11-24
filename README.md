@@ -1,35 +1,37 @@
-# Description
+# Barlog 🏋️‍♂️
 
-Barbell Weight Simulator is the perfect tool for anyone looking to plan their weightlifting sessions with ease. This app helps you visualize how plates would stack on one side of a real barbell, showing the minimum plates required to hit your target weight.
+[![App Store](https://img.shields.io/badge/Download_on_the-App_Store-black.svg?style=flat-square&logo=apple&logoColor=white)](https://apps.apple.com/us/app/barlog/id6737152762)
+[![APK](https://img.shields.io/badge/Download-APK-green.svg?style=flat-square&logo=android&logoColor=white)](https://keiver.dev/lab/barlog)
+[![React Native](https://img.shields.io/badge/React_Native-Latest-blue.svg?style=flat-square&logo=react&logoColor=white)](https://reactnative.dev)
 
-Adjust the target weight with a simple slider that runs the height of your screen and see the plates automatically update. The app supports both pounds and kilograms, and you can even set the barbell's weight for accurate total load calculations. Whether you're training for strength or just want to simulate your next lift, this app makes it easy.
+Minimalist plate calculator that shows the optimal weight configuration for your barbell. Perfect for powerlifters, CrossFit athletes, and gym enthusiasts.
 
-Key Features:
+<div align="center">
+  <img src="./assets/screenshots/6.png" alt="Barlog App Demo" width="200" />
+  <img src="./assets/screenshots/7.png" alt="Barlog Screenshot" width="200" />
+  <img src="./assets/screenshots/4.png" alt="Barlog Screenshot" width="200" />
+  <img src="./assets/screenshots/3.png" alt="Barlog Screenshot" width="200" />
+</div>
 
-Simple Slider Control:
-Adjust your target weight easily and watch the plates update in real-time.
+## Features
 
-Minimum Plate Calculation:
-The app shows you the fewest plates needed to reach your target weight.
+- **Intuitive Slider**: Full-screen vertical slider for quick weight adjustments
+- **Smart Calculator**: Shows minimum plates needed for target weight
+- **Real-time Updates**: Watch plate configurations update instantly
+- **Unit Toggle**: Switch between lb/kg with one tap
+- **Custom Bar**: Support for different barbell weights
+- **Offline Ready**: No internet required
+- **Dark Mode**: Easy on the eyes
 
-Realistic Plate Display:
-Get a visual representation of how weights stack up on a real barbell.
+## Download
 
-Switch Between Pounds and Kilograms:
-Toggle between units based on your preference.
+- **iOS**: [App Store](https://apps.apple.com/us/app/barlog/id6737152762)
+- **Android**: [Download APK](https://github.com/keiver/barup/releases) (Self-hosted)
 
-Custom Barbell Weight:
-Input your barbell weight and let the app calculate the rest.
+## Support
 
-Sleek and Minimal Design:
-Focus on your workout with a clean, distraction-free interface.
+Email: support@keiver.dev
 
-Great for all levels of lifters, from beginners to experienced athletes!
+## Credits
 
-# Keywords
-
-barbell weight, weight simulator, plate calculator, crossfit, training, gym weights, lift planner
-
-# Promotional:
-
-Barbell minimum plates calculator. Adjust weight by sliding up and down, see the minimum plates needed, and switch between lbs and kg—all in a sleek, easy-to-use app.
+Built with help from [rn-vertical-slider](https://github.com/sacmii/rn-vertical-slider) (sacmii) and inspired by [Bar Is Loaded](https://apps.apple.com/us/app/bar-is-loaded-gym-calculator/id1509374210).

@@ -5,6 +5,7 @@ import Animated, {
   withTiming,
   withRepeat,
   withSequence,
+  withDelay,
 } from "react-native-reanimated";
 import Entypo from "@expo/vector-icons/Entypo";
 import { Colors, tintColorDark, tintColorLight } from "@/constants/Colors";
@@ -22,20 +23,23 @@ export function SlideCoachMark(props: SlideCoachMarkProps) {
   const isDark = useColorScheme() === "dark";
   const glowOpacity = useSharedValue(1);
   const movePosition = useSharedValue(0);
-  const [alreadySeen, setAlreadySeen] = React.useState(true);
+  const [alreadySeen, setAlreadySeen] = React.useState(false);
   const client = storage.getInstance();
 
   React.useEffect(() => {
-    client.getData(keys.SAW_COACH_MARK).then((value) => {
-      if (!!value) {
-        setAlreadySeen(false);
-      }
-    });
+    client
+      .getData(keys.SAW_COACH_MARK)
+      .then((value) => {
+        setAlreadySeen(value === "true");
+      })
+      ?.catch(() => {
+        setAlreadySeen(() => true);
+      });
   }, [client, setAlreadySeen]);
 
   // Start the glow animation
   glowOpacity.value = withRepeat(
-    withSequence(withTiming(0.7, { duration: 800 }), withTiming(1, { duration: 800 })),
+    withSequence(withTiming(0.9, { duration: 800 }), withTiming(1, { duration: 800 })),
     -1, // Infinite repetition
     true
   );
@@ -54,7 +58,7 @@ export function SlideCoachMark(props: SlideCoachMarkProps) {
     };
   });
 
-  if (props.hidden || alreadySeen === true || true) {
+  if (props.hidden || alreadySeen) {
     return null;
   }
 
@@ -66,18 +70,18 @@ export function SlideCoachMark(props: SlideCoachMarkProps) {
         color={isDark ? tintColorDark : tintColorLight}
         style={[styles.chevron]}
       />
-      <Entypo
+      {/* <Entypo
         name="chevron-thin-up"
-        size={20}
+        size={24}
         color={isDark ? tintColorDark : tintColorLight}
         style={[styles.chevron, { top: -30 }]}
       />
       <Entypo
         name="chevron-thin-up"
-        size={16}
+        size={24}
         color={isDark ? tintColorDark : tintColorLight}
         style={[styles.chevron, { top: -60 }]}
-      />
+      /> */}
     </Animated.View>
   );
 }

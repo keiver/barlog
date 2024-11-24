@@ -130,7 +130,7 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
         <View
           style={{
             position: "relative", // Parent container
-            backgroundColor: "transparent",
+            backgroundColor: "#2C2C2E",
           }}
         >
           <View

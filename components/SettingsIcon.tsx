@@ -30,7 +30,7 @@ export function ThemedRoundButton({
   dimmed,
 }: ThemedButtonProps) {
   const colorScheme = useColorScheme();
-  const backgroundColor = colorScheme !== "dark" ? "#000000ab" : "#000000ab";
+  const backgroundColor = colorScheme !== "dark" ? "rgba(0, 0, 0, 0.9)" : "rgba(0, 0, 0, 0.9)";
 
   const getBarbellWeightByUnit = React.useCallback(() => {
     return barbellWeight;

@@ -147,7 +147,7 @@ export default function HomeScreen() {
       loadPlates(newPlates);
       onValueChanged(v);
 
-      if (v > Dimensions.get("window").height / 2) {
+      if (v > 250) {
         setUserScrolledOver(true);
         client.storeData(keys.SAW_COACH_MARK, "true");
       }
@@ -271,6 +271,7 @@ const styles = StyleSheet.create({
     // minHeight: Dimensions.get("window").height - 50,
     paddingTop: Platform.OS === "android" ? 50 : 0,
     backgroundColor: "#2C2C2E",
+    //backgroundColor: "#FFB703",
   },
   input: {
     borderBottomColor: "gray",

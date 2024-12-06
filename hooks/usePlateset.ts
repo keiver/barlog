@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 
-// Updated BarbellLoader class with observer pattern
 class BarbellLoader {
   private static instance: BarbellLoader;
   private platesPerSide: Record<number, number> = {};
@@ -29,7 +28,6 @@ class BarbellLoader {
     return this.platesPerSide;
   }
 
-  // Subscription management
   subscribe(listener: () => void) {
     this.listeners.push(listener);
   }
@@ -43,7 +41,6 @@ class BarbellLoader {
   }
 }
 
-// Updated usePlateset hook with subscription to BarbellLoader changes
 const usePlateset = () => {
   const [plates, setPlates] = useState<Record<number, number>>({});
 
@@ -53,11 +50,9 @@ const usePlateset = () => {
       setPlates(barbellLoader.getPlatesPerSide());
     };
 
-    // Set initial plates and subscribe to updates
     updatePlates();
     barbellLoader.subscribe(updatePlates);
 
-    // Cleanup subscription on unmount
     return () => {
       barbellLoader.unsubscribe(updatePlates);
     };

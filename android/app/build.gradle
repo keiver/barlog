@@ -114,8 +114,8 @@ android {
         applicationId 'dev.keiver.barlog'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 19
-        versionName "1.3.1"
+        versionCode 20
+        versionName "1.3.6"
     }
     signingConfigs {
         debug {
@@ -125,7 +125,7 @@ android {
             keyPassword 'android'
         }
         release {
-             storeFile file(System.getenv("KEYSTORE_PATH") ?: "@keiverh__barlog.jks")
+            storeFile file(System.getenv("KEYSTORE_PATH") ?: "@keiverh__barlog.jks")
             storePassword System.getenv("KEYSTORE_PASSWORD")
             keyAlias System.getenv("KEY_ALIAS")
             keyPassword System.getenv("KEY_PASSWORD")

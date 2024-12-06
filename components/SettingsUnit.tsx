@@ -1,6 +1,6 @@
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import * as React from "react";
-import { SafeAreaView, StyleSheet, View, Text, useColorScheme, Platform } from "react-native";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { StyleSheet, View, useColorScheme } from "react-native";
 import Animated from "react-native-reanimated";
 import { Colors, tintColorDark, tintColorLight } from "@/constants/Colors";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -25,7 +25,7 @@ const WeightIcon: React.FC<WeightIconProps> = ({ unit, selected, onPress }) => {
 
   const renderIcon = () => {
     return (
-      <View style={[styles.iconContainer, { shadowColor: isDark ? "yellow" : "black" }]}>
+      <View style={[styles.iconContainer, selected ? styles.selected : {}]}>
         <GestureHandlerRootView>
           <TouchableOpacity
             onPress={onPress}
@@ -34,21 +34,9 @@ const WeightIcon: React.FC<WeightIconProps> = ({ unit, selected, onPress }) => {
             <Animated.Text>
               <MaterialCommunityIcons
                 name={unit === "kg" ? "weight-kilogram" : "weight-pound"}
-                size={44}
+                size={34}
                 color={getColor()}
-                style={{
-                  ...Platform.select({
-                    ios: {
-                      shadowColor: "#e2e8f0",
-                      shadowOffset: { width: 0, height: 0 },
-                      shadowOpacity: 1,
-                      shadowRadius: 8,
-                    },
-                    android: {
-                      elevation: 8,
-                    },
-                  }),
-                }}
+                style={[]}
               />
             </Animated.Text>
           </TouchableOpacity>
@@ -67,7 +55,7 @@ export type Props = {
 
 const SettingsUnit: React.FC<Props> = ({ onPress, unit }: Props) => {
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <WeightIcon
         unit="lb"
         selected={unit === "lb"}
@@ -78,7 +66,7 @@ const SettingsUnit: React.FC<Props> = ({ onPress, unit }: Props) => {
         onPress={() => onPress("kg")}
         selected={unit === "kg"}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
@@ -93,22 +81,22 @@ const styles = StyleSheet.create({
   },
   selected: {
     color: tintColorLight,
+    backgroundColor: Colors.light.maximumTrackTintColor,
+    borderColor: tintColorDark,
+    borderWidth: 4,
+    borderRadius: 1024,
   },
   iconContainer: {
+    position: "relative",
     alignItems: "center",
     justifyContent: "center",
     margin: 10,
-    width: 100,
-    height: 40,
+    width: 50,
+    height: 50,
     padding: 0,
-    shadowColor: "black",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    borderWidth: 4,
+    borderColor: "transparent",
+    borderRadius: 1024,
   },
   unitText: {
     fontSize: 18,

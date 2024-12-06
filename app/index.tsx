@@ -1,23 +1,21 @@
 import React, { useEffect, useCallback } from "react";
-import { Dimensions, Platform, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
+import { StatusBar } from "expo-status-bar";
+import { RNVSliderRef } from "rn-vertical-slider";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { ThemedView } from "@/components/ThemedView";
 import Slider from "@/components/Slider";
 import Barbell from "@/components/Bar";
 import { ThemedRoundButton } from "@/components/SettingsIcon";
 import usePlateset from "@/hooks/usePlateset";
-
 import storage from "@/app/libs/localStorage";
-import { RNVSliderRef } from "rn-vertical-slider";
 import CustomModal from "@/components/Modal";
 import { ThemedText } from "@/components/ThemedText";
 import SettingsUnit from "@/components/SettingsUnit";
 import SettingsBarbellWeight from "@/components/SettingsBarbellWeight";
 import { keys } from "@/constants/Storage";
 import { SlideCoachMark } from "@/components/SlideCoachMark";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { Colors, tintColorLight } from "@/constants/Colors";
-import { StatusBar } from "expo-status-bar";
 import barbellWeights from "@/constants/barbells";
 
 export type PlateSet = Record<number, number>;
@@ -32,7 +30,7 @@ const samplePlateSet: PlateSet = {
   2.5: 0,
 };
 
-const initialBarbellWeight = 45; // Barbell weight in pounds
+const initialBarbellWeight = 45; // Initial barbell weight in pounds
 
 export default function HomeScreen() {
   const { plates, loadPlates, unloadPlates } = usePlateset();
@@ -71,18 +69,7 @@ export default function HomeScreen() {
   }, []);
 
   React.useEffect(() => {
-    // setTimeout(() => {
-    //   load({ ...samplePlateSet, 45: 2, 25: 1 }, 195);
-
-    //   setTimeout(() => {
-    //     load({ ...samplePlateSet, 45: 1 }, 150);
-
-    //   }, 800);
-    // }, 800);
-
-    setTimeout(() => {
-      load({ ...samplePlateSet, 25: 1 }, 95);
-    }, 600);
+    load({ ...samplePlateSet, 25: 1 }, 95);
     return () => {
       unloadPlates();
     };
@@ -94,20 +81,31 @@ export default function HomeScreen() {
         return { ...samplePlateSet };
       }
 
-      // Subtract the barbell weight from the target weight to determine the total weight for plates
-      let remainingWeight = (targetWeight - barbellWeight) / 2; // divide by 2 as we calculate for one side
+      const weightPerSide = (targetWeight - barbellWeight) / 2;
       const availablePlates = [45, 35, 25, 15, 10, 5, 2.5];
-      const newPlates: PlateSet = { ...samplePlateSet };
+      const dp = new Array(Math.ceil(weightPerSide) + 1).fill(Infinity);
+      const choices = new Array(Math.ceil(weightPerSide) + 1).fill(null);
+      dp[0] = 0;
 
-      for (let i = 0; i < availablePlates.length; i++) {
-        const plate = availablePlates[i];
-        const count = Math.floor(remainingWeight / plate);
-
-        if (count > 0) {
-          newPlates[plate] = count;
-          remainingWeight -= plate * count;
-          remainingWeight = parseFloat(remainingWeight.toFixed(2)); // Fix floating-point precision issues
+      for (let w = 1; w <= weightPerSide; w++) {
+        for (const plate of availablePlates) {
+          if (plate <= w) {
+            const newPlates = dp[Math.floor(w - plate)] + 1;
+            if (newPlates < dp[w]) {
+              dp[w] = newPlates;
+              choices[w] = plate;
+            }
+          }
         }
+      }
+
+      const newPlates = { ...samplePlateSet };
+      let remaining = Math.floor(weightPerSide);
+
+      while (remaining > 0 && choices[remaining]) {
+        const plate = choices[remaining];
+        newPlates[plate]++;
+        remaining -= plate;
       }
 
       return newPlates;
@@ -222,7 +220,8 @@ export default function HomeScreen() {
         <CustomModal
           isVisible={modalVisible}
           onClose={() => setModalVisible(false)}
-          title="Settings"
+          title="Barlog"
+          description="What plates per side do I need to reach a target weight on a barbell?"
           buttonLabel="Save"
           onButtonPress={() => {
             setModalVisible(false);
@@ -282,7 +281,7 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   barbellLabel: {
-    marginTop: 20,
+    marginTop: 10,
   },
   addIcon: {
     position: "absolute",

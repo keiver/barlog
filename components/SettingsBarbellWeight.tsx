@@ -11,7 +11,7 @@ import {
   Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Colors, tintColorLight } from "@/constants/Colors";
+import { Colors, tintColorDark, tintColorLight } from "@/constants/Colors";
 import { ThemedText } from "./ThemedText";
 import barbellWeights from "@/constants/barbells";
 import localStorage from "@/app/libs/localStorage";
@@ -152,7 +152,7 @@ const SettingsBarbellWeight: React.FC<SettingsBarbellWeightProps> = ({ barbellWe
       <Modal
         visible={isModalVisible}
         transparent
-        animationType="fade"
+        animationType="slide"
         onRequestClose={() => setModalVisible(false)}
       >
         <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
@@ -215,8 +215,8 @@ const styles = StyleSheet.create({
   },
   selectedCard: {
     backgroundColor: Colors.light.maximumTrackTintColor,
-    borderColor: tintColorLight,
-    borderWidth: 1,
+    borderColor: tintColorDark,
+    borderWidth: 4,
   },
   darkCard: {
     backgroundColor: "#1f2937",

@@ -22,6 +22,7 @@ interface CustomModalProps {
   children: React.ReactNode;
   buttonLabel?: string;
   onButtonPress?: () => void;
+  description?: string;
 }
 
 const CustomModal: React.FC<CustomModalProps> = ({
@@ -31,10 +32,13 @@ const CustomModal: React.FC<CustomModalProps> = ({
   children,
   // buttonLabel = "Save",
   onButtonPress,
+  description,
 }) => {
   const colorScheme = useColorScheme();
+  const versionFile = require("../app.json");
   const backgroundColor = colorScheme === "dark" ? "rgba(0, 0, 0, 0.9)" : "rgba(255, 255, 255, 0.9)";
   const closeIconColor = colorScheme === "dark" ? "rgba(255, 255, 255, 0.9)" : "rgba(0, 0, 0, 0.9)";
+  const version = versionFile.expo.version || "0.0.0";
 
   return (
     <Modal
@@ -52,7 +56,11 @@ const CustomModal: React.FC<CustomModalProps> = ({
             tint="default"
             style={[styles.modalView, { backgroundColor }]}
           >
-            <ThemedText style={styles.modalTitle}>{title}</ThemedText>
+            <ThemedText style={styles.modalTitle}>
+              {title}
+              <ThemedText type="small"> v{version}</ThemedText>
+            </ThemedText>
+
             <TouchableOpacity
               style={styles.modalCloseIcon}
               onPress={onButtonPress || onClose}
@@ -64,6 +72,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
             </TouchableOpacity>
             <ParallaxScrollView style={styles.scrollView}>
               <React.Fragment>
+                {description && <ThemedText>{description}</ThemedText>}
                 <View style={styles.modalContent}>{children}</View>
               </React.Fragment>
             </ParallaxScrollView>
@@ -95,16 +104,17 @@ const styles = StyleSheet.create({
     // elevation: 5,
     overflow: "hidden",
     // minHeight: Dimensions.get("window").height * 0.6,
-    height: Dimensions.get("window").height * 0.45,
+    height: Dimensions.get("window").height * 0.52,
     // height: "auto",
     width: Dimensions.get("window").width * 0.9,
   },
   modalTitle: {
     paddingTop: 10,
     marginTop: 5,
+    marginBottom: 15,
     textAlign: "left",
     fontWeight: "400",
-    fontSize: 28,
+    fontSize: 24,
   },
   modalCloseIcon: {
     position: "absolute",

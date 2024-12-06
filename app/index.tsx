@@ -82,30 +82,16 @@ export default function HomeScreen() {
       }
 
       const weightPerSide = (targetWeight - barbellWeight) / 2;
-      const availablePlates = [45, 35, 25, 15, 10, 5, 2.5];
-      const dp = new Array(Math.ceil(weightPerSide) + 1).fill(Infinity);
-      const choices = new Array(Math.ceil(weightPerSide) + 1).fill(null);
-      dp[0] = 0;
-
-      for (let w = 1; w <= weightPerSide; w++) {
-        for (const plate of availablePlates) {
-          if (plate <= w) {
-            const newPlates = dp[Math.floor(w - plate)] + 1;
-            if (newPlates < dp[w]) {
-              dp[w] = newPlates;
-              choices[w] = plate;
-            }
-          }
-        }
-      }
-
       const newPlates = { ...samplePlateSet };
-      let remaining = Math.floor(weightPerSide);
+      let remaining = weightPerSide;
 
-      while (remaining > 0 && choices[remaining]) {
-        const plate = choices[remaining];
-        newPlates[plate]++;
-        remaining -= plate;
+      for (const plate of [45, 35, 25, 15, 10, 5, 2.5]) {
+        const count = Math.floor(remaining / plate);
+        if (count > 0) {
+          newPlates[plate] = count;
+          remaining -= plate * count;
+          remaining = parseFloat(remaining.toFixed(2));
+        }
       }
 
       return newPlates;

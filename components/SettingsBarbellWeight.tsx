@@ -1,138 +1,308 @@
-import React from "react";
-import { View, TouchableOpacity, StyleSheet, TextInput, useColorScheme } from "react-native";
+import React, { useCallback } from "react";
+import {
+  TouchableOpacity,
+  StyleSheet,
+  View,
+  Modal,
+  useColorScheme,
+  FlatList,
+  Dimensions,
+  TouchableWithoutFeedback,
+  Platform,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { Colors, tintColorDark, tintColorLight } from "@/constants/Colors";
 import { ThemedText } from "./ThemedText";
-import { ThemedView } from "./ThemedView";
-import { Colors, tintColorLight } from "@/constants/Colors";
-
-import localStorage from "@/app/libs/localStorage";
+import barbellWeights from "@/constants/barbells";
 
 interface SettingsBarbellWeightProps {
-  sizes: number[];
   onPress: (size: number) => void;
   barbellWeight?: number;
   unit?: string;
 }
 
-const SettingsBarbellWeight: React.FC<SettingsBarbellWeightProps> = ({ barbellWeight, sizes, onPress, unit }) => {
-  const inputRef = React.useRef<TextInput>(null);
+const SettingsBarbellWeight: React.FC<SettingsBarbellWeightProps> = ({ barbellWeight, onPress, unit }) => {
   const isDark = useColorScheme() === "dark";
-  const client = localStorage.getInstance();
+  const [isModalVisible, setModalVisible] = React.useState(false);
 
-  const onBlur = (e: any) => {
-    const inputValue = e.nativeEvent?.text || e.target?.value || "";
+  const sizes = React.useMemo(() => {
+    return barbellWeights?.map((b) => {
+      return unit === "kg" ? b.kg : b.lbs;
+    });
+  }, [unit]);
 
-    client.storeData("barbellWeight", inputValue);
-    inputRef.current?.blur();
+  const selectedBarbell = barbellWeights?.find((item) => item.lbs === barbellWeight || item.kg === barbellWeight);
+
+  const handleSelect = (size: number) => {
+    onPress(size);
+    setModalVisible(false);
   };
 
-  return (
-    <View style={styles.centeredView}>
-      {sizes?.map((size, index) => {
-        return (
-          <TouchableOpacity
-            key={index}
-            onPress={() => onPress(size)}
-            style={styles.item}
-            hitSlop={10}
-          >
+  const renderItem = useCallback(
+    ({ item: size }: { item: number }) => {
+      const barbell = barbellWeights?.find((b) => b.lbs === size || b.kg === size);
+      const isSelected = unit === "kg" ? size === selectedBarbell?.kg : size === selectedBarbell?.lbs;
+
+      return (
+        <TouchableOpacity
+          onPress={() => handleSelect(size)}
+          style={[
+            styles.optionCard,
+            isSelected && styles.selectedCard,
+            isDark && styles.darkCard,
+            isDark && isSelected && styles.darkSelectedCard,
+          ]}
+        >
+          <View style={styles.iconContainer}>
+            <ThemedText
+              lightColor={isSelected ? tintColorLight : "black"}
+              darkColor={isSelected ? tintColorLight : "white"}
+              style={styles.weight}
+            >
+              {size} {unit}
+            </ThemedText>
             <Ionicons
               name="barbell-sharp"
-              size={size === 18 ? 30 : size}
-              color={barbellWeight === size ? tintColorLight : isDark ? "white" : "black"}
+              size={unit === "kg" ? size * 2 : size}
+              color={isSelected ? tintColorLight : isDark ? "white" : "black"}
             />
-          </TouchableOpacity>
-        );
-      })}
-      <TextInput
-        ref={inputRef}
-        style={styles.addInput}
-        placeholder="Add"
-        keyboardType="numeric"
-        maxLength={5000}
-        onBlur={onBlur}
-        value={barbellWeight ? barbellWeight.toString() : ""}
-        onChangeText={(text) => {
-          if (text.length > 4) {
-            return;
-          }
+          </View>
+          <View style={styles.textContainer}>
+            {barbell?.label && (
+              <ThemedText
+                type="title"
+                lightColor={isSelected ? tintColorLight : "black"}
+                darkColor={isSelected ? tintColorLight : "white"}
+                style={styles.label}
+              >
+                {barbell.label}
+              </ThemedText>
+            )}
 
-          if (text === "") {
-            return onPress(0);
-          }
+            {barbell?.description && (
+              <ThemedText
+                lightColor={isSelected ? tintColorLight : "black"}
+                darkColor={isSelected ? tintColorLight : "white"}
+                style={styles.description}
+              >
+                {barbell.description}
+              </ThemedText>
+            )}
+          </View>
+        </TouchableOpacity>
+      );
+    },
+    [selectedBarbell, isDark, unit, barbellWeight]
+  );
 
-          if (text) {
-            const size = parseFloat(text);
+  return (
+    <>
+      <TouchableOpacity
+        onPress={() => setModalVisible(true)}
+        style={[styles.optionCard, styles.selectedCard, isDark && styles.darkCard, isDark && styles.darkSelectedCard]}
+      >
+        <View style={styles.iconContainer}>
+          <ThemedText
+            lightColor={tintColorLight}
+            darkColor={tintColorLight}
+            style={styles.weight}
+          >
+            {unit === "kg" ? selectedBarbell?.kg : selectedBarbell?.lbs} {unit}
+          </ThemedText>
+          <Ionicons
+            name="barbell-sharp"
+            size={barbellWeight}
+            color={tintColorLight}
+          />
+        </View>
+        <View style={styles.textContainer}>
+          {selectedBarbell?.label && (
+            <ThemedText
+              lightColor={tintColorLight}
+              darkColor={tintColorLight}
+              style={styles.label}
+            >
+              {selectedBarbell.label}
+            </ThemedText>
+          )}
 
-            if (!isNaN(size) && Number.isFinite(size)) {
-              onPress(size);
-            }
-          }
+          {selectedBarbell?.description && (
+            <ThemedText
+              lightColor={tintColorLight}
+              darkColor={tintColorLight}
+              style={styles.description}
+            >
+              {selectedBarbell.description}
+            </ThemedText>
+          )}
+        </View>
+        <View style={styles.chevronContainer}>
+          <Ionicons
+            name="chevron-down"
+            size={24}
+            color={tintColorLight}
+          />
+        </View>
+      </TouchableOpacity>
 
-          return;
-        }}
-      />
-    </View>
+      <Modal
+        visible={isModalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+          <View style={styles.modalOverlay}>
+            <TouchableWithoutFeedback>
+              <View style={[styles.modalContent, isDark && styles.darkModalContent]}>
+                {/* <View style={styles.modalHeader}>
+                  <ThemedText
+                    lightColor="black"
+                    darkColor="white"
+                    style={styles.modalTitle}
+                  >
+                    Select Barbell
+                  </ThemedText>
+                  <TouchableOpacity
+                    onPress={() => setModalVisible(false)}
+                    style={styles.closeButton}
+                  >
+                    <Ionicons
+                      name="close"
+                      size={24}
+                      color={isDark ? "white" : "black"}
+                    />
+                  </TouchableOpacity>
+                </View> */}
+                <FlatList
+                  data={sizes}
+                  renderItem={renderItem}
+                  keyExtractor={(item) => item.toString()}
+                  contentContainerStyle={styles.listContent}
+                  showsVerticalScrollIndicator={false}
+                  initialNumToRender={10}
+                />
+              </View>
+            </TouchableWithoutFeedback>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
+    </>
   );
 };
 
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
+
 const styles = StyleSheet.create({
-  centeredView: {
-    display: "flex",
+  optionCard: {
     flexDirection: "row",
-    gap: 5,
-    alignContent: "center",
-    justifyContent: "space-around",
-    flexWrap: "nowrap",
-    height: "auto",
-    width: "100%",
-    textAlign: "center",
-  },
-  item: {
-    alignContent: "center",
-    justifyContent: "center",
-    shadowColor: "black",
+    backgroundColor: "rgba(0, 0, 0, 0.2)",
+    borderRadius: 26,
+    padding: 16,
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 1,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
+    alignItems: "center",
   },
-  itemSize: {
-    fontSize: 16,
-    marginBottom: -20,
-    fontWeight: "400",
-    textAlign: "center",
-    marginLeft: -2,
+  selectedCard: {
+    backgroundColor: Colors.light.maximumTrackTintColor,
+    borderColor: tintColorLight,
+    borderWidth: 1,
   },
-  addIcon: {
-    position: "absolute",
-    bottom: 8,
-    right: 0,
-    color: "gray",
+  darkCard: {
+    backgroundColor: "#1f2937",
+    // borderColor: tintColorDark,
+    borderWidth: 1,
   },
-  addInput: {
-    borderBottomColor: "gray",
-    borderBottomWidth: 1,
-    borderTopColor: "gray",
-    borderTopWidth: 1,
-    borderLeftColor: "gray",
-    borderLeftWidth: 1,
-    borderRightColor: "gray",
-    borderRightWidth: 1,
-    // minWidth: 50,
-    width: 80,
-    textAlign: "center",
+  darkSelectedCard: {
+    // backgroundColor: "#172554",
+  },
+  iconContainer: {
+    width: "25%",
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: "transparent",
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
+  },
+  textContainer: {
+    flex: 1,
+    backgroundColor: "transparent",
+  },
+  chevronContainer: {
+    marginLeft: 8,
+    justifyContent: "center",
+  },
+  label: {
+    fontSize: 14,
+    marginBottom: 4,
+    opacity: 0.8,
+  },
+  weight: {
     fontSize: 16,
     fontWeight: "600",
-    margin: 10,
-    padding: 10,
-    paddingLeft: 20,
-    paddingRight: 20,
-    borderRadius: 16,
-    color: "gray",
+  },
+  description: {
+    fontSize: 14,
+    marginTop: 0,
+    opacity: 0.7,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "transparent",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    height: Dimensions.get("window").height * 0.62,
+    padding: 25,
+    width: Dimensions.get("window").width * 0.9,
+    backgroundColor: "rgba(255, 255, 255, 1)",
+    borderRadius: 20,
+    marginBottom: 24,
+    overflow: "hidden",
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 5,
+      },
+    }),
+  },
+  darkModalContent: {
+    backgroundColor: "#1f2937",
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(0, 0, 0, 0.1)",
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+  },
+  closeButton: {
+    padding: 4,
+  },
+  listContent: {
+    padding: 16,
+    gap: 12,
   },
 });
 

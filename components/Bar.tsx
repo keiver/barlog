@@ -137,9 +137,6 @@ const Barbell: React.FC<BarbellProps> = ({
   );
 };
 
-const a = Dimensions.get("window").height * 0.05;
-const i = Dimensions.get("window").height * 0.01;
-
 const styles = StyleSheet.create({
   container: {
     position: "relative",
@@ -148,7 +145,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
-    bottom: Platform.OS === "ios" ? i : a,
+    bottom: 0,
   },
   plateContainer: {
     alignItems: "center",

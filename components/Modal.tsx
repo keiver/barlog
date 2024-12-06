@@ -94,8 +94,9 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     // elevation: 5,
     overflow: "hidden",
-    maxHeight: Dimensions.get("window").height * 0.45,
-    height: "100%",
+    // minHeight: Dimensions.get("window").height * 0.6,
+    height: Dimensions.get("window").height * 0.45,
+    // height: "auto",
     width: Dimensions.get("window").width * 0.9,
   },
   modalTitle: {

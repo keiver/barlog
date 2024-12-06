@@ -1,6 +1,6 @@
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import * as React from "react";
-import { SafeAreaView, StyleSheet, View, Text, useColorScheme } from "react-native";
+import { SafeAreaView, StyleSheet, View, Text, useColorScheme, Platform } from "react-native";
 import Animated from "react-native-reanimated";
 import { Colors, tintColorDark, tintColorLight } from "@/constants/Colors";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -36,6 +36,19 @@ const WeightIcon: React.FC<WeightIconProps> = ({ unit, selected, onPress }) => {
                 name={unit === "kg" ? "weight-kilogram" : "weight-pound"}
                 size={44}
                 color={getColor()}
+                style={{
+                  ...Platform.select({
+                    ios: {
+                      shadowColor: "#e2e8f0",
+                      shadowOffset: { width: 0, height: 0 },
+                      shadowOpacity: 1,
+                      shadowRadius: 8,
+                    },
+                    android: {
+                      elevation: 8,
+                    },
+                  }),
+                }}
               />
             </Animated.Text>
           </TouchableOpacity>

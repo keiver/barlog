@@ -18,6 +18,7 @@ import { SlideCoachMark } from "@/components/SlideCoachMark";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Colors, tintColorLight } from "@/constants/Colors";
 import { StatusBar } from "expo-status-bar";
+import barbellWeights from "@/constants/barbells";
 
 export type PlateSet = Record<number, number>;
 
@@ -164,18 +165,16 @@ export default function HomeScreen() {
   const onUnitClicked = React.useCallback(
     async (u: string) => {
       setUnit(u);
-      let newBarbellWeight = 0;
 
-      if (u === "kg") {
-        newBarbellWeight = 20;
-      }
-
-      if (u === "lb") {
-        newBarbellWeight = 45;
-      }
+      const bbData = barbellWeights.find((b) => {
+        return u === "kg" ? b.kg === barbellWeight : b.lbs === barbellWeight;
+      });
 
       await client.storeData(keys.UNIT, u);
-      await client.storeData(keys.BARBELL_WEIGHT, newBarbellWeight.toString());
+      await client.storeData(
+        keys.BARBELL_WEIGHT,
+        u === "kg" ? bbData?.kg.toString() || "" : bbData?.lbs.toString() || ""
+      );
     },
     [setUnit, unit, barbellWeight]
   );
@@ -243,14 +242,13 @@ export default function HomeScreen() {
             type="label"
             style={styles.barbellLabel}
           >
-            Barbell Weight
+            Barbell
           </ThemedText>
           <SettingsBarbellWeight
             onPress={(size) => {
               setBarbellWeight(size);
               client.storeData(keys.BARBELL_WEIGHT, size.toString());
             }}
-            sizes={[45, 44, 33, 18]}
             barbellWeight={barbellWeight}
             unit={unit}
           />
@@ -264,14 +262,9 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   flexOne: {
     flex: 1,
-    // android support to avoid white band in the bottom
-    // paddingTop: Platform.OS === "android" ? 50 : 0,
-    // paddingBottom: 0,
     height: "100%",
-    // minHeight: Dimensions.get("window").height - 50,
-    paddingTop: Platform.OS === "android" ? 50 : 0,
+    paddingTop: 0,
     backgroundColor: "#2C2C2E",
-    //backgroundColor: "#FFB703",
   },
   input: {
     borderBottomColor: "gray",

@@ -40,12 +40,13 @@ export function ThemedRoundButton({
     <TouchableOpacity style={[styles.container, style, dimmed && styles.dimmed]}>
       <BlurView
         intensity={30}
-        tint="default"
+        tint="light"
         style={[styles.modalView, { backgroundColor }]}
       >
         <TouchableOpacity
           onPress={onPress}
-          hitSlop={30}
+          hitSlop={50}
+          style={[styles.flex]}
         >
           <View style={styles.barIndicator}>
             <TabBarIcon
@@ -56,8 +57,8 @@ export function ThemedRoundButton({
             />
             <ThemedText
               lightColor="white"
-              type="default"
-              style={[styles.label, { fontFamily: "NovaSquare_400Regular" }]}
+              type="title"
+              style={[styles.label]}
             >
               Settings
             </ThemedText>
@@ -69,20 +70,30 @@ export function ThemedRoundButton({
           hitSlop={50}
         >
           <View style={styles.barIndicator}>
-            <ThemedText
-              lightColor="#00FF00"
-              darkColor="#00FF00"
-              type="small"
-              style={[styles.label, { fontFamily: "NovaSquare_400Regular" }]}
-            >
-              {logs || ""} {locked ? " ◯ " : ""}
-            </ThemedText>
-            {/* <ShakingIcon
-              styles={[styles.iconLock]}
-              unlocked={!locked}
-              animated={locked}
-              hidden={!logs}
-            /> */}
+            <View style={styles.row}>
+              <ThemedText
+                lightColor="#00FF00"
+                darkColor="#00FF00"
+                type="title"
+                style={[styles.label]}
+              >
+                {logs || ""}
+
+                {logs ? (
+                  <ThemedText
+                    lightColor="yellow"
+                    darkColor="yellow"
+                    type="small"
+                    style={[styles.label]}
+                  >
+                    &nbsp;&nbsp;
+                    {locked ? "Marked" : "Per Side"}
+                  </ThemedText>
+                ) : (
+                  ""
+                )}
+              </ThemedText>
+            </View>
           </View>
         </TouchableOpacity>
 
@@ -98,9 +109,9 @@ export function ThemedRoundButton({
               size={18}
             />
             <ThemedText
-              type="default"
+              type="title"
               lightColor="white"
-              style={[styles.label, { fontFamily: "NovaSquare_400Regular" }]}
+              style={[styles.label]}
             >
               {getBarbellWeightByUnit()} {unit}
             </ThemedText>
@@ -112,6 +123,9 @@ export function ThemedRoundButton({
 }
 
 const styles = StyleSheet.create({
+  flex: {
+    flex: 1,
+  },
   container: {
     position: "absolute",
     top: 0,
@@ -120,18 +134,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 0,
-    borderColor: "red",
     padding: 0,
     paddingRight: 0,
     paddingLeft: 0,
     borderRadius: 0,
-    // minHeight: Dimensions.get("window").height,
-    // overflow: "hidden",
-    // transform: [
-    //   { rotate: "270deg" },
-    //   { translateY: Dimensions.get("window").width / 2.12 },
-    //   { translateX: -Dimensions.get("window").width / 1.3 },
-    // ],
   },
   icon: {
     transform: [{ translateY: -2 }, { rotate: "90deg" }],
@@ -156,11 +162,13 @@ const styles = StyleSheet.create({
   label: {
     position: "relative",
     fontSize: 16,
-    // lineHeight: 16,
-    width: Dimensions.get("window").height / 3 + 100,
-    // minWidth: 100,
-    // height: 19,
+    width: "100%",
     textAlign: "center",
+    verticalAlign: "middle",
+    alignContent: "center",
+    justifyContent: "center",
+    alignSelf: "center",
+    textAlignVertical: "center",
     transform: [
       { rotate: "90deg" },
       {
@@ -176,11 +184,13 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
   },
   iconLock: {
-    // transform: [{ rotate: "-90deg" }],
     marginLeft: 15,
     marginBottom: 1,
   },
   dimmed: {
-    opacity: 0.1,
+    opacity: 0,
+  },
+  row: {
+    flexDirection: "column",
   },
 });

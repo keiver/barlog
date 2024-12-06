@@ -15,6 +15,7 @@ import { Colors, tintColorLight } from "@/constants/Colors";
 import { ThemedText } from "./ThemedText";
 import barbellWeights from "@/constants/barbells";
 import localStorage from "@/app/libs/localStorage";
+import { keys } from "@/constants/Storage";
 
 interface SettingsBarbellWeightProps {
   onPress: (size: number) => void;
@@ -37,7 +38,7 @@ const SettingsBarbellWeight: React.FC<SettingsBarbellWeightProps> = ({ barbellWe
 
   const handleSelect = (size: number) => {
     onPress(size);
-    client.storeData("BARBELL_WEIGHT", size.toString());
+    client.storeData(keys.BARBELL_WEIGHT, size.toString());
     setModalVisible(false);
   };
 

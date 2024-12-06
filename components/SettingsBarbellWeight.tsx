@@ -11,9 +11,10 @@ import {
   Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { Colors, tintColorDark, tintColorLight } from "@/constants/Colors";
+import { Colors, tintColorLight } from "@/constants/Colors";
 import { ThemedText } from "./ThemedText";
 import barbellWeights from "@/constants/barbells";
+import localStorage from "@/app/libs/localStorage";
 
 interface SettingsBarbellWeightProps {
   onPress: (size: number) => void;
@@ -24,6 +25,7 @@ interface SettingsBarbellWeightProps {
 const SettingsBarbellWeight: React.FC<SettingsBarbellWeightProps> = ({ barbellWeight, onPress, unit }) => {
   const isDark = useColorScheme() === "dark";
   const [isModalVisible, setModalVisible] = React.useState(false);
+  const client = localStorage.getInstance();
 
   const sizes = React.useMemo(() => {
     return barbellWeights?.map((b) => {
@@ -35,6 +37,7 @@ const SettingsBarbellWeight: React.FC<SettingsBarbellWeightProps> = ({ barbellWe
 
   const handleSelect = (size: number) => {
     onPress(size);
+    client.storeData("BARBELL_WEIGHT", size.toString());
     setModalVisible(false);
   };
 
@@ -196,7 +199,7 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const styles = StyleSheet.create({
   optionCard: {
     flexDirection: "row",
-    backgroundColor: "rgba(0, 0, 0, 0.2)",
+    backgroundColor: "white",
     borderRadius: 26,
     padding: 16,
     shadowColor: "#000",

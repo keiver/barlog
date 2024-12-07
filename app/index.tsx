@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback } from "react";
-import { StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { RNVSliderRef } from "rn-vertical-slider";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -17,6 +17,7 @@ import SettingsBarbellWeight from "@/components/SettingsBarbellWeight";
 import { keys } from "@/constants/Storage";
 import { SlideCoachMark } from "@/components/SlideCoachMark";
 import barbellWeights from "@/constants/barbells";
+import WatchModule from "../WatchModule";
 
 export type PlateSet = Record<number, number>;
 
@@ -162,6 +163,19 @@ export default function HomeScreen() {
     },
     [setUnit, unit, barbellWeight]
   );
+
+  useEffect(() => {
+    if (Platform.OS === "android") {
+      return;
+    }
+
+    const unsubscribe = WatchModule?.addListener((event) => {
+      console.log("Watch event received:", event);
+      // Handle the event
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const onLogClicked = React.useCallback(() => {
     return setBarbelCollapsed(() => !barbelCollapsed);

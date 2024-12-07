@@ -4,6 +4,7 @@
 #import <WatchConnectivity/WatchConnectivity.h>
 #import <React/RCTLog.h>
 
+
 @interface AppDelegate () <WCSessionDelegate>
 @property (nonatomic, strong) WCSession *watchSession;
 @end
@@ -27,6 +28,9 @@
   } else {
     RCTLogError(@"Phone: WCSession is not supported on this device");
   }
+
+//  RCTWatchConnectivity *watchConnectivity = [RCTWatchConnectivity shared];
+//  RCTLogInfo(@"Phone: RCTWatchConnectivity shared instance retrieved");
 
   BOOL result = [super application:application didFinishLaunchingWithOptions:launchOptions];
   
@@ -86,7 +90,7 @@
     if (number) {
         RCTLogInfo(@"Phone: Received number from watch: %@", number);
         dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"WatchNumberReceived"
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"WatchReceiveMessage"
                                                               object:nil
                                                             userInfo:@{@"number": number}];
             RCTLogInfo(@"Phone: Notification posted with number: %@", number);

@@ -1,9 +1,15 @@
 #import "WatchConnectivity.h"
 #import <React/RCTLog.h>
 
-@implementation RCTWatchConnectivity
+@implementation RCTWatchConnectivity {
+    BOOL hasListeners;
+}
 
 RCT_EXPORT_MODULE();
+
++ (BOOL)requiresMainQueueSetup {
+    return YES;
+}
 
 + (instancetype)shared {
     static RCTWatchConnectivity *sharedInstance = nil;
@@ -17,70 +23,45 @@ RCT_EXPORT_MODULE();
 - (instancetype)init {
     self = [super init];
     if (self) {
-        if ([WCSession isSupported]) {
-            self.session = [WCSession defaultSession];
-            self.session.delegate = self;
-            [self.session activateSession];
-            self.isReady = YES;
-            RCTLogInfo(@"WCSession activated");
-        } else {
-            self.isReady = NO;
-            RCTLogWarn(@"WCSession not supported on this device");
-        }
+        RCTLogInfo(@"RCTWatchConnectivity initialized");
+        // Don't setup WCSession here since AppDelegate handles it
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                               selector:@selector(handleWatchNumber:)
+                                                   name:@"WatchReceiveMessage"
+                                                 object:nil];
     }
     return self;
 }
 
-// Expose a method to check if the module is ready
-RCT_EXPORT_METHOD(isReady:(RCTPromiseResolveBlock)resolve
-                  rejecter:(RCTPromiseRejectBlock)reject) {
-    resolve(@(self.isReady));
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (NSArray<NSString *> *)supportedEvents {
-    return @[@"WatchMessage"];
+    return @[@"WatchReceiveMessage"];
 }
 
-// MARK: - WCSessionDelegate Methods
+- (void)startObserving {
+    hasListeners = YES;
+    RCTLogInfo(@"Phone: Started observing watch events");
+}
 
-- (void)session:(WCSession *)session activationDidCompleteWithState:(WCSessionActivationState)activationState error:(nullable NSError *)error {
-    if (error) {
-        [self sendEventWithName:@"WatchMessage" body:@{@"error": error.localizedDescription}];
+- (void)stopObserving {
+    hasListeners = NO;
+    RCTLogInfo(@"Phone: Stopped observing watch events");
+}
+
+- (void)handleWatchNumber:(NSNotification *)notification {
+    RCTLogInfo(@"Phone: Handling watch number notification");
+    if (hasListeners) {
+        NSNumber *number = notification.userInfo[@"number"];
+        if (number) {
+            NSDictionary *event = @{@"number": number};
+            RCTLogInfo(@"Phone: Emitting watch event: %@", event);
+            [self sendEventWithName:@"WatchReceiveMessage" body:event];
+        }
     } else {
-        [self sendEventWithName:@"WatchMessage" body:@{@"state": @(activationState)}];
-    }
-}
-
-- (void)sessionDidBecomeInactive:(WCSession *)session {
-    [self sendEventWithName:@"WatchMessage" body:@{@"event": @"sessionDidBecomeInactive"}];
-}
-
-- (void)sessionDidDeactivate:(WCSession *)session {
-    [self sendEventWithName:@"WatchMessage" body:@{@"event": @"sessionDidDeactivate"}];
-    [session activateSession]; // Reactivate the session
-}
-
-- (void)session:(WCSession *)session didReceiveMessage:(NSDictionary<NSString *, id> *)message replyHandler:(void (^)(NSDictionary<NSString *, id> *))replyHandler {
-    [self sendEventWithName:@"WatchMessage" body:message];
-    if (replyHandler) {
-        replyHandler(@{@"status": @"received"});
-    }
-}
-
-- (void)session:(WCSession *)session didReceiveMessageData:(NSData *)messageData replyHandler:(void (^)(NSData *))replyHandler {
-    [self sendEventWithName:@"WatchMessage" body:@{@"data": messageData}];
-    if (replyHandler) {
-        replyHandler([@"acknowledged" dataUsingEncoding:NSUTF8StringEncoding]);
-    }
-}
-
-// MARK: - Utilities
-
-- (void)sendEventWithName:(NSString *)name body:(id)body {
-    if (self.bridge) {
-        [super sendEventWithName:name body:body];
-    } else {
-        RCTLogWarn(@"Bridge not set. Unable to send event %@", name);
+        RCTLogInfo(@"Phone: No listeners registered for watch events");
     }
 }
 

@@ -17,7 +17,8 @@ import SettingsBarbellWeight from "@/components/SettingsBarbellWeight";
 import { keys } from "@/constants/Storage";
 import { SlideCoachMark } from "@/components/SlideCoachMark";
 import barbellWeights from "@/constants/barbells";
-import WatchModule from "../WatchModule";
+import WatchModule, { WATCH_NUMBER_EVENT, watchEventEmitter } from "../WatchModule";
+import { nativeWatchEventEmitter } from "react-native-watch-connectivity/dist/native-module";
 
 export type PlateSet = Record<number, number>;
 
@@ -165,16 +166,32 @@ export default function HomeScreen() {
   );
 
   useEffect(() => {
-    if (Platform.OS === "android") {
-      return;
-    }
+    console.log("Setting up watch listener, collapsed:", barbelCollapsed);
 
-    const unsubscribe = WatchModule?.addListener((event) => {
-      console.log("Watch event received:", event);
-      // Handle the event
+    const subscription = nativeWatchEventEmitter.addListener(WATCH_NUMBER_EVENT, (event) => {
+      console.log("Watch event received in React:", event);
+
+      if (event.number === undefined) {
+        console.log("Watch event missing number property");
+        return;
+      }
+
+      if (barbelCollapsed) {
+        console.log("Ignoring watch event - UI is collapsed");
+        return;
+      }
+      if (event?.number < barbellWeight) {
+        return;
+      }
+
+      throttledGetScrollValue(event.number);
+      sliderRef.current?.setValue?.(event.number);
     });
 
-    return () => unsubscribe();
+    return () => {
+      console.log("Cleaning up watch listener, collapsed:", barbelCollapsed);
+      subscription.remove();
+    };
   }, []);
 
   const onLogClicked = React.useCallback(() => {

@@ -34,7 +34,7 @@ const WeightIcon: React.FC<WeightIconProps> = ({ unit, selected, onPress }) => {
             <Animated.Text>
               <MaterialCommunityIcons
                 name={unit === "kg" ? "weight-kilogram" : "weight-pound"}
-                size={34}
+                size={48}
                 color={getColor()}
                 style={[]}
               />
@@ -49,7 +49,7 @@ const WeightIcon: React.FC<WeightIconProps> = ({ unit, selected, onPress }) => {
 };
 
 export type Props = {
-  onPress: (unit: "lb" | "kg" | string) => void;
+  onPress: (unit: "lb" | "kg") => void;
   unit: "lb" | "kg" | string;
 };
 
@@ -91,12 +91,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     margin: 10,
-    width: 50,
-    height: 50,
+    width: 75,
+    height: 75,
     padding: 0,
     borderWidth: 4,
     borderColor: "transparent",
     borderRadius: 1024,
+    paddingTop: 6,
   },
   unitText: {
     fontSize: 18,

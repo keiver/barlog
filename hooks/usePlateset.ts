@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 
 class BarbellLoader {
   private static instance: BarbellLoader;
-  private platesPerSide: Record<number, number> = {};
+  private platesPerSide: PlateSet = {};
   private listeners: Array<() => void> = [];
 
   private constructor() {}
@@ -14,7 +14,7 @@ class BarbellLoader {
     return BarbellLoader.instance;
   }
 
-  loadPlates(newPlates: Record<number, number>) {
+  loadPlates(newPlates: PlateSet) {
     this.platesPerSide = { ...this.platesPerSide, ...newPlates };
     this.notifyListeners();
   }
@@ -24,7 +24,7 @@ class BarbellLoader {
     this.notifyListeners();
   }
 
-  getPlatesPerSide(): Record<number, number> {
+  getPlatesPerSide(): PlateSet {
     return this.platesPerSide;
   }
 
@@ -42,7 +42,7 @@ class BarbellLoader {
 }
 
 const usePlateset = () => {
-  const [plates, setPlates] = useState<Record<number, number>>({});
+  const [plates, setPlates] = useState<PlateSet>({});
 
   useEffect(() => {
     const barbellLoader = BarbellLoader.getInstance();
@@ -58,7 +58,7 @@ const usePlateset = () => {
     };
   }, []);
 
-  const loadPlates = (newPlates: Record<number, number>) => {
+  const loadPlates = (newPlates: PlateSet) => {
     const barbellLoader = BarbellLoader.getInstance();
     barbellLoader.loadPlates(newPlates);
   };

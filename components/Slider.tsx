@@ -23,12 +23,12 @@ export type SliderProps = {
   onValueChanged: (value: number) => void;
   animateCallback?: (toValue: number) => void;
   unit?: string;
-  barbellWeight?: number;
+  sliderValue?: number;
 };
 
 const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
-  ({ onValueChanged, unit, barbellWeight = 0 }: SliderProps, ref) => {
-    const [value, setValue] = React.useState(barbellWeight);
+  ({ onValueChanged, unit, sliderValue = 0 }: SliderProps, ref) => {
+    const [value, setValue] = React.useState(sliderValue);
     const localRef = React.useRef<RNVSliderRef>(null);
     const [key, setKey] = React.useState(React.useId());
     const scheme = useColorScheme();
@@ -70,25 +70,17 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
 
     const onChangeValue = React.useCallback(
       (newValue: number) => {
-        if (newValue < barbellWeight) {
-          setValue(barbellWeight);
-        } else {
-          setValue(newValue);
-        }
+        setValue(newValue);
       },
-      [barbellWeight, sliderRef]
+      [setValue]
     );
 
     const onComplete = React.useCallback(
       (newValue: number) => {
-        if (newValue < barbellWeight) {
-          sliderRef.current?.setValue(barbellWeight);
-          onValueChanged(barbellWeight);
-        } else {
-          onValueChanged(newValue);
-        }
+        sliderRef.current?.setValue(newValue);
+        onValueChanged(newValue);
       },
-      [barbellWeight, onValueChanged, sliderRef]
+      [onValueChanged, sliderRef]
     );
 
     const { height, width } = useWindowDimensions();

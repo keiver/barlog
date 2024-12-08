@@ -1,8 +1,10 @@
-import React, { useEffect, useCallback } from "react";
-import { Platform, StyleSheet } from "react-native";
+import React, { useEffect, useCallback, useMemo } from "react";
+import { StyleSheet } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { RNVSliderRef } from "rn-vertical-slider";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { nativeWatchEventEmitter } from "react-native-watch-connectivity/dist/native-module";
+import { sendMessage, getIsWatchAppInstalled, getReachability } from "react-native-watch-connectivity";
 
 import { ThemedView } from "@/components/ThemedView";
 import Slider from "@/components/Slider";
@@ -16,13 +18,10 @@ import SettingsUnit from "@/components/SettingsUnit";
 import SettingsBarbellWeight from "@/components/SettingsBarbellWeight";
 import { keys } from "@/constants/Storage";
 import { SlideCoachMark } from "@/components/SlideCoachMark";
-import barbellWeights from "@/constants/barbells";
-import WatchModule, { WATCH_NUMBER_EVENT, watchEventEmitter } from "../WatchModule";
-import { nativeWatchEventEmitter } from "react-native-watch-connectivity/dist/native-module";
+import { WATCH_NUMBER_EVENT } from "../WatchModule";
+import { calculatePlates, describePlateSet, convert, findMatchingBarbell, findMatchingById } from "./libs/helpers";
 
-export type PlateSet = Record<number, number>;
-
-const samplePlateSet: PlateSet = {
+const initialPlateSet = {
   45: 0,
   35: 0,
   25: 0,
@@ -32,155 +31,102 @@ const samplePlateSet: PlateSet = {
   2.5: 0,
 };
 
-const initialBarbellWeight = 45; // Initial barbell weight in pounds
+const initialBarbellId = "1"; // 20kg/45lb Olympic bar
 
 export default function HomeScreen() {
-  const { plates, loadPlates, unloadPlates } = usePlateset();
+  const { plates, loadPlates } = usePlateset();
   const [lastCallTime, setLastCallTime] = React.useState<number | null>(null);
-  const [barbellWeight, setBarbellWeight] = React.useState<number>(initialBarbellWeight);
-  const [unit, setUnit] = React.useState<string>("lb");
+  const [barbellId, setBarbellId] = React.useState<string>(initialBarbellId);
+  const [unit, setUnit] = React.useState<Unit>("lb");
   const sliderRef = React.useRef<RNVSliderRef>(null);
   const [modalVisible, setModalVisible] = React.useState(false);
-  const [barbelCollapsed, setBarbelCollapsed] = React.useState(false);
-  const [value, onValueChanged] = React.useState(0);
+  const [barbellCollapsed, setBarbellCollapsed] = React.useState(false);
+  const [weight, setWeight] = React.useState(0);
   const [userScrolledOver, setUserScrolledOver] = React.useState(false);
 
   const client = storage.getInstance();
 
+  const barbellData = useMemo(() => findMatchingById(barbellId), [barbellId]);
+
   const load = useCallback(
-    (p: PlateSet, slider: number) => {
-      loadPlates(p);
-      sliderRef.current?.setValue?.(slider);
+    (plateSet: typeof initialPlateSet, targetWeight: number) => {
+      loadPlates(plateSet);
+      sliderRef.current?.setValue?.(targetWeight);
+      setWeight(targetWeight);
     },
-    [loadPlates, sliderRef?.current]
+    [loadPlates]
   );
 
+  const reset = useCallback(() => {
+    load({ ...initialPlateSet, 25: 1 }, 95);
+  }, [load]);
+
+  // Initial load
+  useEffect(() => {
+    reset();
+  }, []);
+
+  // Load saved preferences
   useEffect(() => {
     Promise.all([
-      client.getData("barbellWeight").then((value) => {
-        if (value) {
-          setBarbellWeight(parseFloat(value));
-        }
+      client.getData(keys.BARBELL_ID).then((value) => {
+        if (value) setBarbellId(value);
       }),
-      client.getData("unit").then((value) => {
-        if (value) {
-          setUnit(value);
-        }
+      client.getData(keys.UNIT).then((value) => {
+        if (value) setUnit(value as Unit);
       }),
     ]);
   }, []);
 
-  React.useEffect(() => {
-    load({ ...samplePlateSet, 25: 1 }, 95);
-    return () => {
-      unloadPlates();
-    };
-  }, []);
-
-  const calculatePlates = React.useCallback(
-    (targetWeight: number): PlateSet => {
-      if (targetWeight < barbellWeight) {
-        return { ...samplePlateSet };
-      }
-
-      const weightPerSide = (targetWeight - barbellWeight) / 2;
-      const newPlates = { ...samplePlateSet };
-      let remaining = weightPerSide;
-
-      for (const plate of [45, 35, 25, 15, 10, 5, 2.5]) {
-        const count = Math.floor(remaining / plate);
-        if (count > 0) {
-          newPlates[plate] = count;
-          remaining -= plate * count;
-          remaining = parseFloat(remaining.toFixed(2));
+  const throttle = useCallback(
+    (func: (value: number) => void, limit: number) => {
+      return (value: number) => {
+        const now = Date.now();
+        if (!lastCallTime || now - lastCallTime >= limit) {
+          setLastCallTime(now);
+          func(value);
         }
-      }
-
-      return newPlates;
+      };
     },
-    [barbellWeight]
+    [lastCallTime]
   );
 
-  const throttle = (func: (value: number) => void, limit: number) => {
-    return (value: number) => {
-      const now = Date.now();
-      if (!lastCallTime || now - lastCallTime >= limit) {
-        setLastCallTime(now);
-        func(value);
-      }
-    };
-  };
+  const handleScrollValue = useCallback(
+    (value: number) => {
+      if (!barbellData) return;
 
-  const describePlateSet = React.useCallback(
-    (plateSet: PlateSet) => {
-      return Object.entries(plateSet)
-        .filter(([_, count]) => count > 0)
-        .sort(([a], [b]) => parseFloat(b) - parseFloat(a))
-        .map(([weight, count]) => {
-          let displayWeight = parseFloat(weight);
-          if (unit === "kg") {
-            displayWeight = parseFloat((displayWeight * 0.453592).toFixed(1)); // Convert to kg
-          }
-          return `${displayWeight} × ${count}`;
-        })
-        .join(" · ");
-    },
-    [unit]
-  );
+      const newPlates = calculatePlates(value, unit === "kg" ? barbellData?.kg : barbellData?.lbs, unit);
 
-  const handleScrollValue = React.useCallback(
-    (v: number) => {
-      const newPlates = calculatePlates(v);
       loadPlates(newPlates);
-      onValueChanged(v);
+      setWeight(value);
 
-      if (v > 250) {
+      if (value > 250) {
         setUserScrolledOver(true);
         client.storeData(keys.SAW_COACH_MARK, "true");
       }
     },
-    [barbelCollapsed, calculatePlates, loadPlates, value]
+    [barbellId, unit, loadPlates, barbellData]
   );
 
-  const throttledGetScrollValue = useCallback(throttle(handleScrollValue, 400), [lastCallTime]);
+  const throttledGetScrollValue = useCallback(throttle(handleScrollValue, 100), [handleScrollValue, throttle]);
 
-  const clicked = React.useCallback(() => {
-    setModalVisible(true);
-  }, []);
-
-  const onUnitClicked = React.useCallback(
-    async (u: string) => {
-      setUnit(u);
-
-      const bbData = barbellWeights.find((b) => {
-        return u === "kg" ? b.kg === barbellWeight : b.lbs === barbellWeight;
-      });
-
-      await client.storeData(keys.UNIT, u);
-      await client.storeData(
-        keys.BARBELL_WEIGHT,
-        u === "kg" ? bbData?.kg.toString() || "" : bbData?.lbs.toString() || ""
-      );
+  const onUnitChanged = useCallback(
+    async (newUnit: Unit) => {
+      try {
+        setUnit(newUnit);
+        reset();
+        await client.storeData(keys.UNIT, newUnit);
+      } catch (error) {
+        console.error("Error setting unit:", error);
+      }
     },
-    [setUnit, unit, barbellWeight]
+    [reset, setUnit]
   );
 
+  // Watch connectivity
   useEffect(() => {
-    console.log("Setting up watch listener, collapsed:", barbelCollapsed);
-
     const subscription = nativeWatchEventEmitter.addListener(WATCH_NUMBER_EVENT, (event) => {
-      console.log("Watch event received in React:", event);
-
-      if (event.number === undefined) {
-        console.log("Watch event missing number property");
-        return;
-      }
-
-      if (barbelCollapsed) {
-        console.log("Ignoring watch event - UI is collapsed");
-        return;
-      }
-      if (event?.number < barbellWeight) {
+      if (event.number === undefined || barbellCollapsed || event.number < barbellId) {
         return;
       }
 
@@ -188,50 +134,70 @@ export default function HomeScreen() {
       sliderRef.current?.setValue?.(event.number);
     });
 
-    return () => {
-      console.log("Cleaning up watch listener, collapsed:", barbelCollapsed);
-      subscription.remove();
-    };
-  }, []);
+    return () => subscription.remove();
+  }, [barbellCollapsed, throttledGetScrollValue]);
 
-  const onLogClicked = React.useCallback(() => {
-    return setBarbelCollapsed(() => !barbelCollapsed);
-  }, [barbelCollapsed, setBarbelCollapsed]);
+  const plateDescription = React.useMemo(() => describePlateSet(plates, unit), [plates, unit]);
 
-  const logs = React.useMemo(() => describePlateSet(plates), [plates, describePlateSet]);
+  const checkWatchConnectivityAndSend = useCallback(async () => {
+    try {
+      const [installed, reachable] = await Promise.all([getIsWatchAppInstalled(), getReachability()]);
 
+      if (!installed || !reachable) return;
+
+      const message = {
+        logs: plateDescription,
+        weight,
+        label: `${convert(weight, unit)} ${unit}`,
+        unit,
+      };
+
+      sendMessage(
+        message,
+        (response) => console.log("Watch response:", response),
+        (error) => console.error("Watch error:", error)
+      );
+    } catch (error) {
+      console.error("Watch connectivity error:", error);
+    }
+  }, [plateDescription, weight, unit]);
+
+  useEffect(() => {
+    checkWatchConnectivityAndSend();
+  }, [plateDescription, weight, barbellId, unit, checkWatchConnectivityAndSend]);
+
+  console.log("HomeScreen render", plateDescription, weight);
   return (
     <GestureHandlerRootView style={styles.flexOne}>
       <StatusBar style="light" />
       <ThemedView style={styles.container}>
         <Slider
-          onValueChanged={(v) => {
-            if (barbelCollapsed) {
-              sliderRef.current?.setValue?.(value);
+          onValueChanged={(value) => {
+            if (barbellCollapsed) {
+              sliderRef.current?.setValue?.(weight);
               return;
             }
-
-            return throttledGetScrollValue(v);
+            return throttledGetScrollValue(value);
           }}
           unit={unit}
-          barbellWeight={barbellWeight}
+          sliderValue={weight}
           ref={sliderRef}
         />
 
         <ThemedRoundButton
-          onPress={clicked}
-          barbellWeight={barbellWeight}
+          onPress={() => setModalVisible(true)}
+          barbellId={barbellId}
           unit={unit}
-          onLogClicked={onLogClicked}
-          logs={logs}
-          locked={barbelCollapsed}
+          onLogClicked={() => setBarbellCollapsed((prev) => !prev)}
+          logs={plateDescription}
+          locked={barbellCollapsed}
           dimmed={modalVisible}
         />
 
         <Barbell
           platesPerSide={plates}
           unit={unit}
-          collapsed={barbelCollapsed}
+          collapsed={barbellCollapsed}
         />
 
         <CustomModal
@@ -240,9 +206,7 @@ export default function HomeScreen() {
           title="Barlog"
           description="What plates per side do I need to reach a target weight on a barbell?"
           buttonLabel="Save"
-          onButtonPress={() => {
-            setModalVisible(false);
-          }}
+          onButtonPress={() => setModalVisible(false)}
         >
           <ThemedText
             type="label"
@@ -252,7 +216,7 @@ export default function HomeScreen() {
           </ThemedText>
           <SettingsUnit
             unit={unit}
-            onPress={onUnitClicked}
+            onPress={onUnitChanged}
           />
           <ThemedText
             type="label"
@@ -261,11 +225,8 @@ export default function HomeScreen() {
             Barbell
           </ThemedText>
           <SettingsBarbellWeight
-            onPress={(size) => {
-              setBarbellWeight(size);
-              client.storeData(keys.BARBELL_WEIGHT, size.toString());
-            }}
-            barbellWeight={barbellWeight}
+            onPress={setBarbellId}
+            barbellId={barbellId}
             unit={unit}
           />
         </CustomModal>
@@ -282,33 +243,14 @@ const styles = StyleSheet.create({
     paddingTop: 0,
     backgroundColor: "#2C2C2E",
   },
-  input: {
-    borderBottomColor: "gray",
-    borderBottomWidth: 1,
-  },
   container: {
     flex: 1,
     padding: 0,
     paddingTop: 0,
     position: "relative",
-    // backgroundColor: "green",
     backgroundColor: "#2C2C2E",
-  },
-  bar: {
-    position: "absolute",
   },
   barbellLabel: {
     marginTop: 10,
-  },
-  addIcon: {
-    position: "absolute",
-    bottom: 8,
-    right: 0,
-    color: "gray",
-  },
-  addIconContainer: {
-    position: "absolute",
-    height: 44,
-    width: 44,
   },
 });

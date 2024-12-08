@@ -3,6 +3,8 @@ import { TouchableOpacity, StyleSheet, ViewStyle, Dimensions, View, useColorSche
 import { TabBarIcon } from "./navigation/TabBarIcon";
 import { ThemedText } from "./ThemedText";
 import { BlurView } from "expo-blur";
+import { convert, convertToLb } from "@/app/libs/helpers";
+import barbellWeights from "@/constants/barbells";
 
 export type ThemedButtonProps = {
   onPress: () => void;
@@ -10,7 +12,7 @@ export type ThemedButtonProps = {
   iconColor?: string;
   borderColor?: string;
   style?: ViewStyle;
-  barbellWeight?: number;
+  barbellId?: string;
   unit?: string;
   logs?: string;
   onLogClicked?: () => void;
@@ -22,7 +24,7 @@ export function ThemedRoundButton({
   onPress,
   iconColor = "white",
   style,
-  barbellWeight,
+  barbellId,
   unit,
   logs = "",
   onLogClicked,
@@ -33,8 +35,14 @@ export function ThemedRoundButton({
   const backgroundColor = colorScheme !== "dark" ? "rgba(0, 0, 0, 0.9)" : "rgba(0, 0, 0, 0.9)";
 
   const getBarbellWeightByUnit = React.useCallback(() => {
-    return barbellWeight;
-  }, [barbellWeight, unit]);
+    const bar = barbellWeights?.find((b) => b.id === barbellId);
+
+    if (!bar) {
+      return "";
+    }
+
+    return unit === "kg" ? bar.kg : bar.lbs;
+  }, [barbellId, unit, convert]);
 
   return (
     <TouchableOpacity style={[styles.container, style, dimmed && styles.dimmed]}>

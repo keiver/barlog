@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, StyleSheet, Animated, LayoutAnimation, Dimensions, Platform } from "react-native";
+import { View, StyleSheet, Animated, Dimensions } from "react-native";
 
 // Import your plate SVG components here
 import Plate45 from "@/assets/images/plates/45.svg";
@@ -11,9 +11,9 @@ import Plate5 from "@/assets/images/plates/5.svg";
 import Plate2P5 from "@/assets/images/plates/2_5.svg";
 
 interface BarbellProps {
-  platesPerSide: Record<number, number>;
+  platesPerSide: PlateSet;
   barType?: string;
-  unit?: string;
+  unit?: Unit;
   barWeight?: number;
   collapsed?: boolean;
 }
@@ -26,6 +26,7 @@ interface Plate {
   image: React.FC<React.SVGProps<SVGSVGElement>>;
 }
 
+// Map of weights in pounds to their corresponding SVG components
 const plateImages: Record<number, React.FC<React.SVGProps<SVGSVGElement>>> = {
   45: Plate45,
   35: Plate35,
@@ -36,6 +37,17 @@ const plateImages: Record<number, React.FC<React.SVGProps<SVGSVGElement>>> = {
   2.5: Plate2P5,
 };
 
+// Map of weights in kg to their corresponding weights in pounds
+const kgToLbMap: Record<number, number> = {
+  20.4: 45,
+  15.9: 35,
+  11.3: 25,
+  6.8: 15,
+  4.5: 10,
+  2.3: 5,
+  1.13: 2.5,
+};
+
 const Barbell: React.FC<BarbellProps> = ({
   platesPerSide,
   barType = "Standard",
@@ -43,64 +55,58 @@ const Barbell: React.FC<BarbellProps> = ({
   barWeight = 45,
   collapsed = false,
 }) => {
-  const weightsInPounds = React.useMemo(() => Object.keys(plateImages).map((weight) => parseFloat(weight)), []);
-
   // Create the plates array with weight information and images
-  const plates: Plate[] = React.useMemo(
-    () =>
-      weightsInPounds.map((w) => {
-        const weightLb = w;
-        const weightKg = parseFloat((w * 0.453592).toFixed(2));
+  const plates: Plate[] = React.useMemo(() => {
+    const weightsInPounds = Object.keys(plateImages).map((weight) => parseFloat(weight));
 
-        return {
-          weightLb,
-          weightKg,
-          label: `${weightKg} kg / ${weightLb} lb`,
-          image: plateImages[weightLb],
-          height: 50, // Example height value in pixels
-        };
-      }),
-    [weightsInPounds]
-  );
+    return weightsInPounds.map((w) => {
+      const weightLb = w;
+      const weightKg = parseFloat((w * 0.453592).toFixed(2));
+
+      return {
+        weightLb,
+        weightKg,
+        label: `${weightKg} kg / ${weightLb} lb`,
+        image: plateImages[weightLb],
+        height: 50,
+      };
+    });
+  }, []);
 
   // Generate a flat list of all plates to render, including duplicates
   const platesToRender = React.useMemo(() => {
-    let result: Plate[] = [];
+    const result: Plate[] = [];
+
+    // Convert kg weights to lb if necessary
+    const normalizedPlatesPerSide = { ...platesPerSide };
+    if (unit === "kg") {
+      const newPlatesPerSide: PlateSet = {};
+      Object.entries(platesPerSide).forEach(([weight, count]) => {
+        const weightNum = parseFloat(weight);
+        const lbWeight = kgToLbMap[weightNum];
+        if (lbWeight) {
+          newPlatesPerSide[lbWeight] = count;
+        }
+      });
+      Object.assign(normalizedPlatesPerSide, newPlatesPerSide);
+    }
+
+    // Sort plates by weight (heaviest first)
     const sortedWeights = plates.map((plate) => plate.weightLb).sort((a, b) => b - a);
 
+    // Add plates to render list
     sortedWeights.forEach((weight) => {
       const plate = plates.find((p) => p.weightLb === weight);
       if (plate) {
-        const count = platesPerSide[weight] || 0;
+        const count = normalizedPlatesPerSide[weight] || 0;
         for (let i = 0; i < count; i++) {
           result.push(plate);
         }
       }
     });
+
     return result;
-  }, [platesPerSide, plates]);
-
-  // Initialize an animated value for each individual plate
-  const animatedValues = React.useMemo(() => platesToRender.map(() => new Animated.Value(0)), [platesToRender]);
-
-  // Animate each plate individually
-  React.useEffect(() => {
-    const animations = platesToRender.map((_, index) =>
-      Animated.timing(animatedValues[index], {
-        toValue: 1 * index,
-        duration: 25,
-        useNativeDriver: true,
-      })
-    );
-    Animated.sequence(animations).start();
-  }, [animatedValues]);
-
-  // Smoothly animate layout changes
-  // React.useEffect(() => {
-  //   if (Platform.OS === "ios") {
-  //     LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
-  //   }
-  // }, [collapsed, platesToRender]);
+  }, [platesPerSide, plates, unit]);
 
   const COLLAPSED_MARGIN = -191;
   const EXPANDED_MARGIN = -155;
@@ -119,12 +125,7 @@ const Barbell: React.FC<BarbellProps> = ({
             style={[
               styles.plateContainer,
               {
-                transform: [
-                  { translateY: animatedValues[index] },
-                  // { translateX: animatedValues[index] },
-                  { rotateX: `50deg` },
-                  { rotateZ: `${unit === "lb" ? 245 : 0}deg` },
-                ],
+                transform: [{ rotateX: "50deg" }, { rotateZ: "245deg" }],
                 marginTop: collapsed ? COLLAPSED_MARGIN : EXPANDED_MARGIN,
               },
             ]}

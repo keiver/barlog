@@ -36,8 +36,8 @@ const CustomModal: React.FC<CustomModalProps> = ({
 }) => {
   const colorScheme = useColorScheme();
   const versionFile = require("../app.json");
-  const backgroundColor = colorScheme === "dark" ? "rgba(0, 0, 0, 0.9)" : "rgba(255, 255, 255, 0.9)";
-  const closeIconColor = colorScheme === "dark" ? "rgba(255, 255, 255, 0.9)" : "rgba(0, 0, 0, 0.9)";
+  const backgroundColor = colorScheme === "dark" ? "#000" : "#fff";
+  const closeIconColor = colorScheme === "dark" ? "#fff" : "#000";
   const version = versionFile.expo.version || "0.0.0";
 
   return (
@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     // elevation: 5,
     overflow: "hidden",
     // minHeight: Dimensions.get("window").height * 0.6,
-    height: Dimensions.get("window").height * 0.52,
+    height: Dimensions.get("window").height * 0.6,
     // height: "auto",
     width: Dimensions.get("window").width * 0.9,
   },

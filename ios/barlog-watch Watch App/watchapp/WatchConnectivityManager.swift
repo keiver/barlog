@@ -19,7 +19,7 @@ enum WatchConnectivityError: LocalizedError {
     }
 }
 
-class WatchConnectivityManager: NSObject, ObservableObject {
+class WatchConnectivityManager: NSObject, ObservableObject, WCSessionDelegate {
     // MARK: - Singleton
     static let shared = WatchConnectivityManager()
     
@@ -27,7 +27,8 @@ class WatchConnectivityManager: NSObject, ObservableObject {
     @Published private(set) var isReachable = false
     @Published private(set) var activationState: WCSessionActivationState = .notActivated
     @Published private(set) var lastError: Error?
-    
+    @Published var receivedMessage: [String: Any] = [:]
+
     // MARK: - Private Properties
     private let session: WCSession
     private var messageQueue: [(number: Int, completion: ((Error?) -> Void)?)] = []
@@ -93,10 +94,8 @@ class WatchConnectivityManager: NSObject, ObservableObject {
         
         isProcessingQueue = false
     }
-}
-
-// MARK: - WCSessionDelegate
-extension WatchConnectivityManager: WCSessionDelegate {
+    
+    // MARK: - WCSessionDelegate
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
         DispatchQueue.main.async { [weak self] in
             if let error = error {
@@ -128,12 +127,11 @@ extension WatchConnectivityManager: WCSessionDelegate {
         }
     }
     
-    func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
-        print("Watch: Received message: \(message)")
-    }
-    
     func session(_ session: WCSession, didReceiveMessage message: [String: Any], replyHandler: @escaping ([String: Any]) -> Void) {
-        print("Watch: Received message with reply handler: \(message)")
+        DispatchQueue.main.async {
+            self.receivedMessage = message
+            print("Updated receivedMessage: \(self.receivedMessage)")
+        }
         replyHandler(["status": "received"])
     }
 }

@@ -18,38 +18,50 @@ import localStorage from "@/app/libs/localStorage";
 import { keys } from "@/constants/Storage";
 
 interface SettingsBarbellWeightProps {
-  onPress: (size: number) => void;
-  barbellWeight?: number;
+  onPress: (size: string) => void;
+  barbellId?: string;
   unit?: string;
 }
 
-const SettingsBarbellWeight: React.FC<SettingsBarbellWeightProps> = ({ barbellWeight, onPress, unit }) => {
+const SettingsBarbellWeight: React.FC<SettingsBarbellWeightProps> = ({ barbellId, onPress, unit }) => {
   const isDark = useColorScheme() === "dark";
   const [isModalVisible, setModalVisible] = React.useState(false);
   const client = localStorage.getInstance();
 
   const sizes = React.useMemo(() => {
     return barbellWeights?.map((b) => {
-      return unit === "kg" ? b.kg : b.lbs;
+      return b?.id;
     });
   }, [unit]);
 
-  const selectedBarbell = barbellWeights?.find((item) => item.lbs === barbellWeight || item.kg === barbellWeight);
+  const selectedBarbell = barbellWeights?.find((item) => item.id === barbellId);
 
-  const handleSelect = (size: number) => {
-    onPress(size);
-    client.storeData(keys.BARBELL_WEIGHT, size.toString());
+  const handleSelect = (id: string) => {
+    onPress(id);
+    const barbell = barbellWeights?.find((b) => b.id === id);
+
+    if (!barbell) {
+      return;
+    }
+
+    console.log("barbell", barbell?.id?.toString());
+
+    client.storeData(keys.BARBELL_ID, barbell?.id?.toString() || "");
     setModalVisible(false);
   };
 
   const renderItem = useCallback(
-    ({ item: size }: { item: number }) => {
-      const barbell = barbellWeights?.find((b) => b.lbs === size || b.kg === size);
-      const isSelected = unit === "kg" ? size === selectedBarbell?.kg : size === selectedBarbell?.lbs;
+    ({ item: id }: { item: string }) => {
+      const barbell = barbellWeights.find((b) => b.id === id);
+      const isSelected = selectedBarbell?.id === id;
+
+      if (!barbell) {
+        return null;
+      }
 
       return (
         <TouchableOpacity
-          onPress={() => handleSelect(size)}
+          onPress={() => handleSelect(id)}
           style={[
             styles.optionCard,
             isSelected && styles.selectedCard,
@@ -63,16 +75,11 @@ const SettingsBarbellWeight: React.FC<SettingsBarbellWeightProps> = ({ barbellWe
               darkColor={isSelected ? tintColorLight : "white"}
               style={styles.weight}
             >
-              {size} {unit}
+              {unit === "kg" ? barbell.kg : barbell.lbs} {unit}
             </ThemedText>
-            <Ionicons
-              name="barbell-sharp"
-              size={unit === "kg" ? size * 2 : size}
-              color={isSelected ? tintColorLight : isDark ? "white" : "black"}
-            />
           </View>
           <View style={styles.textContainer}>
-            {barbell?.label && (
+            {barbell.label && (
               <ThemedText
                 type="title"
                 lightColor={isSelected ? tintColorLight : "black"}
@@ -82,8 +89,7 @@ const SettingsBarbellWeight: React.FC<SettingsBarbellWeightProps> = ({ barbellWe
                 {barbell.label}
               </ThemedText>
             )}
-
-            {barbell?.description && (
+            {barbell.description && (
               <ThemedText
                 lightColor={isSelected ? tintColorLight : "black"}
                 darkColor={isSelected ? tintColorLight : "white"}
@@ -96,7 +102,7 @@ const SettingsBarbellWeight: React.FC<SettingsBarbellWeightProps> = ({ barbellWe
         </TouchableOpacity>
       );
     },
-    [selectedBarbell, isDark, unit, barbellWeight]
+    [selectedBarbell, isDark, unit]
   );
 
   return (
@@ -115,7 +121,7 @@ const SettingsBarbellWeight: React.FC<SettingsBarbellWeightProps> = ({ barbellWe
           </ThemedText>
           <Ionicons
             name="barbell-sharp"
-            size={barbellWeight}
+            size={unit === "kg" ? (selectedBarbell?.kg || 0) * 2.2 : selectedBarbell?.lbs || 0}
             color={tintColorLight}
           />
         </View>

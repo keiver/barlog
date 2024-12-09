@@ -48,13 +48,7 @@ const kgToLbMap: Record<number, number> = {
   1.13: 2.5,
 };
 
-const Barbell: React.FC<BarbellProps> = ({
-  platesPerSide,
-  barType = "Standard",
-  unit = "lb",
-  barWeight = 45,
-  collapsed = false,
-}) => {
+const Barbell: React.FC<BarbellProps> = ({ platesPerSide, unit = "lb", collapsed = false }) => {
   // Create the plates array with weight information and images
   const plates: Plate[] = React.useMemo(() => {
     const weightsInPounds = Object.keys(plateImages).map((weight) => parseFloat(weight));

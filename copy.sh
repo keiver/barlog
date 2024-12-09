@@ -11,6 +11,13 @@ fi
 MAJOR=$(echo $CURRENT_VERSION | cut -d. -f1)
 MINOR=$(echo $CURRENT_VERSION | cut -d. -f2)
 PATCH=$(echo $CURRENT_VERSION | cut -d. -f3)
+
+// if PATCH = final, we increase MINOR and set PATCH to 0 to version up
+if [ $PATCH = "final" ]; then
+    MINOR=$((MINOR + 1))
+    PATCH=0
+fi
+
 NEW_PATCH=$((PATCH + 1))
 NEW_VERSION="$MAJOR.$MINOR.$NEW_PATCH"
 

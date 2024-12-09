@@ -19,7 +19,7 @@ import SettingsBarbellWeight from "@/components/SettingsBarbellWeight";
 import { keys } from "@/constants/Storage";
 import { SlideCoachMark } from "@/components/SlideCoachMark";
 import { WATCH_NUMBER_EVENT } from "../WatchModule";
-import { calculatePlates, describePlateSet, convert, findMatchingBarbell, findMatchingById } from "./libs/helpers";
+import { calculatePlates, describePlateSet, convert, findMatchingById } from "./libs/helpers";
 
 const initialPlateSet = {
   45: 0,
@@ -61,12 +61,10 @@ export default function HomeScreen() {
     load({ ...initialPlateSet, 25: 1 }, 95);
   }, [load]);
 
-  // Initial load
   useEffect(() => {
     reset();
   }, []);
 
-  // Load saved preferences
   useEffect(() => {
     Promise.all([
       client.getData(keys.BARBELL_ID).then((value) => {
@@ -166,7 +164,6 @@ export default function HomeScreen() {
     checkWatchConnectivityAndSend();
   }, [plateDescription, weight, barbellId, unit, checkWatchConnectivityAndSend]);
 
-  console.log("HomeScreen render", plateDescription, weight);
   return (
     <GestureHandlerRootView style={styles.flexOne}>
       <StatusBar style="light" />

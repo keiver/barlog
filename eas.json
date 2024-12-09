@@ -1,30 +1,23 @@
 {
-  "cli": {
-    "version": ">= 12.5.2",
-    "appVersionSource": "remote"
-  },
   "build": {
-    "development": {
-      "developmentClient": true,
-      "distribution": "internal",
-      "ios": {
-        "simulator": true
-      }
-    },
     "preview": {
       "distribution": "internal",
       "ios": {
-        "scheme": "barlog-watch"
+        "scheme": "barlog",
+        "cocoapods": "1.16.2",
+        "image": "latest"
       }
     },
     "production": {
       "autoIncrement": true,
       "ios": {
-        "scheme": "barlog-watch"
+        "scheme": "barlog",
+        "cocoapods": "1.16.2",
+        "image": "latest"
       }
     }
   },
-  "submit": {
-    "production": {}
+  "cli": {
+    "appVersionSource": "remote"
   }
 }

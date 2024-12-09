@@ -48,7 +48,7 @@ const kgToLbMap: Record<number, number> = {
   1.13: 2.5,
 };
 
-const Barbell: React.FC<BarbellProps> = ({ platesPerSide, unit = "lb", collapsed = false }) => {
+const Barbell: React.FC<BarbellProps> = ({ platesPerSide, unit, collapsed = false }) => {
   // Create the plates array with weight information and images
   const plates: Plate[] = React.useMemo(() => {
     const weightsInPounds = Object.keys(plateImages).map((weight) => parseFloat(weight));
@@ -65,7 +65,7 @@ const Barbell: React.FC<BarbellProps> = ({ platesPerSide, unit = "lb", collapsed
         height: 50,
       };
     });
-  }, []);
+  }, [unit]);
 
   // Generate a flat list of all plates to render, including duplicates
   const platesToRender = React.useMemo(() => {
@@ -119,7 +119,7 @@ const Barbell: React.FC<BarbellProps> = ({ platesPerSide, unit = "lb", collapsed
             style={[
               styles.plateContainer,
               {
-                transform: [{ rotateX: "50deg" }, { rotateZ: "245deg" }],
+                transform: [{ translateY: index }, { rotateX: `50deg` }, { rotateZ: `${unit === "lb" ? 245 : 0}deg` }],
                 marginTop: collapsed ? COLLAPSED_MARGIN : EXPANDED_MARGIN,
               },
             ]}

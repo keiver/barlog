@@ -34,10 +34,10 @@ const initialPlateSet = {
 const initialBarbellId = "1"; // 20kg/45lb Olympic bar
 
 export default function HomeScreen() {
-  const { plates, loadPlates } = usePlateset();
   const [lastCallTime, setLastCallTime] = React.useState<number | null>(null);
   const [barbellId, setBarbellId] = React.useState<string>(initialBarbellId);
   const [unit, setUnit] = React.useState<Unit>("lb");
+  const { plates, loadPlates } = usePlateset();
   const sliderRef = React.useRef<RNVSliderRef>(null);
   const [modalVisible, setModalVisible] = React.useState(false);
   const [barbellCollapsed, setBarbellCollapsed] = React.useState(false);
@@ -133,7 +133,7 @@ export default function HomeScreen() {
     });
 
     return () => subscription.remove();
-  }, [barbellCollapsed, throttledGetScrollValue]);
+  }, [barbellCollapsed, throttledGetScrollValue, weight, barbellId]);
 
   const plateDescription = React.useMemo(() => describePlateSet(plates, unit), [plates, unit]);
 
@@ -160,22 +160,27 @@ export default function HomeScreen() {
     }
   }, [plateDescription, weight, unit]);
 
+  const onValueChanged = useCallback(
+    (value: number) => {
+      if (barbellCollapsed) {
+        sliderRef.current?.setValue?.(weight);
+        return;
+      }
+      return throttledGetScrollValue(value);
+    },
+    [throttledGetScrollValue, weight, barbellCollapsed, sliderRef]
+  );
+
   useEffect(() => {
     checkWatchConnectivityAndSend();
-  }, [plateDescription, weight, barbellId, unit, checkWatchConnectivityAndSend]);
+  }, [plateDescription, weight, barbellId, unit, checkWatchConnectivityAndSend, onValueChanged]);
 
   return (
     <GestureHandlerRootView style={styles.flexOne}>
       <StatusBar style="light" />
       <ThemedView style={styles.container}>
         <Slider
-          onValueChanged={(value) => {
-            if (barbellCollapsed) {
-              sliderRef.current?.setValue?.(weight);
-              return;
-            }
-            return throttledGetScrollValue(value);
-          }}
+          onValueChanged={onValueChanged}
           unit={unit}
           sliderValue={weight}
           ref={sliderRef}

@@ -16,8 +16,12 @@
       "image": "./assets/images/appstore.png"
     },
     "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "dev.keiver.barlog"
+      "watchApp": {
+        "name": "barlog-watch",
+        "entitlements": {
+          "com.apple.security.application-groups": ["group.dev.keiver.barlog"]
+        }
+      }
     },
     "android": {
       "adaptiveIcon": {

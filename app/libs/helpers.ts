@@ -1,11 +1,11 @@
 import barbellWeights from "@/constants/barbells";
 
 // Constants
-const KG_TO_LB = 2.20462262;
-const LB_TO_KG = 0.453592;
+export const KG_TO_LB = 2.20462262;
+export const LB_TO_KG = 0.453592;
 
 // Consolidate all unit-specific constants
-const UNITS: Record<
+export const UNITS: Record<
   Unit,
   {
     plates: number[];

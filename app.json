@@ -4,48 +4,42 @@
     "slug": "barlog",
     "description": "Easy preview of barbell plate set",
     "version": "1.4.0",
-    "orientation": "portrait",
-    "icon": "./assets/images/appstore.png",
+    "orientation": "default",
+    "icon": "./assets/icon.png",
     "scheme": "barlog",
     "userInterfaceStyle": "automatic",
     "backgroundColor": "#2C2C2E",
     "primaryColor": "#FFB703",
+    "newArchEnabled": true,
     "splash": {
-      "resizeMode": "contain",
-      "backgroundColor": "#FFB703",
-      "image": "./assets/images/appstore.png"
+      "backgroundColor": "#2C2C2E",
+      "image": "./assets/splash-icon.png"
     },
     "ios": {
-      "watchApp": {
-        "name": "barlog-watch",
-        "entitlements": {
-          "com.apple.security.application-groups": ["group.dev.keiver.barlog"]
-        }
-      }
+      "bundleIdentifier": "dev.keiver.barlog"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/playstore.png",
+        "foregroundImage": "./assets/playstore.png",
         "backgroundColor": "#FFB703"
       },
       "package": "dev.keiver.barlog",
-      "splash": {
-        "image": "./assets/images/appstore.png",
-        "resizeMode": "contain",
-        "backgroundColor": "#FFB703"
-      },
-      "softwareKeyboardLayoutMode": "pan",
-      "statusBar": {
-        "backgroundColor": "#FFB703",
-        "barStyle": "dark-content"
-      }
+      "softwareKeyboardLayoutMode": "pan"
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/appstore.png"
+      "favicon": "./assets/appstore.png"
     },
-    "plugins": ["expo-router"],
+    "plugins": [
+      "expo-router",
+      [
+        "expo-screen-orientation",
+        {
+          "initialOrientation": "DEFAULT"
+        }
+      ]
+    ],
     "experiments": {
       "typedRoutes": true
     },

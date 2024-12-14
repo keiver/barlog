@@ -1,1 +1,0 @@
-Barbell minimum plates calculator. Adjust weight by sliding up and down, see the minimum plates needed, and switch between lbs and kg — all in a sleek, easy-to-use app.

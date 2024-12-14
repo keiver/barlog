@@ -4,7 +4,6 @@
 #import <WatchConnectivity/WatchConnectivity.h>
 #import <React/RCTLog.h>
 
-
 @interface AppDelegate () <WCSessionDelegate>
 @property (nonatomic, strong) WCSession *watchSession;
 @end
@@ -14,26 +13,23 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
   self.moduleName = @"main";
-  // You can add your custom initial props in the dictionary below.
-  // They will be passed down to the ViewController used by React Native.
   self.initialProps = @{};
 
-  // Initialize Watch Connectivity before super call
-  if ([WCSession isSupported]) {
-    RCTLogInfo(@"Phone: WCSession is supported, initializing...");
-    self.watchSession = [WCSession defaultSession];
-    self.watchSession.delegate = self;
-    [self.watchSession activateSession];
-    RCTLogInfo(@"Phone: WCSession activation requested");
-  } else {
-    RCTLogError(@"Phone: WCSession is not supported on this device");
-  }
-
-//  RCTWatchConnectivity *watchConnectivity = [RCTWatchConnectivity shared];
-//  RCTLogInfo(@"Phone: RCTWatchConnectivity shared instance retrieved");
+  // Initialize Watch Connectivity on main thread
+  dispatch_async(dispatch_get_main_queue(), ^{
+    if ([WCSession isSupported]) {
+      RCTLogInfo(@"Phone: WCSession is supported, initializing...");
+      self.watchSession = [WCSession defaultSession];
+      self.watchSession.delegate = self;
+      [self.watchSession activateSession];
+      RCTLogInfo(@"Phone: WCSession activation requested. Current state: %ld", (long)self.watchSession.activationState);
+      RCTLogInfo(@"Phone: Initial reachability: %d", self.watchSession.isReachable);
+    } else {
+      RCTLogError(@"Phone: WCSession is not supported on this device");
+    }
+  });
 
   BOOL result = [super application:application didFinishLaunchingWithOptions:launchOptions];
-  
   return result;
 }
 
@@ -73,13 +69,13 @@
         
         switch (activationState) {
             case WCSessionActivationStateActivated:
-                RCTLogInfo(@"Phone: WCSession activated");
+                RCTLogInfo(@"Phone: WCSession activated successfully. Reachable: %d", session.isReachable);
                 break;
             case WCSessionActivationStateInactive:
-                RCTLogInfo(@"Phone: WCSession inactive");
+                RCTLogInfo(@"Phone: WCSession is inactive");
                 break;
             case WCSessionActivationStateNotActivated:
-                RCTLogInfo(@"Phone: WCSession not activated");
+                RCTLogInfo(@"Phone: WCSession is not activated");
                 break;
         }
     });
@@ -90,21 +86,80 @@
     if (number) {
         RCTLogInfo(@"Phone: Received number from watch: %@", number);
         dispatch_async(dispatch_get_main_queue(), ^{
+            RCTLogInfo(@"Phone: Broadcasting number via notification: %@", number);
             [[NSNotificationCenter defaultCenter] postNotificationName:@"WatchReceiveMessage"
                                                               object:nil
                                                             userInfo:@{@"number": number}];
             RCTLogInfo(@"Phone: Notification posted with number: %@", number);
         });
+    } else {
+        RCTLogInfo(@"Phone: Received message without number: %@", message);
     }
 }
 
+// send updates to the watch
+- (void)sendUpdateToWatch:(NSDictionary *)update {
+    if (![WCSession defaultSession].isReachable) {
+        RCTLogInfo(@"Phone: Watch is not reachable, skipping update");
+        return;
+    }
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [[WCSession defaultSession] sendMessage:update
+                                 replyHandler:^(NSDictionary<NSString *, id> *replyMessage) {
+                                     RCTLogInfo(@"Phone: Watch received update: %@", replyMessage);
+                                 }
+                                 errorHandler:^(NSError *error) {
+                                     RCTLogError(@"Phone: Failed to send update to watch: %@", error);
+                                 }];
+    });
+}
+
+
+- (void)session:(WCSession *)session didReceiveMessage:(NSDictionary<NSString *, id> *)message replyHandler:(void(^)(NSDictionary<NSString *, id> *replyMessage))replyHandler {
+    NSNumber *number = message[@"number"];
+    if (number) {
+         RCTLogInfo(@"Phone: Received number from watch: %@", number);
+         dispatch_async(dispatch_get_main_queue(), ^{
+             // Send the notification for React Native
+             [[NSNotificationCenter defaultCenter] postNotificationName:@"WatchReceiveMessage"
+                                                               object:nil
+                                                             userInfo:@{@"number": number}];
+             
+             // Send back current state to watch
+             NSDictionary *response = @{
+                 @"weight": number,
+                 @"label": @"", // You'll need to get this from your RN state
+                 @"unit": @"lb", // You'll need to get this from your RN state
+                 @"status": @"received"
+             };
+             
+             replyHandler(response);
+             
+             // Also proactively send an update with full state
+             [self sendUpdateToWatch:response];
+         });
+     } else {
+         replyHandler(@{@"status": @"error", @"message": @"No number received"});
+     }
+}
+
 - (void)sessionDidBecomeInactive:(WCSession *)session {
-    RCTLogInfo(@"Phone: WCSession became inactive");
+    RCTLogInfo(@"Phone: WCSession became inactive. Attempting to reactivate...");
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [session activateSession];
+    });
 }
 
 - (void)sessionDidDeactivate:(WCSession *)session {
-    RCTLogInfo(@"Phone: WCSession deactivated, reactivating...");
-    [session activateSession];
+    RCTLogInfo(@"Phone: WCSession deactivated. Attempting to reactivate...");
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [session activateSession];
+    });
+}
+
+- (void)sessionReachabilityDidChange:(WCSession *)session {
+    RCTLogInfo(@"Phone: Session reachability changed. Reachable: %d", session.isReachable);
 }
 
 @end

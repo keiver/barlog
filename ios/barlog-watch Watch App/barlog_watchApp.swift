@@ -2,7 +2,7 @@
 //  barlog_watchApp.swift
 //  barlog-watch Watch App
 //
-//  Created by Keiver Hernandez on 12/6/24.
+//  Created by Keiver Hernandez on 12/12/24.
 //
 
 import SwiftUI

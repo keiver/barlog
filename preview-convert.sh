@@ -1,1 +1,0 @@
-ffmpeg -i z1.mp4 -i optimistic.ogg -c:v libx264 -preset medium -crf 23 -vf "scale=886:1920" -r 30 -profile:v main -c:a aac -b:a 256k -ar 48000 -ac 2 -map 0:v:0 -map 1:a:0 -shortest -movflags +faststart output.mp4

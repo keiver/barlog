@@ -1,6 +1,7 @@
 #import <RCTAppDelegate.h>
 #import <UIKit/UIKit.h>
 #import <Expo/Expo.h>
+#import "barlog-Bridging-Header.h"
 
 @interface AppDelegate : EXAppDelegateWrapper
 

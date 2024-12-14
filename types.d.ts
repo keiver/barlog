@@ -17,3 +17,12 @@ type PlateSet = {
  * Valid weight units
  */
 type Unit = "lb" | "kg";
+
+interface WeightLog {
+  timestamp: number;
+  weight: number;
+  unit: Unit;
+  barbellId: string;
+  plateDescription: string;
+  timestamp?: number;
+}

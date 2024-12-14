@@ -37,16 +37,13 @@ export function ThemedRoundButton({
 }: ThemedButtonProps) {
   const colorScheme = useColorScheme();
   const backgroundColor = colorScheme !== "dark" ? "rgba(0, 0, 0, 0.9)" : "rgba(0, 0, 0, 0.9)";
+  const iconOpacity = colorScheme === "dark" ? 0.7 : 1;
 
   const getBarbellWeightByUnit = React.useCallback(() => {
     const bar = barbellWeights?.find((b) => b.id === barbellId);
-
-    if (!bar) {
-      return "";
-    }
-
+    if (!bar) return "";
     return unit === "kg" ? bar.kg : bar.lbs;
-  }, [barbellId, unit, convert]);
+  }, [barbellId, unit]);
 
   return (
     <TouchableOpacity style={[styles.container, style, dimmed && styles.dimmed]}>
@@ -57,40 +54,35 @@ export function ThemedRoundButton({
       >
         <TouchableOpacity
           onPress={onLogsIconClicked}
-          style={[styles.flex]}
+          style={styles.flex}
         >
           <View style={[styles.barIndicator, styles.indicatorStart]}>
             <MaterialCommunityIcons
               name="notebook-outline"
               color={iconColor}
-              style={[
-                styles.icon,
-                {
-                  transform: [{ translateX: 0 }],
-                  opacity: colorScheme === "dark" ? 0.7 : 1,
-                },
-              ]}
+              style={[styles.icon, { opacity: iconOpacity }]}
               size={28}
             />
           </View>
         </TouchableOpacity>
+
         <TouchableOpacity onPress={onLogClicked}>
           <View
-            style={styles.barIndicator}
+            style={[styles.barIndicator]}
             id="logs"
           >
-            <View style={styles.row}>
+            <View style={styles.verticalTextContainer}>
               <ThemedText
                 lightColor="#00FF00"
                 darkColor="#00FF00"
                 type="title"
-                style={[styles.label]}
+                style={styles.verticalText}
+                numberOfLines={1}
               >
                 <ThemedText
                   lightColor={tintColorDark}
                   darkColor={tintColorDark}
                   type="small"
-                  style={[styles.label]}
                 >
                   {locked ? "" : "Load"}&nbsp;&nbsp;
                 </ThemedText>
@@ -99,7 +91,6 @@ export function ThemedRoundButton({
                   lightColor={tintColorDark}
                   darkColor={tintColorDark}
                   type="small"
-                  style={[styles.label]}
                 >
                   &nbsp;&nbsp;
                   {locked ? "Saved" : "Per Side"}
@@ -109,36 +100,28 @@ export function ThemedRoundButton({
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={onPress}>
-          <View
-            style={[
-              styles.barIndicator,
-              styles.indicatorEnd,
-              {
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center",
-                alignItems: "center",
-                transform: [{ rotate: "90deg" }],
-                gap: 10,
-                width: 70,
-                opacity: colorScheme === "dark" ? 0.7 : 1,
-              },
-            ]}
-          >
-            <TabBarIcon
-              name="barbell-outline"
-              color={iconColor}
-              style={styles.icon}
-              size={24}
-            />
-            <ThemedText
-              type="title"
-              lightColor="white"
-              style={[styles.label]}
-            >
-              {getBarbellWeightByUnit()} {unit}
-            </ThemedText>
+        <TouchableOpacity
+          onPress={onPress}
+          id="barbell"
+        >
+          <View style={[styles.barIndicator, styles.indicatorEnd]}>
+            <View style={styles.barbellTextContainer}>
+              <View style={[styles.barbellContent, { opacity: iconOpacity }]}>
+                <TabBarIcon
+                  name="barbell-outline"
+                  color={iconColor}
+                  style={styles.icon}
+                  size={24}
+                />
+                <ThemedText
+                  type="title"
+                  lightColor="white"
+                  style={styles.barbellText}
+                >
+                  {getBarbellWeightByUnit()} {unit}
+                </ThemedText>
+              </View>
+            </View>
           </View>
         </TouchableOpacity>
       </BlurView>
@@ -167,31 +150,7 @@ const styles = StyleSheet.create({
     paddingRight: 0,
     paddingLeft: 0,
     borderRadius: 0,
-    backgroundColor: "#00",
-  },
-  icon: {
-    // transform: [{ translateY: -2 }, { rotate: "90deg" }],
-  },
-  barIndicator: {
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    width: 150,
-    height: height - 350,
-  },
-  indicatorStart: {
-    justifyContent: "flex-end",
-    alignItems: "center",
-    // width: 150,
-    marginTop: 50,
-    width: 48,
-    height: 48,
-  },
-  indicatorEnd: {
-    justifyContent: "flex-end",
-    marginBottom: -20,
-    marginTop: 10,
-    height: 200,
+    backgroundColor: "transparent",
   },
   modalView: {
     paddingLeft: 2,
@@ -203,22 +162,38 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  label: {
-    position: "relative",
-    fontSize: 16,
-    width: "100%",
-    textAlign: "center",
-    verticalAlign: "middle",
-    alignContent: "center",
+  barIndicator: {
+    flexDirection: "column",
     justifyContent: "center",
-    alignSelf: "center",
-    textAlignVertical: "center",
-    transform: [
-      { rotate: "90deg" },
-      {
-        translateX: 25,
-      },
-    ],
+    alignItems: "center",
+    width: 150,
+    height: height - 350,
+  },
+  indicatorStart: {
+    justifyContent: "flex-end",
+    alignItems: "center",
+    marginTop: 50,
+    width: 48,
+    height: 48,
+  },
+  indicatorEnd: {
+    justifyContent: "flex-end",
+    marginBottom: -20,
+    marginTop: 10,
+    height: 200,
+  },
+  verticalTextContainer: {
+    width: height - 350,
+    height: 32,
+    justifyContent: "center",
+    alignItems: "center",
+    transform: [{ rotate: "90deg" }],
+    position: "absolute",
+  },
+  verticalText: {
+    fontSize: 16,
+    textAlign: "center",
+    width: "100%",
     shadowColor: "darkgray",
     shadowOffset: {
       width: -2,
@@ -227,19 +202,34 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.7,
     shadowRadius: 3,
   },
-  iconLock: {
-    marginLeft: 15,
-    marginBottom: 1,
+  barbellTextContainer: {
+    width: 200, // Increased width to accommodate the text
+    height: 32,
+    justifyContent: "center",
+    alignItems: "center",
+    transform: [{ rotate: "90deg" }],
+    position: "absolute",
+    bottom: 70, // Adjust this value to position the barbell text correctly
+  },
+  barbellContent: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+  },
+  barbellText: {
+    textAlign: "center",
+    fontSize: 16,
+  },
+  icon: {
+    alignSelf: "center",
+  },
+  label: {
+    textAlign: "center",
   },
   dimmed: {
     opacity: 0,
   },
-  row: {
-    transform: [{ rotate: "90deg" }],
-    position: "relative",
-    top: 0,
-    right: 0,
-    height: 32,
-    overflow: "hidden",
-  },
 });
+
+export default ThemedRoundButton;

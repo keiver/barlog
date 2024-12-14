@@ -34,8 +34,6 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
-	<key>EXDefaultScreenOrientationMask</key>
-	<string>UIInterfaceOrientationMaskAllButUpsideDown</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>12.0</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -55,12 +53,6 @@
 	</array>
 	<key>RCTRootViewBackgroundColor</key>
 	<integer>4281084974</integer>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>remote-notification</string>
-		<string>fetch</string>
-		<string>processing</string>
-	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>SplashScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>

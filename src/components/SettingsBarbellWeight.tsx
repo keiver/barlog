@@ -23,7 +23,7 @@ const SettingsBarbellWeight: React.FC<SettingsBarbellWeightProps> = ({ barbellId
   const isDark = useColorScheme() === "dark";
   const [isModalVisible, setModalVisible] = React.useState(false);
   const client = localStorage.getInstance();
-  const backgroundColor = colorScheme === "dark" ? "rgba(0,0,0,.5)" : "rgba(255,255,255,.5)";
+  const backgroundColor = colorScheme === "dark" ? "rgba(0,0,0,.9)" : "rgba(255,255,255,.9)";
   const closeIconColor = colorScheme === "dark" ? "#fff" : "#000";
 
   const sizes = React.useMemo(() => {
@@ -64,8 +64,8 @@ const SettingsBarbellWeight: React.FC<SettingsBarbellWeightProps> = ({ barbellId
         >
           <View style={styles.iconContainer}>
             <ThemedText
-              lightColor={isSelected ? tintColorLight : "#00"}
-              darkColor={isSelected ? tintColorLight : "#ff"}
+              lightColor={isSelected ? tintColorLight : "#000"}
+              darkColor={isSelected ? tintColorLight : "#fff"}
               style={styles.weight}
             >
               {unit === "kg" ? barbell.kg : barbell.lbs} {unit}
@@ -73,15 +73,15 @@ const SettingsBarbellWeight: React.FC<SettingsBarbellWeightProps> = ({ barbellId
             <Ionicons
               name="barbell-sharp"
               size={(barbell?.kg || 0) * 2.2}
-              color={isSelected ? tintColorLight : "#00"}
+              color={isSelected ? tintColorLight : "#000"}
             />
           </View>
           <View style={styles.textContainer}>
             {barbell.label && (
               <ThemedText
                 type="title"
-                lightColor={isSelected ? tintColorLight : "#00"}
-                darkColor={isSelected ? tintColorLight : "#ff"}
+                lightColor={isSelected ? tintColorLight : "#000"}
+                darkColor={isSelected ? tintColorLight : "#fff"}
                 style={styles.label}
               >
                 {barbell.label}
@@ -89,8 +89,8 @@ const SettingsBarbellWeight: React.FC<SettingsBarbellWeightProps> = ({ barbellId
             )}
             {barbell.description && (
               <ThemedText
-                lightColor={isSelected ? tintColorLight : "#00"}
-                darkColor={isSelected ? tintColorLight : "#ff"}
+                lightColor={isSelected ? tintColorLight : "#000"}
+                darkColor={isSelected ? tintColorLight : "#fff"}
                 style={styles.description}
               >
                 {barbell.description}
@@ -197,6 +197,7 @@ const styles = StyleSheet.create({
     elevation: 2,
     alignItems: "center",
     marginBottom: 10,
+    marginHorizontal: 10,
   },
   selectedCard: {
     backgroundColor: Colors.light.maximumTrackTintColor,

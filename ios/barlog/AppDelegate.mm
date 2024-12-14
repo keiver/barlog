@@ -15,9 +15,10 @@
   self.moduleName = @"main";
   self.initialProps = @{};
 
-  // Initialize Watch Connectivity on main thread
+  // Initialize Watch Connectivity on main thread only for iPhone
   dispatch_async(dispatch_get_main_queue(), ^{
-    if ([WCSession isSupported]) {
+    // Check if device is iPhone before attempting WCSession
+    if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone && [WCSession isSupported]) {
       RCTLogInfo(@"Phone: WCSession is supported, initializing...");
       self.watchSession = [WCSession defaultSession];
       self.watchSession.delegate = self;
@@ -25,7 +26,7 @@
       RCTLogInfo(@"Phone: WCSession activation requested. Current state: %ld", (long)self.watchSession.activationState);
       RCTLogInfo(@"Phone: Initial reachability: %d", self.watchSession.isReachable);
     } else {
-      RCTLogError(@"Phone: WCSession is not supported on this device");
+      RCTLogInfo(@"Device does not support WatchConnectivity - skipping initialization");
     }
   });
 

@@ -4,7 +4,6 @@
     "slug": "barlog",
     "description": "Easy preview of barbell plate set",
     "version": "1.4.0",
-    "orientation": "default",
     "icon": "./assets/icon.png",
     "scheme": "barlog",
     "userInterfaceStyle": "automatic",
@@ -31,15 +30,7 @@
       "output": "static",
       "favicon": "./assets/appstore.png"
     },
-    "plugins": [
-      "expo-router",
-      [
-        "expo-screen-orientation",
-        {
-          "initialOrientation": "DEFAULT"
-        }
-      ]
-    ],
+    "plugins": ["expo-router"],
     "experiments": {
       "typedRoutes": true
     },

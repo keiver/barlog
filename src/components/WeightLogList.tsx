@@ -1,5 +1,5 @@
 import React from "react";
-import { FlatList, View, StyleSheet, TouchableOpacity, ListRenderItem } from "react-native";
+import { FlatList, View, StyleSheet, TouchableOpacity, ListRenderItem, useColorScheme } from "react-native";
 import { ThemedText } from "@/src/components/ThemedText";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, { useAnimatedStyle, withTiming, useSharedValue } from "react-native-reanimated";
@@ -24,7 +24,7 @@ const LogItem: React.FC<{
   const opacity = useSharedValue(1);
   const height = useSharedValue(88); // Approximate initial height
   const [isDeleting, setIsDeleting] = React.useState(false);
-
+  const theme = useColorScheme();
   const handleDelete = React.useCallback(async () => {
     if (isDeleting) return;
 
@@ -68,7 +68,8 @@ const LogItem: React.FC<{
               type="defaultSemiBold"
               style={styles.weightText}
             >
-              {w} {log.unit}
+              {w}
+              {log.unit}
               <ThemedText
                 type="small"
                 style={styles.barbellText}
@@ -103,7 +104,7 @@ const LogItem: React.FC<{
           <Ionicons
             name="trash-outline"
             size={20}
-            color="#000"
+            color={theme === "dark" ? "white" : "black"}
           />
         </TouchableOpacity>
       </TouchableOpacity>
@@ -161,7 +162,7 @@ const WeightLogList: React.FC<WeightLogListProps> = ({ onItemTapped }) => {
       return "Unknown barbell";
     }
 
-    return log.unit === "lb" ? `${bData.lbs} lb` : `${bData.kg} kg`;
+    return log.unit === "lb" ? `${bData.lbs}lb` : `${bData.kg}kg`;
   }, []);
 
   const renderItem: ListRenderItem<WeightLog> = React.useCallback(
@@ -236,7 +237,7 @@ const styles = StyleSheet.create({
   },
   mainContent: {
     flex: 1,
-    padding: 12,
+    padding: 24,
   },
   logHeader: {
     marginBottom: 4,
@@ -252,6 +253,7 @@ const styles = StyleSheet.create({
   },
   barbellText: {
     opacity: 0.7,
+    transform: [{ translateY: 15 }],
   },
   timeText: {
     position: "absolute",
@@ -270,7 +272,7 @@ const styles = StyleSheet.create({
     fontWeight: "400",
   },
   deleteButton: {
-    width: 50,
+    width: 70,
     height: "100%",
     backgroundColor: "rgba(255, 0, 0, 0.3)",
     justifyContent: "center",
@@ -282,7 +284,7 @@ const styles = StyleSheet.create({
     paddingBottom: 56,
   },
   separator: {
-    height: 12,
+    height: 28,
   },
   emptyContainer: {
     flex: 1,

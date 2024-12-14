@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   small: {
-    fontSize: 8,
+    fontSize: 12,
   },
   label: {
     lineHeight: 40,

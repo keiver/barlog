@@ -142,12 +142,6 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
                 showIndicator={true}
                 width={width}
                 height={height}
-                // containerStyle={{
-                //   zIndex: 999,
-                //   elevation: 999,
-                //   position: "relative",
-                //   overflow: "visible",
-                // }}
                 borderRadius={0}
                 maximumTrackTintColor={maximumTrackTintColor}
                 minimumTrackTintColor={minimumTrackTintColor}
@@ -211,8 +205,8 @@ const styles = StyleSheet.create({
     // width: 50,
     transform: [{ translateX: -3 }],
     textAlign: "center",
-    zIndex: 999, // Add this
-    elevation: 999, // Add this for Android
+    zIndex: 999,
+    elevation: 999,
   },
   contentBox: {
     position: "absolute",
@@ -229,7 +223,7 @@ const styles = StyleSheet.create({
     height: 45,
     width: Dimensions.get("window").width,
     backgroundColor: "transparent",
-    zIndex: 999,
-    elevation: 999,
+    zIndex: 2,
+    elevation: 2,
   },
 });

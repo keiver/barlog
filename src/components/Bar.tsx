@@ -142,6 +142,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
     bottom: 0,
+    zIndex: 0,
   },
   plateContainer: {
     alignItems: "center",

@@ -1,7 +1,5 @@
-import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import React from "react";
 import { AccessibilityInfo, Dimensions, StyleSheet, useColorScheme, useWindowDimensions, View } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Animated, { ReduceMotion } from "react-native-reanimated";
 import RnVerticalSlider, { RNVSliderRef } from "rn-vertical-slider";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -9,7 +7,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Colors, tintColorDark, tintColorLight } from "@/src/constants/Colors";
 import { useThemeColor } from "@/src/hooks/useThemeColor";
 import { ThemedView } from "./ThemedView";
-import { ThemedText } from "./ThemedText";
 
 export type SliderProps = {
   onValueChanged: (value: number) => void;
@@ -29,18 +26,15 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
     const insets = useSafeAreaInsets();
 
     React.useEffect(() => {
-      // Check if the user has enabled "Reduce Motion"
       AccessibilityInfo.isReduceMotionEnabled().then((isEnabled) => {
         setReduceMotionEnabled(isEnabled);
       });
 
-      // Listen for changes in the "Reduce Motion" setting
       const subscription = AccessibilityInfo.addEventListener("reduceMotionChanged", (isEnabled) => {
         setReduceMotionEnabled(isEnabled);
       });
 
       return () => {
-        // Clean up the subscription when the component unmounts
         subscription?.remove();
       };
     }, []);
@@ -95,70 +89,49 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
           <Animated.Text style={[styles.renderContainerText, { color: getColor() }]}>
             {convert(value)} {unit}
           </Animated.Text>
-          {/* <ThemedText
-            type="title"
-            style={[styles.renderContainerText, { color: getColor() }]}
-          >
-            {convert(value)}
-          </ThemedText> */}
         </View>
       );
     };
 
     return (
-      <GestureHandlerRootView style={styles.flexOne}>
-        <View
-          style={{
-            position: "relative", // Parent container
-            backgroundColor: "#2C2C2E",
-          }}
-        >
-          <View
-            style={{
-              position: "absolute",
-              zIndex: 1,
-              elevation: 1,
-              overflow: "visible",
+      <View style={styles.flexOne}>
+        <View style={styles.container}>
+          <RnVerticalSlider
+            key={key}
+            ref={sliderRef}
+            value={value}
+            disabled={false}
+            min={0}
+            max={800}
+            step={1}
+            animationConfig={{
+              duration: 1000,
+              dampingRatio: 0.4,
+              stiffness: 100,
+              reduceMotion: reduceMotionEnabled ? ReduceMotion.Never : ReduceMotion.System,
+              velocity: 3.5,
             }}
-          >
-            <View style={styles.container}>
-              <RnVerticalSlider
-                key={key}
-                ref={sliderRef}
-                value={value}
-                disabled={false}
-                min={0}
-                max={800}
-                step={1}
-                animationConfig={{
-                  duration: 1000,
-                  dampingRatio: 0.4,
-                  stiffness: 100,
-                  reduceMotion: reduceMotionEnabled ? ReduceMotion.Never : ReduceMotion.System,
-                  velocity: 3.5,
-                }}
-                onChange={onChangeValue}
-                onComplete={onComplete}
-                showIndicator={true}
-                width={width}
-                height={height}
-                borderRadius={0}
-                maximumTrackTintColor={maximumTrackTintColor}
-                minimumTrackTintColor={minimumTrackTintColor}
-                renderIndicator={renderIcon}
-              />
-              <ThemedView
-                style={[
-                  styles.safeArea,
-                  {
-                    height: insets.bottom,
-                  },
-                ]}
-              />
-            </View>
-          </View>
+            onChange={onChangeValue}
+            onComplete={onComplete}
+            showIndicator={true}
+            width={width}
+            height={height}
+            borderRadius={0}
+            maximumTrackTintColor={maximumTrackTintColor}
+            minimumTrackTintColor={minimumTrackTintColor}
+            renderIndicator={renderIcon}
+          />
+          <ThemedView
+            style={[
+              styles.safeArea,
+              {
+                height: insets.bottom,
+                backgroundColor: getColor(),
+              },
+            ]}
+          />
         </View>
-      </GestureHandlerRootView>
+      </View>
     );
   }
 );
@@ -171,9 +144,11 @@ const styles = StyleSheet.create({
     position: "absolute",
     zIndex: 0,
     elevation: 0,
+    bottom: 0,
+    backgroundColor: "#2C2C2E",
   },
   container: {
-    position: "absolute",
+    position: "relative",
     display: "flex",
     alignItems: "flex-start",
     justifyContent: "center",
@@ -190,7 +165,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     justifyContent: "center",
     left: 35,
-    position: "absolute",
+    position: "relative",
     // height: 100,
     width: Dimensions.get("window").width - 20,
     zIndex: 2,
@@ -205,11 +180,11 @@ const styles = StyleSheet.create({
     // width: 50,
     transform: [{ translateX: -3 }],
     textAlign: "center",
-    zIndex: 999,
-    elevation: 999,
+    // zIndex: 999,
+    // elevation: 999,
   },
   contentBox: {
-    position: "absolute",
+    position: "relative",
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-end",
@@ -218,11 +193,10 @@ const styles = StyleSheet.create({
     paddingBottom: 44,
   },
   safeArea: {
-    position: "absolute",
+    position: "relative",
     bottom: 0,
     height: 45,
     width: Dimensions.get("window").width,
-    backgroundColor: "transparent",
     zIndex: 2,
     elevation: 2,
   },

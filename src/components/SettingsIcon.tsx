@@ -7,6 +7,7 @@ import { convert } from "@/src/libs/helpers";
 import barbellWeights from "@/src/constants/barbells";
 import { tintColorDark } from "../constants/Colors";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export type ThemedButtonProps = {
   onPress: () => void;
@@ -38,6 +39,7 @@ export function ThemedRoundButton({
   const colorScheme = useColorScheme();
   const backgroundColor = colorScheme !== "dark" ? "rgba(0, 0, 0, 0.9)" : "rgba(0, 0, 0, 0.9)";
   const iconOpacity = colorScheme === "dark" ? 0.7 : 1;
+  const insets = useSafeAreaInsets();
 
   const getBarbellWeightByUnit = React.useCallback(() => {
     const bar = barbellWeights?.find((b) => b.id === barbellId);
@@ -46,7 +48,17 @@ export function ThemedRoundButton({
   }, [barbellId, unit]);
 
   return (
-    <TouchableOpacity style={[styles.container, style, dimmed && styles.dimmed]}>
+    <TouchableOpacity
+      style={[
+        styles.container,
+        style,
+        dimmed && styles.dimmed,
+        {
+          height: "100%",
+          minHeight: Dimensions.get("window").height,
+        },
+      ]}
+    >
       <BlurView
         intensity={30}
         tint="light"
@@ -151,12 +163,14 @@ const styles = StyleSheet.create({
     paddingLeft: 0,
     borderRadius: 0,
     backgroundColor: "transparent",
+    zIndex: 99220,
+    elevation: 99220,
   },
   modalView: {
     paddingLeft: 2,
     borderRadius: 0,
     overflow: "hidden",
-    height: Dimensions.get("window").height,
+    height: "100%",
     width: 48,
     flexDirection: "column",
     justifyContent: "center",

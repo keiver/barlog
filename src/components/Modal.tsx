@@ -92,7 +92,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
     <Modal
       visible={isVisible}
       transparent={true}
-      animationType="none"
+      animationType="fade"
       onRequestClose={onClose}
       supportedOrientations={["portrait"]}
     >
@@ -147,13 +147,20 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    position: "absolute",
+    zIndex: 1921,
+    elevation: 1921,
   },
   overlay: {
-    ...StyleSheet.absoluteFillObject,
+    height,
     paddingTop: height / 2 - 225,
+    zIndex: 1921,
+    elevation: 1921,
+    backgroundColor: "rgba(0,0,0,.5)",
   },
   modalContainer: {
-    width: "90%",
+    width: Dimensions.get("window").width - 40,
+    marginHorizontal: 20,
     height: Math.min(height * 0.75, 490),
     borderRadius: 20,
     overflow: "hidden",
@@ -164,9 +171,6 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
         shadowRadius: 4,
-      },
-      android: {
-        elevation: 5,
       },
     }),
   },
@@ -193,8 +197,8 @@ const styles = StyleSheet.create({
     padding: 5,
     marginTop: 15,
     marginRight: -5,
-    zIndex: 921,
-    elevation: 921,
+    zIndex: 1921,
+    elevation: 1921,
   },
   description: {
     marginBottom: 15,

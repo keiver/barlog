@@ -26,7 +26,6 @@ const LogItem: React.FC<{
   const opacity = useSharedValue(1);
   const height = useSharedValue(88); // Approximate initial height
   const [isDeleting, setIsDeleting] = React.useState(false);
-  const theme = useColorScheme();
   const handleDelete = React.useCallback(async () => {
     if (isDeleting) return;
 
@@ -94,8 +93,6 @@ const LogItem: React.FC<{
               {w} {log.unit}
             </ThemedText>
             {bar()}
-            {/* <ThemedText type="small"> {new Date(log.timestamp).toLocaleString()}</ThemedText> */}
-            {/* <View style={styles.barbellInfo}></View> */}
           </View>
           <ThemedText
             numberOfLines={1}

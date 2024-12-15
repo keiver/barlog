@@ -1,17 +1,19 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
-  Modal,
   View,
-  StyleSheet,
-  TouchableOpacity,
-  Dimensions,
   TouchableWithoutFeedback,
-  AccessibilityInfo,
+  StyleSheet,
   Platform,
+  AccessibilityInfo,
+  BackHandler,
+  Modal,
+  Dimensions,
+  TouchableOpacity,
 } from "react-native";
-import { ThemedText } from "./ThemedText";
+import Animated, { useAnimatedStyle, withTiming, useSharedValue } from "react-native-reanimated";
 import { BlurView } from "expo-blur";
 import { TabBarIcon } from "./navigation/TabBarIcon";
+import { ThemedText } from "./ThemedText";
 import { useColorScheme } from "react-native";
 
 interface CustomModalProps {
@@ -23,8 +25,9 @@ interface CustomModalProps {
   onButtonPress?: () => void;
   description?: string;
   version?: boolean;
-  animationType?: "slide" | "fade";
 }
+
+const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
 
 const CustomModal: React.FC<CustomModalProps> = ({
   isVisible,
@@ -34,120 +37,170 @@ const CustomModal: React.FC<CustomModalProps> = ({
   children,
   onButtonPress,
   description,
-  animationType = "slide",
 }) => {
   const colorScheme = useColorScheme();
   const versionFile = require("../../app.json");
-  const backgroundColor = colorScheme === "dark" ? "rgba(0,0,0,.9)" : "rgba(255,255,255,.9)";
-  const closeIconColor = colorScheme === "dark" ? "#fff" : "#000";
-  const c = version ? `v${versionFile.expo.version}` || "0.0.0" : "";
-  const [reduceMotionEnabled, setReduceMotionEnabled] = React.useState(false);
+  const [reduceMotionEnabled, setReduceMotionEnabled] = useState(false);
+  const opacity = useSharedValue(0);
+  const scale = useSharedValue(0.95);
 
-  React.useEffect(() => {
-    AccessibilityInfo.isReduceMotionEnabled().then((isEnabled) => {
-      setReduceMotionEnabled(isEnabled);
-    });
+  useEffect(() => {
+    if (Platform.OS === "android") {
+      const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
+        if (isVisible) {
+          onClose();
+          return true;
+        }
+        return false;
+      });
+      return () => backHandler.remove();
+    }
+  }, [isVisible, onClose]);
 
-    const subscription = AccessibilityInfo.addEventListener("reduceMotionChanged", (isEnabled) => {
-      setReduceMotionEnabled(isEnabled);
-    });
-
+  useEffect(() => {
+    AccessibilityInfo.isReduceMotionEnabled().then(setReduceMotionEnabled);
+    const subscription = AccessibilityInfo.addEventListener("reduceMotionChanged", setReduceMotionEnabled);
     return () => {
       subscription?.remove();
     };
   }, []);
 
+  useEffect(() => {
+    if (isVisible) {
+      opacity.value = withTiming(1, { duration: reduceMotionEnabled ? 0 : 200 });
+      scale.value = withTiming(1, { duration: reduceMotionEnabled ? 0 : 300 });
+    } else {
+      opacity.value = withTiming(0, { duration: reduceMotionEnabled ? 0 : 200 });
+      scale.value = withTiming(0.95, { duration: reduceMotionEnabled ? 0 : 200 });
+    }
+  }, [isVisible, reduceMotionEnabled]);
+
+  const overlayStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+  }));
+
+  const contentStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+    opacity: opacity.value,
+  }));
+
+  const backgroundColor = colorScheme === "dark" ? "rgba(0,0,0,.9)" : "rgba(255,255,255,.9)";
+  const closeIconColor = colorScheme === "dark" ? "#fff" : "#000";
+  const version_string = version ? `v${versionFile.expo.version}` || "0.0.0" : "";
+
   return (
     <Modal
-      animationType={reduceMotionEnabled ? "none" : animationType}
-      hardwareAccelerated={true}
-      statusBarTranslucent={true}
-      transparent={true}
       visible={isVisible}
+      transparent={true}
+      animationType="none"
       onRequestClose={onClose}
+      supportedOrientations={["portrait"]}
     >
-      <TouchableWithoutFeedback onPress={onClose}>
-        <View style={styles.centeredView}>
-          <BlurView
-            intensity={99}
-            tint={colorScheme === "dark" ? "dark" : "light"}
-            experimentalBlurMethod={Platform.OS === "android" ? "dimezisBlurView" : undefined}
-            style={[styles.modalView, { backgroundColor }]}
-          >
-            <ThemedText style={styles.modalTitle}>
-              {title}
-              <ThemedText type="small"> {c}</ThemedText>
-            </ThemedText>
+      <View style={styles.centeredView}>
+        <Animated.View style={[styles.overlay, overlayStyle]}>
+          <TouchableWithoutFeedback onPress={onClose}>
+            <View style={StyleSheet.absoluteFillObject} />
+          </TouchableWithoutFeedback>
 
-            <TouchableOpacity
-              style={styles.modalCloseIcon}
-              onPress={onButtonPress || onClose}
-              hitSlop={50}
+          <Animated.View style={[styles.modalContainer, contentStyle]}>
+            <AnimatedBlurView
+              intensity={99}
+              experimentalBlurMethod={Platform.OS === "android" ? "dimezisBlurView" : undefined}
+              style={[styles.blurContainer, { backgroundColor }]}
             >
-              <TabBarIcon
-                name="close"
-                color={closeIconColor}
-              />
-            </TouchableOpacity>
-            {description && <ThemedText>{description}</ThemedText>}
-            <View style={styles.modalContent}>{children}</View>
-          </BlurView>
-        </View>
-      </TouchableWithoutFeedback>
+              <View style={styles.header}>
+                <ThemedText style={styles.title}>
+                  {title}
+                  <ThemedText type="small"> {version_string}</ThemedText>
+                </ThemedText>
+
+                <TouchableOpacity
+                  onPress={onClose}
+                  style={styles.closeButton}
+                  hitSlop={{ top: 50, bottom: 50, left: 50, right: 50 }}
+                  accessible={true}
+                  accessibilityLabel="Close modal"
+                  accessibilityRole="button"
+                >
+                  <TabBarIcon
+                    name="close"
+                    color={closeIconColor}
+                  />
+                </TouchableOpacity>
+              </View>
+
+              {description && <ThemedText style={styles.description}>{description}</ThemedText>}
+
+              <View style={styles.content}>{children}</View>
+            </AnimatedBlurView>
+          </Animated.View>
+        </Animated.View>
+      </View>
     </Modal>
   );
 };
 
-const { height, width } = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   centeredView: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.3)",
   },
-  modalView: {
-    position: "relative",
-    padding: 25,
-    paddingTop: 14,
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    paddingTop: height / 2 - 225,
+  },
+  modalContainer: {
+    width: "90%",
+    height: Math.min(height * 0.75, 490),
     borderRadius: 20,
     overflow: "hidden",
-    height: height * 0.75 < 480 ? height * 0.75 : 480,
-    width: width * 0.9,
-    backgroundColor: "transparent",
+    alignSelf: "center",
     ...Platform.select({
-      android: {
-        elevation: 24,
-      },
       ios: {
         shadowColor: "#000",
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
+        shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.25,
         shadowRadius: 4,
       },
+      android: {
+        elevation: 5,
+      },
     }),
   },
-  modalTitle: {
+  blurContainer: {
+    flex: 1,
+    padding: 25,
+    paddingTop: 14,
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    marginBottom: 15,
+  },
+  title: {
     paddingTop: 10,
     marginTop: 5,
-    marginBottom: 15,
-    textAlign: "left",
-    fontWeight: "400",
     fontSize: 24,
+    fontWeight: "400",
+    flex: 1,
+    marginRight: 40,
   },
-  modalCloseIcon: {
-    position: "absolute",
-    top: 22,
-    right: 28,
-    paddingTop: 5,
-    zIndex: 1,
+  closeButton: {
+    padding: 5,
+    marginTop: 15,
+    marginRight: -5,
+    zIndex: 921,
+    elevation: 921,
   },
-  modalContent: {
-    marginBottom: 20,
+  description: {
+    marginBottom: 15,
+  },
+  content: {
+    flex: 1,
   },
 });
 

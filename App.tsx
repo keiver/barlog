@@ -284,12 +284,8 @@ export default function RootLayout() {
                 buttonLabel="Close"
                 version={false}
               >
-                <View style={{ flex: 1, minHeight: "100%", paddingTop: 15 }}>
-                  <WeightLogList onItemTapped={onItemTapped} />
-                </View>
+                <WeightLogList onItemTapped={onItemTapped} />
               </CustomModal>
-
-              {/* <SlideCoachMark hidden={userScrolledOver} /> */}
             </ThemedView>
             <VerticalRuler
               unit={unit}
@@ -318,14 +314,5 @@ const styles = StyleSheet.create({
   },
   barbellLabel: {
     marginTop: 10,
-  },
-  watchIndicator: {
-    position: "absolute",
-    top: 10,
-    right: 10,
-    padding: 8,
-    backgroundColor: "rgba(0,0,0,0.5)",
-    borderRadius: 8,
-    zIndex: 1000,
   },
 });

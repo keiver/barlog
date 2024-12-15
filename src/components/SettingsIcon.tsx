@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
   },
   indicatorEnd: {
     justifyContent: "flex-end",
-    marginBottom: -20,
+    marginBottom: -10,
     marginTop: 10,
     height: 200,
   },
@@ -216,6 +216,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 10,
+    marginRight: height * 0.1,
   },
   barbellText: {
     textAlign: "center",

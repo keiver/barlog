@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { FlatList, View, StyleSheet, TouchableOpacity, ListRenderItem, useColorScheme } from "react-native";
 import { ThemedText } from "@/src/components/ThemedText";
 import { Ionicons } from "@expo/vector-icons";
@@ -6,6 +6,8 @@ import Animated, { useAnimatedStyle, withTiming, useSharedValue } from "react-na
 import LogManager from "../libs/LogManager";
 import barbellWeights from "../constants/barbells";
 import { KG_TO_LB } from "../libs/helpers";
+import { TabBarIcon } from "./navigation/TabBarIcon";
+import { Colors, tintColorDark } from "../constants/Colors";
 
 interface BarbellWeight {
   id: string;
@@ -55,6 +57,24 @@ const LogItem: React.FC<{
     return `${log.weight}`;
   }, [log]);
 
+  const bar = React.useCallback(() => {
+    return (
+      <View style={styles.barbellInfo}>
+        <ThemedText
+          type="small"
+          style={styles.barbellText}
+        >
+          {getBarbellWeight(log)}
+        </ThemedText>
+
+        <TabBarIcon
+          name="barbell-outline"
+          size={18}
+        />
+      </View>
+    );
+  }, [getBarbellWeight, log]);
+
   return (
     <AnimatedView style={[styles.itemContainer, animatedStyle]}>
       <TouchableOpacity
@@ -66,30 +86,22 @@ const LogItem: React.FC<{
           <View style={styles.logHeader}>
             <ThemedText
               type="defaultSemiBold"
+              lightColor={tintColorDark}
+              darkColor={tintColorDark}
+              shadowColor="black"
               style={styles.weightText}
             >
-              {w}
-              {log.unit}
-              <ThemedText
-                type="small"
-                style={styles.barbellText}
-              >
-                {" "}
-                ({getBarbellWeight(log)} Barbell)
-              </ThemedText>
+              {w} {log.unit}
             </ThemedText>
-
-            <ThemedText
-              type="small"
-              style={styles.timeText}
-            >
-              {" "}
-              {new Date(log.timestamp).toLocaleString()}
-            </ThemedText>
-            <View style={styles.barbellInfo}></View>
+            {bar()}
+            {/* <ThemedText type="small"> {new Date(log.timestamp).toLocaleString()}</ThemedText> */}
+            {/* <View style={styles.barbellInfo}></View> */}
           </View>
           <ThemedText
             numberOfLines={1}
+            lightColor={"#00FF00"}
+            darkColor={"#00FF00"}
+            shadowColor="black"
             style={styles.plateDescription}
           >
             {log.plateDescription}
@@ -104,7 +116,7 @@ const LogItem: React.FC<{
           <Ionicons
             name="trash-outline"
             size={20}
-            color={theme === "dark" ? "white" : "black"}
+            color={"white"}
           />
         </TouchableOpacity>
       </TouchableOpacity>
@@ -162,7 +174,7 @@ const WeightLogList: React.FC<WeightLogListProps> = ({ onItemTapped }) => {
       return "Unknown barbell";
     }
 
-    return log.unit === "lb" ? `${bData.lbs}lb` : `${bData.kg}kg`;
+    return log.unit === "lb" ? `${bData.lbs} lb` : `${bData.kg} kg`;
   }, []);
 
   const renderItem: ListRenderItem<WeightLog> = React.useCallback(
@@ -231,29 +243,25 @@ const styles = StyleSheet.create({
   logItem: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.2)",
-    borderRadius: 16,
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    borderRadius: 18,
     overflow: "hidden",
   },
   mainContent: {
     flex: 1,
-    padding: 24,
+    padding: 14,
   },
   logHeader: {
     marginBottom: 4,
   },
   weightText: {
-    fontSize: 18,
+    fontSize: 26,
     marginBottom: 2,
-  },
-  barbellInfo: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    position: "relative",
+    padding: 5,
   },
   barbellText: {
     opacity: 0.7,
-    transform: [{ translateY: 15 }],
   },
   timeText: {
     position: "absolute",
@@ -284,7 +292,7 @@ const styles = StyleSheet.create({
     paddingBottom: 56,
   },
   separator: {
-    height: 28,
+    height: 18,
   },
   emptyContainer: {
     flex: 1,
@@ -300,6 +308,19 @@ const styles = StyleSheet.create({
     padding: 8,
     backgroundColor: "rgba(0, 0, 0, 0.1)",
     borderRadius: 8,
+  },
+  barbellInfo: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: 90,
+    height: 30,
+    paddingVertical: 4,
+    paddingHorizontal: 14,
+    borderRadius: 18,
+    backgroundColor: "rgba(255, 255, 255, 0.5)",
+    position: "absolute",
+    right: 0,
   },
 });
 

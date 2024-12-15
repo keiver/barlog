@@ -23,8 +23,7 @@ const SettingsBarbellWeight: React.FC<SettingsBarbellWeightProps> = ({ barbellId
   const isDark = useColorScheme() === "dark";
   const [isModalVisible, setModalVisible] = React.useState(false);
   const client = localStorage.getInstance();
-  const backgroundColor = colorScheme === "dark" ? "rgba(0,0,0,.9)" : "rgba(255,255,255,.9)";
-  const closeIconColor = colorScheme === "dark" ? "#fff" : "#000";
+  const bg = colorScheme === "dark" ? "rgba(255,255,255,.1)" : "rgba(0,0,0,.2)";
 
   const sizes = React.useMemo(() => {
     return barbellWeights?.map((b) => {
@@ -60,7 +59,13 @@ const SettingsBarbellWeight: React.FC<SettingsBarbellWeightProps> = ({ barbellId
         <TouchableOpacity
           key={id}
           onPress={() => handleSelect(id)}
-          style={[styles.optionCard, isSelected && styles.selectedCard]}
+          style={[
+            styles.optionCard,
+            isSelected && styles.selectedCard,
+            {
+              backgroundColor: isSelected ? "rgba(0,0,0,.8)" : bg,
+            },
+          ]}
         >
           <View style={styles.iconContainer}>
             <ThemedText
@@ -73,7 +78,7 @@ const SettingsBarbellWeight: React.FC<SettingsBarbellWeightProps> = ({ barbellId
             <Ionicons
               name="barbell-sharp"
               size={(barbell?.kg || 0) * 2.2}
-              color={isSelected ? tintColorLight : "#000"}
+              color={isSelected ? tintColorLight : isDark ? "rgba(255,2555,255,.2)" : "rgba(0,0,0,.9)"}
             />
           </View>
           <View style={styles.textContainer}>
@@ -164,7 +169,6 @@ const SettingsBarbellWeight: React.FC<SettingsBarbellWeightProps> = ({ barbellId
         title="Select Barbell"
         isVisible={isModalVisible}
         version={false}
-        animationType="fade"
         onClose={() => setModalVisible(false)}
       >
         <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
@@ -179,25 +183,24 @@ const SettingsBarbellWeight: React.FC<SettingsBarbellWeightProps> = ({ barbellId
   );
 };
 
-const { width, height } = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
   optionCard: {
     flexDirection: "row",
-    backgroundColor: "#fff",
     borderRadius: 26,
     padding: 16,
-    shadowColor: "#00",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 1,
     },
     shadowOpacity: 0.05,
     shadowRadius: 2,
-    elevation: 2,
+    elevation: 0,
     alignItems: "center",
     marginBottom: 10,
-    marginHorizontal: 10,
+    marginHorizontal: 0,
   },
   selectedCard: {
     backgroundColor: Colors.light.maximumTrackTintColor,

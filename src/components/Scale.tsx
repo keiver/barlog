@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     borderRightWidth: 0,
     zIndex: 1,
-    elevation: 1,
+    elevation: 0,
   },
   markContainer: {
     position: "absolute",

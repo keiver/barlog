@@ -38,7 +38,11 @@ export function ThemedText({
 
         style,
         shadowColor
-          ? { textShadowColor: shadowColor, textShadowOffset: { width: -2, height: 4 }, textShadowRadius: 6 }
+          ? {
+              textShadowColor: shadowColor,
+              textShadowOffset: { width: -0, height: 1 },
+              textShadowRadius: 6,
+            }
           : undefined,
       ]}
       {...rest}

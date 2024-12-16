@@ -36,16 +36,6 @@ if (!__DEV__ || true) {
   });
 }
 
-const initialPlateSet: PlateSet = {
-  "45": 0,
-  "35": 0,
-  "25": 0,
-  "15": 0,
-  "10": 0,
-  "5": 0,
-  "2.5": 0,
-};
-
 const initialBarbellId = "1"; // 20kg/45lb Olympic bar
 
 export default function RootLayout() {
@@ -55,7 +45,7 @@ export default function RootLayout() {
   });
 
   const colorScheme = useColorScheme();
-  const [lastCallTime, setLastCallTime] = React.useState<number | null>(null);
+  const lastCallTimeRef = React.useRef<number | null>(null);
   const [barbellId, setBarbellId] = React.useState<string>(initialBarbellId);
   const [unit, setUnit] = React.useState<Unit>("lb");
   const { plates, loadPlates } = usePlateset();
@@ -63,7 +53,6 @@ export default function RootLayout() {
   const [modalVisible, setModalVisible] = React.useState(false);
   const [barbellCollapsed, setBarbellCollapsed] = React.useState(false);
   const [weight, setWeight] = React.useState(0);
-  const [userScrolledOver, setUserScrolledOver] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
   const [logId, setLogId] = React.useState<string | null>(null);
   const [barKey, setBarKey] = React.useState(0);
@@ -94,18 +83,15 @@ export default function RootLayout() {
     initializeApp();
   }, []);
 
-  const throttle = useCallback(
-    (func: (value: number) => void, limit: number) => {
-      return (value: number) => {
-        const now = Date.now();
-        if (!lastCallTime || now - lastCallTime >= limit) {
-          setLastCallTime(now);
-          func(value);
-        }
-      };
-    },
-    [lastCallTime]
-  );
+  const throttle = useCallback((func: (value: number) => void, limit: number) => {
+    return (value: number) => {
+      const now = Date.now();
+      if (!lastCallTimeRef.current || now - lastCallTimeRef.current >= limit) {
+        lastCallTimeRef.current = now;
+        func(value);
+      }
+    };
+  }, []);
 
   const handleScrollValue = useCallback(
     (value: number) => {
@@ -115,11 +101,6 @@ export default function RootLayout() {
 
       loadPlates(newPlates);
       setWeight(value);
-
-      if (value > 250) {
-        setUserScrolledOver(true);
-        client.storeData(keys.SAW_COACH_MARK, "true");
-      }
     },
     [barbellId, unit, loadPlates, barbellData, logManager]
   );
@@ -222,12 +203,14 @@ export default function RootLayout() {
           <GestureHandlerRootView style={styles.flexOne}>
             <StatusBar style="light" />
             <ThemedView style={styles.container}>
-              <Slider
-                onValueChanged={onValueChanged}
-                unit={unit}
-                sliderValue={weight}
-                ref={sliderRef}
-              />
+              {modalVisible || logVisible ? null : (
+                <Slider
+                  onValueChanged={onValueChanged}
+                  unit={unit}
+                  sliderValue={weight}
+                  ref={sliderRef}
+                />
+              )}
               <ThemedRoundButton
                 onPress={() => setModalVisible(true)}
                 barbellId={barbellId}
@@ -304,6 +287,7 @@ const styles = StyleSheet.create({
     height: "100%",
     paddingTop: 0,
     backgroundColor: "#2C2C2E",
+    zIndex: 1,
   },
   container: {
     flex: 1,

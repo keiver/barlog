@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { FlatList, View, StyleSheet, TouchableOpacity, ListRenderItem, useColorScheme } from "react-native";
+import { FlatList, View, StyleSheet, TouchableOpacity, ListRenderItem } from "react-native";
 import { ThemedText } from "@/src/components/ThemedText";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, { useAnimatedStyle, withTiming, useSharedValue } from "react-native-reanimated";
@@ -7,7 +7,7 @@ import LogManager from "../libs/LogManager";
 import barbellWeights from "../constants/barbells";
 import { KG_TO_LB } from "../libs/helpers";
 import { TabBarIcon } from "./navigation/TabBarIcon";
-import { Colors, tintColorDark } from "../constants/Colors";
+import { tintColorDark } from "../constants/Colors";
 
 interface BarbellWeight {
   id: string;

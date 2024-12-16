@@ -135,14 +135,13 @@ const Barbell: React.FC<BarbellProps> = ({ platesPerSide, unit, collapsed = fals
 
 const styles = StyleSheet.create({
   container: {
-    position: "relative",
+    position: "absolute",
     flexDirection: "column-reverse",
     alignItems: "center",
     justifyContent: "flex-start",
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
     bottom: 0,
-    zIndex: 0,
   },
   plateContainer: {
     alignItems: "center",

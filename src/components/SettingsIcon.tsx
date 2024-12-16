@@ -146,8 +146,8 @@ const { height } = Dimensions.get("window");
 const styles = StyleSheet.create({
   flex: {
     flex: 1,
-    zIndex: 0,
-    elevation: 0,
+    zIndex: 1,
+    elevation: 1,
   },
   container: {
     position: "absolute",
@@ -163,8 +163,6 @@ const styles = StyleSheet.create({
     paddingLeft: 0,
     borderRadius: 0,
     backgroundColor: "transparent",
-    zIndex: 99220,
-    elevation: 99220,
   },
   modalView: {
     paddingLeft: 2,

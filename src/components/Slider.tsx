@@ -1,5 +1,14 @@
 import React from "react";
-import { AccessibilityInfo, Dimensions, StyleSheet, useColorScheme, useWindowDimensions, View } from "react-native";
+import {
+  AccessibilityInfo,
+  Dimensions,
+  Platform,
+  StyleSheet,
+  useColorScheme,
+  useWindowDimensions,
+  View,
+} from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Animated, { ReduceMotion } from "react-native-reanimated";
 import RnVerticalSlider, { RNVSliderRef } from "rn-vertical-slider";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -22,7 +31,6 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
     const [key, setKey] = React.useState(React.useId());
     const scheme = useColorScheme();
     const [reduceMotionEnabled, setReduceMotionEnabled] = React.useState(false);
-
     const insets = useSafeAreaInsets();
 
     React.useEffect(() => {
@@ -48,7 +56,6 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
       if (unit === "lb") {
         return (value: number) => `${value}`;
       }
-
       return (value: number) => `${parseInt((value * 0.453592).toFixed(0))}`;
     }, [unit]);
 
@@ -75,17 +82,21 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
     const isDark = useColorScheme() === "dark";
     const { height: windowHeight } = Dimensions.get("window");
 
+    const onTop = React.useMemo(() => {
+      return value < windowHeight - 250;
+    }, [value, windowHeight]);
+
     const getColor = React.useCallback(() => {
-      if (value < windowHeight - 250) {
+      if (onTop) {
         return isDark ? tintColorDark : tintColorLight;
       }
 
-      return !isDark ? Colors.light.shadowColor : tintColorDark;
-    }, [isDark, value, windowHeight]);
+      return isDark ? Colors.dark.shadowColor : Colors.light.shadowColor;
+    }, [isDark, value, windowHeight, onTop]);
 
     const renderIcon = () => {
       return (
-        <View style={[styles.renderContainer, value < windowHeight - 250 ? styles.onTop : {}]}>
+        <View style={[styles.renderContainer, onTop ? styles.onTop : {}]}>
           <Animated.Text style={[styles.renderContainerText, { color: getColor() }]}>
             {convert(value)} {unit}
           </Animated.Text>
@@ -94,8 +105,8 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
     };
 
     return (
-      <View style={styles.flexOne}>
-        <View style={styles.container}>
+      <GestureHandlerRootView style={styles.root}>
+        <View style={styles.wrapper}>
           <RnVerticalSlider
             key={key}
             ref={sliderRef}
@@ -117,6 +128,7 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
             width={width}
             height={height}
             borderRadius={0}
+            containerStyle={styles.sliderContainer}
             maximumTrackTintColor={maximumTrackTintColor}
             minimumTrackTintColor={minimumTrackTintColor}
             renderIndicator={renderIcon}
@@ -131,27 +143,25 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
             ]}
           />
         </View>
-      </View>
+      </GestureHandlerRootView>
     );
   }
 );
 
-export default Slider;
-
 const styles = StyleSheet.create({
-  flexOne: {
+  root: {
     flex: 1,
-    position: "absolute",
-    zIndex: 0,
-    elevation: 0,
-    bottom: 0,
     backgroundColor: "#2C2C2E",
+    position: Platform.OS === "ios" ? "absolute" : "relative",
   },
-  container: {
+  wrapper: {
+    flex: 1,
     position: "relative",
-    display: "flex",
-    alignItems: "flex-start",
-    justifyContent: "center",
+  },
+  sliderContainer: {
+    position: "relative",
+    flex: 1,
+    alignSelf: "stretch",
     shadowColor: "#171717",
     shadowOffset: {
       width: -2,
@@ -161,43 +171,25 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
   },
   renderContainer: {
-    display: "flex",
+    position: "relative",
     alignItems: "flex-start",
     justifyContent: "center",
-    left: 35,
-    position: "relative",
-    // height: 100,
+    paddingLeft: 35,
     width: Dimensions.get("window").width - 20,
-    zIndex: 2,
-    elevation: 2,
   },
   onTop: {
-    bottom: 0,
+    alignItems: "flex-start",
   },
   renderContainerText: {
     fontSize: 16,
     fontWeight: "700",
-    // width: 50,
     transform: [{ translateX: -3 }],
     textAlign: "center",
-    // zIndex: 999,
-    // elevation: 999,
-  },
-  contentBox: {
-    position: "relative",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-end",
-    height: Dimensions.get("window").height,
-    width: Dimensions.get("window").width,
-    paddingBottom: 44,
   },
   safeArea: {
     position: "relative",
-    bottom: 0,
-    height: 45,
-    width: Dimensions.get("window").width,
-    zIndex: 2,
-    elevation: 2,
+    width: "100%",
   },
 });
+
+export default Slider;

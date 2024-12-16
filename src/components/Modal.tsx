@@ -148,15 +148,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     position: "absolute",
-    zIndex: 1921,
-    elevation: 1921,
+    zIndex: 223,
+    elevation: 223,
   },
   overlay: {
     height,
     paddingTop: height / 2 - 225,
-    zIndex: 1921,
-    elevation: 1921,
     backgroundColor: "rgba(0,0,0,.5)",
+    zIndex: 222,
+    elevation: 222,
   },
   modalContainer: {
     width: Dimensions.get("window").width - 40,
@@ -197,8 +197,6 @@ const styles = StyleSheet.create({
     padding: 5,
     marginTop: 15,
     marginRight: -5,
-    zIndex: 1921,
-    elevation: 1921,
   },
   description: {
     marginBottom: 15,

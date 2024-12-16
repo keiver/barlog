@@ -87,7 +87,6 @@ export function SlideCoachMark(props: SlideCoachMarkProps) {
 
 const styles = StyleSheet.create({
   chevronContainer: {
-    zIndex: 1,
     position: "absolute",
     elevation: 1,
     pointerEvents: "none",

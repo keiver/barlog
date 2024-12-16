@@ -91,7 +91,7 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
         return isDark ? tintColorDark : tintColorLight;
       }
 
-      return isDark ? Colors.dark.shadowColor : Colors.light.shadowColor;
+      return tintColorDark;
     }, [isDark, value, windowHeight, onTop]);
 
     const renderIcon = () => {

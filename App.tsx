@@ -234,7 +234,7 @@ export default function RootLayout() {
                 onClose={onSettingsClose}
                 title="Barlog Settings"
                 buttonLabel="Save"
-                description="What barbell plates per side do I need?"
+                description="What barbell plates per side do I need to reach a target weight?"
               >
                 <ThemedText
                   type="label"
@@ -262,8 +262,8 @@ export default function RootLayout() {
               <CustomModal
                 isVisible={logVisible}
                 onClose={() => setLogVisible(false)}
-                title="Log"
-                description="Saved target weights"
+                title="Logs"
+                description="Saved weights. Add new ones by tapping on the plates description in the main toolbar."
                 buttonLabel="Close"
                 version={false}
               >

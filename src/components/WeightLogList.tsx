@@ -87,7 +87,7 @@ const LogItem: React.FC<{
               type="defaultSemiBold"
               lightColor={tintColorDark}
               darkColor={tintColorDark}
-              shadowColor="black"
+              shadowColor="rgba(0, 0, 0, 0.5)"
               style={styles.weightText}
             >
               {w} {log.unit}
@@ -211,7 +211,7 @@ const WeightLogList: React.FC<WeightLogListProps> = ({ onItemTapped }) => {
   if (logs.length === 0) {
     return (
       <View style={styles.emptyContainer}>
-        <ThemedText>No target weights saved</ThemedText>
+        <ThemedText>Nothing saved</ThemedText>
       </View>
     );
   }
@@ -240,7 +240,7 @@ const styles = StyleSheet.create({
   logItem: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
     borderRadius: 18,
     overflow: "hidden",
   },
@@ -270,6 +270,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     opacity: 0.9,
     marginTop: 4,
+    marginLeft: 8,
     shadowColor: "black",
     shadowOpacity: 0.1,
     shadowRadius: 4,
@@ -303,19 +304,19 @@ const styles = StyleSheet.create({
   },
   retryButton: {
     padding: 8,
-    backgroundColor: "rgba(0, 0, 0, 0.1)",
+    backgroundColor: "rgba(255, 255, 255, 0.3)",
     borderRadius: 8,
   },
   barbellInfo: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    width: 90,
-    height: 30,
+    width: 85,
+    height: 25,
     paddingVertical: 4,
     paddingHorizontal: 14,
     borderRadius: 18,
-    backgroundColor: "rgba(255, 255, 255, 0.5)",
+    backgroundColor: "rgba(255, 255, 255, 0.3)",
     position: "absolute",
     right: 0,
   },

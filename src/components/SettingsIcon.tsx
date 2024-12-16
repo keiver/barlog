@@ -8,6 +8,7 @@ import barbellWeights from "@/src/constants/barbells";
 import { tintColorDark } from "../constants/Colors";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
 
 export type ThemedButtonProps = {
   onPress: () => void;
@@ -91,22 +92,41 @@ export function ThemedRoundButton({
                 style={styles.verticalText}
                 numberOfLines={1}
               >
-                <ThemedText
+                {/* <ThemedText
                   lightColor={tintColorDark}
                   darkColor={tintColorDark}
                   type="small"
                 >
                   {locked ? "" : "Load"}&nbsp;&nbsp;
-                </ThemedText>
+                </ThemedText> */}
                 {logs || ""}
                 <ThemedText
                   lightColor={tintColorDark}
                   darkColor={tintColorDark}
                   type="small"
                 >
-                  &nbsp;&nbsp;
-                  {locked ? "Saved" : "Per Side"}
+                  &nbsp;&nbsp;&nbsp;
+                  {locked ? "Saved" : "Plates Per Side"}
                 </ThemedText>
+                {/* &nbsp;&nbsp;
+                <Ionicons
+                  name="save-outline"
+                  color={tintColorDark}
+                  style={[styles.icon1, { opacity: iconOpacity }]}
+                  size={12}
+                /> */}
+                &nbsp;&nbsp;
+                {/* <Ionicons
+                  name="save-outline"
+                  color={tintColorDark}
+                  style={[
+                    styles.icon1,
+                    {
+                      opacity: iconOpacity,
+                    },
+                  ]}
+                  size={10}
+                /> */}
               </ThemedText>
             </View>
           </View>
@@ -236,6 +256,9 @@ const styles = StyleSheet.create({
   },
   icon: {
     alignSelf: "center",
+  },
+  icon1: {
+    transform: [{ rotate: "90deg" }],
   },
   label: {
     textAlign: "center",

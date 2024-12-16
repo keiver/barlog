@@ -84,7 +84,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
     opacity: opacity.value,
   }));
 
-  const backgroundColor = colorScheme === "dark" ? "rgba(0,0,0,.9)" : "rgba(255,255,255,.9)";
+  const backgroundColor = colorScheme === "dark" ? "#000" : "rgba(255,255,255,.9)";
   const closeIconColor = colorScheme === "dark" ? "#fff" : "#000";
   const version_string = version ? `v${versionFile.expo.version}` || "0.0.0" : "";
 
@@ -154,14 +154,14 @@ const styles = StyleSheet.create({
   overlay: {
     height,
     paddingTop: height / 2 - 225,
-    backgroundColor: "rgba(0,0,0,.5)",
+    backgroundColor: "rgba(0,0,0,.1)",
     zIndex: 222,
     elevation: 222,
   },
   modalContainer: {
     width: Dimensions.get("window").width - 40,
     marginHorizontal: 20,
-    height: Math.min(height * 0.75, 490),
+    height: Math.min(height * 0.8, 500),
     borderRadius: 20,
     overflow: "hidden",
     alignSelf: "center",

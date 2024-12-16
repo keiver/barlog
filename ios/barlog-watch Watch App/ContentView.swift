@@ -178,7 +178,7 @@ struct HelpView: View {
                 .multilineTextAlignment(.center)
                 .padding(.bottom, 15)
 
-            Text("What barbell plates per side do I need?")
+            Text("What barbell plates per side do I need to reach a target weight?")
                 .font(.body)
                 .multilineTextAlignment(.center)
           

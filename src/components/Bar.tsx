@@ -115,7 +115,6 @@ const Barbell: React.FC<BarbellProps> = ({ platesPerSide, unit, collapsed = fals
 
         return (
           <Animated.View
-            pointerEvents="auto"
             key={`plate-${index}`}
             style={[
               styles.plateContainer,
@@ -142,6 +141,7 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height,
     bottom: 0,
+    // backgroundColor: "rgba(0,0,0,.6)",
   },
   plateContainer: {
     alignItems: "center",

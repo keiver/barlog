@@ -94,6 +94,10 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
       return tintColorDark;
     }, [isDark, value, windowHeight, onTop]);
 
+    const getSafeAreaColor = React.useCallback(() => {
+      return isDark ? Colors.dark.minimumTrackTintColor : Colors.light.minimumTrackTintColor;
+    }, [isDark]);
+
     const renderIcon = () => {
       return (
         <View style={[styles.renderContainer, onTop ? styles.onTop : {}]}>
@@ -137,8 +141,8 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
             style={[
               styles.safeArea,
               {
-                height: insets.bottom,
-                backgroundColor: getColor(),
+                height: insets.bottom < value ? insets.bottom : value,
+                backgroundColor: getSafeAreaColor(),
               },
             ]}
           />
@@ -187,8 +191,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   safeArea: {
-    position: "relative",
+    position: "absolute",
+    bottom: 0,
     width: "100%",
+    zIndex: 0,
+    elevation: 0,
   },
 });
 

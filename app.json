@@ -3,7 +3,7 @@
     "name": "barlog",
     "slug": "barlog",
     "description": "Easy preview of barbell plate set",
-    "version": "1.4.0",
+    "version": "1.4.1",
     "icon": "./assets/icon.png",
     "scheme": "barlog",
     "userInterfaceStyle": "automatic",

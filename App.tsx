@@ -263,7 +263,7 @@ export default function RootLayout() {
                 isVisible={logVisible}
                 onClose={() => setLogVisible(false)}
                 title="Logs"
-                description="Saved weights. Add new ones by tapping on the plates description in the main toolbar."
+                description="Saved weights. Add new ones by tapping on the main toolbar plates description."
                 buttonLabel="Close"
                 version={false}
               >

@@ -7,10 +7,15 @@
 Minimalist plate calculator that shows the optimal weight configuration for your barbell. Perfect for powerlifters, CrossFit athletes, and gym enthusiasts.
 
 <div align="center">
-  <img src="./assets/screenshots/6.png" alt="Barlog App Demo" width="200" />
-  <img src="./assets/screenshots/7.png" alt="Barlog Screenshot" width="200" />
-  <img src="./assets/screenshots/4.png" alt="Barlog Screenshot" width="200" />
+  <img src="./assets/screenshots/1.png" alt="Barlog Screenshot" width="200" />
+  <img src="./assets/screenshots/2.png" alt="Barlog Screenshot" width="200" />
   <img src="./assets/screenshots/3.png" alt="Barlog Screenshot" width="200" />
+  <img src="./assets/screenshots/4.png" alt="Barlog Screenshot" width="200" />
+  <img src="./assets/screenshots/5.png" alt="Barlog Screenshot" width="200" />
+  <img src="./assets/screenshots/6.png" alt="Barlog Screenshot" width="200" />
+  <img src="./assets/screenshots/7.png" alt="Barlog Screenshot" width="200" />
+  <img src="./assets/screenshots/8.png" alt="Barlog Screenshot" width="200" />
+  <img src="./assets/screenshots/9.png" alt="Barlog Screenshot" width="200" />
 </div>
 
 ## Features

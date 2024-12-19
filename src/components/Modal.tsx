@@ -141,6 +141,7 @@ const CustomModal: React.FC<CustomModalProps> = ({
 };
 
 const { height } = Dimensions.get("window");
+const isPad = Platform.OS === "ios" && Platform.isPad;
 
 const styles = StyleSheet.create({
   centeredView: {
@@ -159,8 +160,8 @@ const styles = StyleSheet.create({
     elevation: 222,
   },
   modalContainer: {
-    width: Dimensions.get("window").width - 40,
-    marginHorizontal: 20,
+    width: isPad ? Dimensions.get("window").width / 2 : Dimensions.get("window").width - 40,
+    marginHorizontal: isPad ? Dimensions.get("window").width / 4 : 20,
     height: Math.min(height * 0.8, 500),
     borderRadius: 20,
     overflow: "hidden",

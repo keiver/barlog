@@ -48,7 +48,7 @@ const LogItem: React.FC<{
     height: height.value,
   }));
 
-  const w = React.useMemo(() => {
+  const weightLabel = React.useMemo(() => {
     if (log.unit === "kg") {
       return `${(log.weight / KG_TO_LB).toFixed(0)}`;
     }
@@ -90,7 +90,7 @@ const LogItem: React.FC<{
               shadowColor="rgba(0, 0, 0, 0.5)"
               style={styles.weightText}
             >
-              {w} {log.unit}
+              {weightLabel} {log.unit}
             </ThemedText>
             {bar()}
           </View>
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "rgba(0, 0, 0, 0.6)",
-    borderRadius: 18,
+    borderRadius: 14,
     overflow: "hidden",
   },
   mainContent: {
@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
     paddingBottom: 56,
   },
   separator: {
-    height: 18,
+    height: 22,
   },
   emptyContainer: {
     flex: 1,
@@ -311,7 +311,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    width: 85,
+    minWidth: 85,
+    width: "40%",
     height: 25,
     paddingVertical: 4,
     paddingHorizontal: 14,

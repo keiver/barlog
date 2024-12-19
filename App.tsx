@@ -97,17 +97,28 @@ export default function RootLayout() {
     (value: number) => {
       if (!barbellData) return;
 
-      const newPlates = calculatePlates(value, unit === "kg" ? barbellData?.kg : barbellData?.lbs, unit);
+      // Calculate barbell weight based on current unit
+      const barbellWeight = unit === "kg" ? barbellData.kg : barbellData.lbs;
 
+      // Ensure value is within valid range
+      const validValue = Math.max(barbellWeight, value);
+
+      // Calculate plates based on the adjusted weight
+      const newPlates = calculatePlates(validValue, barbellWeight, unit);
+
+      // Update state in a consistent order
+      setWeight(validValue);
       loadPlates(newPlates);
-      setWeight(value);
+
+      // Return the calculated value for any callbacks
+      return validValue;
     },
-    [barbellId, unit, loadPlates, barbellData, logManager]
+    [barbellData, unit, loadPlates]
   );
 
   const throttledGetScrollValue = useCallback(throttle(handleScrollValue, 100), [handleScrollValue, throttle]);
 
-  const plateDescription = React.useMemo(() => describePlateSet(plates, unit), [plates, unit, logId]);
+  const plateDescription = React.useMemo(() => describePlateSet(plates, unit), [plates, unit, logId, barKey]);
 
   const onValueChanged = useCallback(
     (value: number) => {
@@ -155,18 +166,38 @@ export default function RootLayout() {
   }, [weight, unit, barbellId, logManager, plateDescription, setBarbellCollapsed]);
 
   const onItemTapped = useCallback(
-    (log: WeightLog) => {
-      const targetWeight = parseInt(`${log.unit === "kg" ? log.weight.toFixed(0) : log.weight}`, 10);
+    async (log: WeightLog) => {
+      // First update the unit and barbell settings
+      await Promise.all([client.storeData(keys.UNIT, log.unit), client.storeData(keys.BARBELL_ID, log.barbellId)]);
+
+      setUnit(log.unit as Unit);
+      setBarbellId(log.barbellId);
+
+      // Force a plates recalculation after unit change
+      const targetWeight = log.weight;
+
+      // Use Promise to ensure state updates are complete
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      if (barbellData) {
+        const newPlates = calculatePlates(
+          targetWeight,
+          log.unit === "kg" ? barbellData.kg : barbellData.lbs,
+          log.unit as Unit
+        );
+        loadPlates(newPlates);
+      }
 
       handleScrollValue(targetWeight);
       sliderRef.current?.setValue?.(targetWeight);
+
+      // Update UI state
       setBarbellCollapsed(false);
-      setUnit(log.unit as Unit);
-      setBarbellId(log.barbellId);
       setLogVisible(false);
       setLogId(`${log.timestamp}`);
+      setBarKey((prev) => prev + 1);
     },
-    [unit, handleScrollValue, sliderRef, setBarbellCollapsed, setUnit, setBarbellId, setLogVisible, setLogId]
+    [handleScrollValue, sliderRef, barbellData, loadPlates, client]
   );
 
   const onSettingsClose = useCallback(() => {
@@ -221,13 +252,14 @@ export default function RootLayout() {
                 dimmed={modalVisible || logVisible}
                 onLogsIconClicked={() => setLogVisible(true)}
               />
-
-              <Barbell
-                key={barKey}
-                platesPerSide={plates}
-                unit={unit}
-                collapsed={barbellCollapsed}
-              />
+              {modalVisible || logVisible ? null : (
+                <Barbell
+                  key={barKey}
+                  platesPerSide={plates}
+                  unit={unit}
+                  collapsed={barbellCollapsed}
+                />
+              )}
 
               <CustomModal
                 isVisible={modalVisible}

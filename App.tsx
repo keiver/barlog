@@ -27,7 +27,7 @@ import VerticalRuler from "@/src/components/Scale";
 import LogManager from "@/src/libs/LogManager";
 import WeightLogList from "@/src/components/WeightLogList";
 
-if (!__DEV__ || true) {
+if (!__DEV__) {
   // This is a hack to disable console logs
   const consoleKeys = Object.keys(console) as (keyof Console)[];
   consoleKeys.forEach((key) => {

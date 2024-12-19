@@ -54,20 +54,50 @@ class WatchConnectivityManager: NSObject, ObservableObject, WCSessionDelegate {
     
     // MARK: - Public Methods
     func sendNumberToPhone(_ number: Int, completion: ((Error?) -> Void)? = nil) {
-        // Add to queue
-        messageQueue.append((number: number, completion: completion))
-        processMessageQueue()
+        ensureSessionIsActive()
+        
+        guard session.isReachable else {
+            print("Watch: Phone not reachable, messages queued")
+            messageQueue.append((number, completion))
+            return
+        }
+        
+        session.sendMessage(
+            ["number": number],
+            replyHandler: { response in
+                print("Watch: Message sent successfully: \(response)")
+                completion?(nil)
+            },
+            errorHandler: { error in
+                print("Watch: Failed to send message: \(error.localizedDescription)")
+                completion?(WatchConnectivityError.sendFailed(error))
+            }
+        )
+    }
+    
+    func sendNumberWithRetry(_ number: Int, retries: Int = 3) {
+        sendNumberToPhone(number) { error in
+            if let error = error, retries > 0 {
+                print("Watch: Retry sending number due to error: \(error.localizedDescription). Retries left: \(retries - 1)")
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    self.sendNumberWithRetry(number, retries: retries - 1)
+                }
+            }
+        }
     }
     
     // MARK: - Private Methods
+    private func ensureSessionIsActive() {
+        if session.activationState != .activated {
+            print("Watch: Session not activated. Attempting to activate.")
+            session.activate()
+        }
+    }
+    
     private func processMessageQueue() {
         guard !isProcessingQueue else { return }
-        guard activationState == .activated else {
-            print("Watch: Session not activated, messages queued")
-            return
-        }
         guard session.isReachable else {
-            print("Watch: Phone not reachable, messages queued")
+            print("Watch: Phone not reachable, processing paused")
             return
         }
         
@@ -75,21 +105,7 @@ class WatchConnectivityManager: NSObject, ObservableObject, WCSessionDelegate {
         
         while !messageQueue.isEmpty {
             let (number, completion) = messageQueue.removeFirst()
-            
-            print("Watch: Sending number \(number) to phone")
-            session.sendMessage(
-                ["number": number],
-                replyHandler: { response in
-                    print("Watch: Message sent successfully: \(response)")
-                    completion?(nil)
-                },
-                errorHandler: { error in
-                    print("Watch: Failed to send message: \(error.localizedDescription)")
-                    completion?(WatchConnectivityError.sendFailed(error))
-                    // On error, stop processing queue
-                    self.isProcessingQueue = false
-                }
-            )
+            sendNumberToPhone(number, completion: completion)
         }
         
         isProcessingQueue = false
@@ -97,41 +113,40 @@ class WatchConnectivityManager: NSObject, ObservableObject, WCSessionDelegate {
     
     // MARK: - WCSessionDelegate
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
-        DispatchQueue.main.async { [weak self] in
+        DispatchQueue.main.async {
             if let error = error {
                 print("Watch: Session activation failed: \(error.localizedDescription)")
-                self?.lastError = error
+                self.lastError = error
                 return
             }
             
-            self?.activationState = activationState
-            self?.isReachable = session.isReachable
-            
+            self.activationState = activationState
+            self.isReachable = session.isReachable
             print("Watch: Session activation state: \(activationState.rawValue)")
             print("Watch: isReachable: \(session.isReachable)")
             
-            if activationState == .activated {
-                self?.processMessageQueue()
+            if session.isReachable {
+                self.processMessageQueue()
             }
         }
     }
     
     func sessionReachabilityDidChange(_ session: WCSession) {
         DispatchQueue.main.async { [weak self] in
-            self?.isReachable = session.isReachable
-            print("Watch: Reachability changed. Is reachable: \(session.isReachable)")
-            
-            if session.isReachable {
-                self?.processMessageQueue()
-            }
+        self?.isReachable = session.isReachable
+        if session.isReachable {
+            self?.processMessageQueue()
+        } else {
+            print("Watch: Phone is not reachable")
         }
+    }
     }
     
     func session(_ session: WCSession, didReceiveMessage message: [String: Any], replyHandler: @escaping ([String: Any]) -> Void) {
         DispatchQueue.main.async {
             self.receivedMessage = message
-            print("Updated receivedMessage: \(self.receivedMessage)")
+            print("Watch: Received message: \(message)")
+            replyHandler(["response": "Message received"])
         }
-        replyHandler(["status": "received"])
     }
 }

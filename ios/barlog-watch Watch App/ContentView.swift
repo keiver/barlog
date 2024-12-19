@@ -176,11 +176,14 @@ struct HelpView: View {
             Text("barlog")
                 .font(.title)
                 .multilineTextAlignment(.center)
-                .padding(.bottom, 15)
+                .padding(.bottom, 5)
 
             Text("What barbell plates per side do I need to reach a target weight?")
-                .font(.body)
-                .multilineTextAlignment(.center)
+               .font(.body)
+               .multilineTextAlignment(.center)
+               .lineLimit(nil)
+               .minimumScaleFactor(0.5)
+               .frame(maxWidth: .infinity)
           
           Text(appVersion)
                 .font(.footnote)

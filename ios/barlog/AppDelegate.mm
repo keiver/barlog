@@ -6,6 +6,7 @@
 
 @interface AppDelegate () <WCSessionDelegate>
 @property (nonatomic, strong) WCSession *watchSession;
+@property (nonatomic, assign) BOOL sessionActivated;
 @end
 
 @implementation AppDelegate
@@ -17,21 +18,18 @@
 
   // Initialize Watch Connectivity on main thread only for iPhone
   dispatch_async(dispatch_get_main_queue(), ^{
-    // Check if device is iPhone before attempting WCSession
     if ([UIDevice currentDevice].userInterfaceIdiom == UIUserInterfaceIdiomPhone && [WCSession isSupported]) {
       RCTLogInfo(@"Phone: WCSession is supported, initializing...");
       self.watchSession = [WCSession defaultSession];
       self.watchSession.delegate = self;
       [self.watchSession activateSession];
-      RCTLogInfo(@"Phone: WCSession activation requested. Current state: %ld", (long)self.watchSession.activationState);
-      RCTLogInfo(@"Phone: Initial reachability: %d", self.watchSession.isReachable);
+      RCTLogInfo(@"Phone: WCSession activation requested.");
     } else {
       RCTLogInfo(@"Device does not support WatchConnectivity - skipping initialization");
     }
   });
 
-  BOOL result = [super application:application didFinishLaunchingWithOptions:launchOptions];
-  return result;
+  return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
@@ -48,119 +46,71 @@
 #endif
 }
 
-// Linking API
-- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url options:(NSDictionary<UIApplicationOpenURLOptionsKey,id> *)options {
-  return [super application:application openURL:url options:options] || [RCTLinkingManager application:application openURL:url options:options];
-}
-
-// Universal Links
-- (BOOL)application:(UIApplication *)application continueUserActivity:(nonnull NSUserActivity *)userActivity restorationHandler:(nonnull void (^)(NSArray<id<UIUserActivityRestoring>> * _Nullable))restorationHandler {
-  BOOL result = [RCTLinkingManager application:application continueUserActivity:userActivity restorationHandler:restorationHandler];
-  return [super application:application continueUserActivity:userActivity restorationHandler:restorationHandler] || result;
-}
-
-#pragma mark - WCSessionDelegate Methods
-
+// WCSessionDelegate Methods
 - (void)session:(WCSession *)session activationDidCompleteWithState:(WCSessionActivationState)activationState error:(NSError *)error {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if (error) {
-            RCTLogError(@"Phone: Session activation failed: %@", error.localizedDescription);
-            return;
-        }
-        
-        switch (activationState) {
-            case WCSessionActivationStateActivated:
-                RCTLogInfo(@"Phone: WCSession activated successfully. Reachable: %d", session.isReachable);
-                break;
-            case WCSessionActivationStateInactive:
-                RCTLogInfo(@"Phone: WCSession is inactive");
-                break;
-            case WCSessionActivationStateNotActivated:
-                RCTLogInfo(@"Phone: WCSession is not activated");
-                break;
-        }
-    });
-}
-
-- (void)session:(WCSession *)session didReceiveMessage:(NSDictionary<NSString *, id> *)message {
-    NSNumber *number = message[@"number"];
-    if (number) {
-        RCTLogInfo(@"Phone: Received number from watch: %@", number);
-        dispatch_async(dispatch_get_main_queue(), ^{
-            RCTLogInfo(@"Phone: Broadcasting number via notification: %@", number);
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"WatchReceiveMessage"
-                                                              object:nil
-                                                            userInfo:@{@"number": number}];
-            RCTLogInfo(@"Phone: Notification posted with number: %@", number);
-        });
-    } else {
-        RCTLogInfo(@"Phone: Received message without number: %@", message);
-    }
-}
-
-// send updates to the watch
-- (void)sendUpdateToWatch:(NSDictionary *)update {
-    if (![WCSession defaultSession].isReachable) {
-        RCTLogInfo(@"Phone: Watch is not reachable, skipping update");
-        return;
+  dispatch_async(dispatch_get_main_queue(), ^{
+    if (error) {
+      RCTLogError(@"Phone: Session activation failed: %@", error.localizedDescription);
+      self.sessionActivated = NO;
+      return;
     }
     
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[WCSession defaultSession] sendMessage:update
-                                 replyHandler:^(NSDictionary<NSString *, id> *replyMessage) {
-                                     RCTLogInfo(@"Phone: Watch received update: %@", replyMessage);
-                                 }
-                                 errorHandler:^(NSError *error) {
-                                     RCTLogError(@"Phone: Failed to send update to watch: %@", error);
-                                 }];
-    });
-}
-
-
-- (void)session:(WCSession *)session didReceiveMessage:(NSDictionary<NSString *, id> *)message replyHandler:(void(^)(NSDictionary<NSString *, id> *replyMessage))replyHandler {
-    NSNumber *number = message[@"number"];
-    if (number) {
-         RCTLogInfo(@"Phone: Received number from watch: %@", number);
-         dispatch_async(dispatch_get_main_queue(), ^{
-             // Send the notification for React Native
-             [[NSNotificationCenter defaultCenter] postNotificationName:@"WatchReceiveMessage"
-                                                               object:nil
-                                                             userInfo:@{@"number": number}];
-             
-             // Send back current state to watch
-             NSDictionary *response = @{
-                 @"weight": number,
-                 @"label": @"", // You'll need to get this from your RN state
-                 @"unit": @"lb", // You'll need to get this from your RN state
-                 @"status": @"received"
-             };
-             
-             replyHandler(response);
-             
-             // Also proactively send an update with full state
-             [self sendUpdateToWatch:response];
-         });
-     } else {
-         replyHandler(@{@"status": @"error", @"message": @"No number received"});
-     }
-}
-
-- (void)sessionDidBecomeInactive:(WCSession *)session {
-    RCTLogInfo(@"Phone: WCSession became inactive. Attempting to reactivate...");
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [session activateSession];
-    });
-}
-
-- (void)sessionDidDeactivate:(WCSession *)session {
-    RCTLogInfo(@"Phone: WCSession deactivated. Attempting to reactivate...");
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [session activateSession];
-    });
+    self.sessionActivated = (activationState == WCSessionActivationStateActivated);
+    RCTLogInfo(@"Phone: Session activation completed with state: %ld", (long)activationState);
+    RCTLogInfo(@"Phone: Reachable: %d", session.isReachable);
+  });
 }
 
 - (void)sessionReachabilityDidChange:(WCSession *)session {
-    RCTLogInfo(@"Phone: Session reachability changed. Reachable: %d", session.isReachable);
+  RCTLogInfo(@"Phone: Session reachability changed. Reachable: %d", session.isReachable);
+}
+
+- (void)sessionDidBecomeInactive:(WCSession *)session {
+  RCTLogInfo(@"Phone: WCSession became inactive. Reactivating...");
+  [session activateSession];
+}
+
+- (void)sessionDidDeactivate:(WCSession *)session {
+  RCTLogInfo(@"Phone: WCSession deactivated. Reactivating...");
+  [session activateSession];
+}
+
+- (void)session:(WCSession *)session didReceiveMessage:(NSDictionary<NSString *, id> *)message replyHandler:(void (^)(NSDictionary<NSString *, id> *))replyHandler {
+  NSNumber *number = message[@"number"];
+  if (number) {
+    RCTLogInfo(@"Phone: Received number from watch: %@", number);
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"WatchReceiveMessage" object:nil userInfo:@{ @"number": number }];
+    replyHandler(@{ @"status": @"received" });
+  } else {
+    replyHandler(@{ @"status": @"error", @"message": @"No number received" });
+  }
+}
+
+// Retry mechanism for sending messages
+- (void)sendMessageToWatch:(NSDictionary *)message retries:(NSInteger)retries {
+  if (!self.sessionActivated) {
+    RCTLogError(@"Phone: WCSession is not activated. Cannot send message.");
+    return;
+  }
+
+  if (!self.watchSession.isReachable) {
+    RCTLogError(@"Phone: Watch is not reachable.");
+    return;
+  }
+
+  [self.watchSession sendMessage:message
+                    replyHandler:^(NSDictionary<NSString *, id> *replyMessage) {
+                      RCTLogInfo(@"Phone: Message sent successfully: %@", replyMessage);
+                    }
+                    errorHandler:^(NSError *error) {
+                      RCTLogError(@"Phone: Failed to send message: %@", error.localizedDescription);
+                      if (retries > 0) {
+                        RCTLogInfo(@"Phone: Retrying to send message. Retries left: %ld", (long)(retries - 1));
+                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                          [self sendMessageToWatch:message retries:retries - 1];
+                        });
+                      }
+                    }];
 }
 
 @end

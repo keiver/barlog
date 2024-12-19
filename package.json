@@ -2,6 +2,14 @@
   "name": "barlog",
   "version": "1.4.1",
   "main": "index.ts",
+  "codegenConfig": {
+    "name": "RCTWatchConnectivitySpec",
+    "type": "modules",
+    "jsSrcsDir": "src/native/watch-connectivity/specs",
+    "android": {
+      "javaPackageName": "dev.keiver.barlog.watchconnectivity"
+    }
+  },
   "scripts": {
     "start": "expo start",
     "android": "expo run:android --device",

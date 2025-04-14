@@ -92,9 +92,10 @@ const CustomModal: React.FC<CustomModalProps> = ({
     <Modal
       visible={isVisible}
       transparent={true}
-      animationType="fade"
+      animationType="slide"
       onRequestClose={onClose}
       supportedOrientations={["portrait"]}
+      statusBarTranslucent={true}
     >
       <View style={styles.centeredView}>
         <Animated.View style={[styles.overlay, overlayStyle]}>

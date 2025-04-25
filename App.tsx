@@ -248,7 +248,7 @@ export default function RootLayout() {
                 unit={unit}
                 onLogClicked={onLogClicked}
                 logs={plateDescription}
-                locked={false}
+                locked={barbellCollapsed}
                 dimmed={modalVisible || logVisible}
                 onLogsIconClicked={() => setLogVisible(true)}
               />

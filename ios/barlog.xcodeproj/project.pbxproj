@@ -10,13 +10,13 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		1A761884B91A81FD7D9E1281 /* libPods-barlog.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D29CF2FC516FF2788B75EBF /* libPods-barlog.a */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
 		4DCF65B0F9BB858B8ABA2E22 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 066127BFD6BFC1CC12F86C5B /* PrivacyInfo.xcprivacy */; };
 		6AD8627FAF6E8345ADDD8700 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 066127BFD6BFC1CC12F86C5B /* PrivacyInfo.xcprivacy */; };
 		9947503DCEDE42269D9285F5 /* noop-file.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8652ED162FBC48939FB6A8A1 /* noop-file.swift */; };
 		B18059E884C0ABDD17F3DC3D /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
+		D0A1FB3F1B69D05C768C4B24 /* libPods-barlog.a in Frameworks */ = {isa = PBXBuildFile; fileRef = EEA40FE8FB2222BA06882651 /* libPods-barlog.a */; };
 		EB50B1C02D14588200E3069F /* RCTWatchConnectivityModule.mm in Sources */ = {isa = PBXBuildFile; fileRef = EB50B1BF2D14588200E3069F /* RCTWatchConnectivityModule.mm */; };
 		EB65E7FC2D0BB50400A8CF96 /* barlog-watch Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = EB65E7EF2D0BB50300A8CF96 /* barlog-watch Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
@@ -53,24 +53,26 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = barlog/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = barlog/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = barlog/main.m; sourceTree = "<group>"; };
-		4879B6A2CA30F7884EF9E77F /* Pods-barlog.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-barlog.release.xcconfig"; path = "Target Support Files/Pods-barlog/Pods-barlog.release.xcconfig"; sourceTree = "<group>"; };
 		8652ED162FBC48939FB6A8A1 /* noop-file.swift */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 4; includeInIndex = 0; lastKnownFileType = sourcecode.swift; name = "noop-file.swift"; path = "barlog/noop-file.swift"; sourceTree = "<group>"; };
-		8D29CF2FC516FF2788B75EBF /* libPods-barlog.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-barlog.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8E10688E571F24C1744B2D08 /* Pods-barlog.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-barlog.release.xcconfig"; path = "Target Support Files/Pods-barlog/Pods-barlog.release.xcconfig"; sourceTree = "<group>"; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = barlog/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
-		D7CCF10C5BD2BC8EF5FF781F /* Pods-barlog.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-barlog.debug.xcconfig"; path = "Target Support Files/Pods-barlog/Pods-barlog.debug.xcconfig"; sourceTree = "<group>"; };
 		EB50B1BD2D14588200E3069F /* RCTWatchConnectivity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RCTWatchConnectivity.h; path = WatchConnectivity/RCTWatchConnectivity.h; sourceTree = "<group>"; };
 		EB50B1BE2D14588200E3069F /* RCTWatchConnectivityModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RCTWatchConnectivityModule.h; path = WatchConnectivity/RCTWatchConnectivityModule.h; sourceTree = "<group>"; };
 		EB50B1BF2D14588200E3069F /* RCTWatchConnectivityModule.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; name = RCTWatchConnectivityModule.mm; path = WatchConnectivity/RCTWatchConnectivityModule.mm; sourceTree = "<group>"; };
 		EB65E7EF2D0BB50300A8CF96 /* barlog-watch Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "barlog-watch Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EBED90062D146C75008BBDA0 /* barlog-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "barlog-Bridging-Header.h"; path = "barlog/barlog-Bridging-Header.h"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		EEA40FE8FB2222BA06882651 /* libPods-barlog.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-barlog.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F49954E3DA835EA8F4FA588A /* Pods-barlog.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-barlog.debug.xcconfig"; path = "Target Support Files/Pods-barlog/Pods-barlog.debug.xcconfig"; sourceTree = "<group>"; };
 		FAC715A2D49A985799AEE119 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-barlog/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		EB65E7F02D0BB50300A8CF96 /* barlog-watch Watch App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = "barlog-watch Watch App";
 			sourceTree = "<group>";
 		};
@@ -81,7 +83,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1A761884B91A81FD7D9E1281 /* libPods-barlog.a in Frameworks */,
+				D0A1FB3F1B69D05C768C4B24 /* libPods-barlog.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,7 +121,7 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				8D29CF2FC516FF2788B75EBF /* libPods-barlog.a */,
+				EEA40FE8FB2222BA06882651 /* libPods-barlog.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -176,8 +178,8 @@
 		D65327D7A22EEC0BE12398D9 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				D7CCF10C5BD2BC8EF5FF781F /* Pods-barlog.debug.xcconfig */,
-				4879B6A2CA30F7884EF9E77F /* Pods-barlog.release.xcconfig */,
+				F49954E3DA835EA8F4FA588A /* Pods-barlog.debug.xcconfig */,
+				8E10688E571F24C1744B2D08 /* Pods-barlog.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -197,15 +199,15 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "barlog" */;
 			buildPhases = (
-				C91AC2FD8ACF79B36F04B463 /* [CP] Check Pods Manifest.lock */,
+				C3ABC9C914DF7C0CD170DC04 /* [CP] Check Pods Manifest.lock */,
 				9AC8D292C6AEE499C7E5FFA0 /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				EB65E7FD2D0BB50400A8CF96 /* Embed Watch Content */,
-				12173DA3FCB75BF172111944 /* [CP] Embed Pods Frameworks */,
-				9942BB42CCB23242F490F13D /* [CP] Copy Pods Resources */,
+				50D32964EC7A5F1AE600DC95 /* [CP] Embed Pods Frameworks */,
+				5F2F3A01203014D3B7C4C578 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -313,7 +315,7 @@
 			shellPath = /bin/sh;
 			shellScript = "if [[ -f \"$PODS_ROOT/../.xcode.env\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env\"\nfi\nif [[ -f \"$PODS_ROOT/../.xcode.env.local\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env.local\"\nfi\n\n# The project root by default is one level up from the ios directory\nexport PROJECT_ROOT=\"$PROJECT_DIR\"/..\n\nif [[ \"$CONFIGURATION\" = *Debug* ]]; then\n  export SKIP_BUNDLING=1\nfi\nif [[ -z \"$ENTRY_FILE\" ]]; then\n  # Set the entry JS file using the bundler's entry resolution.\n  export ENTRY_FILE=\"$(\"$NODE_BINARY\" -e \"require('expo/scripts/resolveAppEntry')\" \"$PROJECT_ROOT\" ios absolute | tail -n 1)\"\nfi\n\nif [[ -z \"$CLI_PATH\" ]]; then\n  # Use Expo CLI\n  export CLI_PATH=\"$(\"$NODE_BINARY\" --print \"require.resolve('@expo/cli', { paths: [require.resolve('expo/package.json')] })\")\"\nfi\nif [[ -z \"$BUNDLE_COMMAND\" ]]; then\n  # Default Expo CLI command for bundling\n  export BUNDLE_COMMAND=\"export:embed\"\nfi\n\n# Source .xcode.env.updates if it exists to allow\n# SKIP_BUNDLING to be unset if needed\nif [[ -f \"$PODS_ROOT/../.xcode.env.updates\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env.updates\"\nfi\n# Source local changes to allow overrides\n# if needed\nif [[ -f \"$PODS_ROOT/../.xcode.env.local\" ]]; then\n  source \"$PODS_ROOT/../.xcode.env.local\"\nfi\n\n`\"$NODE_BINARY\" --print \"require('path').dirname(require.resolve('react-native/package.json')) + '/scripts/react-native-xcode.sh'\"`\n\n";
 		};
-		12173DA3FCB75BF172111944 /* [CP] Embed Pods Frameworks */ = {
+		50D32964EC7A5F1AE600DC95 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -330,7 +332,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-barlog/Pods-barlog-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		9942BB42CCB23242F490F13D /* [CP] Copy Pods Resources */ = {
+		5F2F3A01203014D3B7C4C578 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -366,7 +368,7 @@
 			shellPath = /bin/sh;
 			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-barlog/expo-configure-project.sh\"\n";
 		};
-		C91AC2FD8ACF79B36F04B463 /* [CP] Check Pods Manifest.lock */ = {
+		C3ABC9C914DF7C0CD170DC04 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -423,14 +425,14 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D7CCF10C5BD2BC8EF5FF781F /* Pods-barlog.debug.xcconfig */;
+			baseConfigurationReference = F49954E3DA835EA8F4FA588A /* Pods-barlog.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = barlog/barlog.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_TEAM = 64QR53M8C9;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -445,7 +447,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.4.2;
+				MARKETING_VERSION = 1.5.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -464,14 +466,14 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4879B6A2CA30F7884EF9E77F /* Pods-barlog.release.xcconfig */;
+			baseConfigurationReference = 8E10688E571F24C1744B2D08 /* Pods-barlog.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = barlog/barlog.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 0;
 				DEVELOPMENT_TEAM = 64QR53M8C9;
 				INFOPLIST_FILE = barlog/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Barlog;
@@ -481,7 +483,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.4.2;
+				MARKETING_VERSION = 1.5.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -552,7 +554,10 @@
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
@@ -607,7 +612,10 @@
 				);
 				LIBRARY_SEARCH_PATHS = "$(SDKROOT)/usr/lib/swift\"$(inherited)\"";
 				MTL_ENABLE_DEBUG_INFO = NO;
-				OTHER_LDFLAGS = "$(inherited)  ";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
+				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
 				USE_HERMES = true;
@@ -632,7 +640,7 @@
 				CODE_SIGN_ENTITLEMENTS = "barlog-watch Watch App/barlog-watch Watch App.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_ASSET_PATHS = "\"barlog-watch Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = 64QR53M8C9;
@@ -650,7 +658,7 @@
 					"@executable_path/Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.4.2;
+				MARKETING_VERSION = 1.5.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
@@ -685,7 +693,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"barlog-watch Watch App/Preview Content\"";
 				DEVELOPMENT_TEAM = 64QR53M8C9;
@@ -703,7 +711,7 @@
 					"@executable_path/Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.4.2;
+				MARKETING_VERSION = 1.5.0;
 				MTL_FAST_MATH = YES;
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = dev.keiver.barlog.watchkitapp;

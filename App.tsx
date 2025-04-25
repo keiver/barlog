@@ -294,8 +294,8 @@ export default function RootLayout() {
               <CustomModal
                 isVisible={logVisible}
                 onClose={() => setLogVisible(false)}
-                title="Logs"
-                description="Saved weights. Add new ones by tapping on the main toolbar plates description."
+                title="Log"
+                description="Saved weights. To add new ones, tap ✅ on toolbar."
                 buttonLabel="Close"
                 version={false}
               >

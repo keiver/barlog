@@ -1,4 +1,3 @@
-// src/native/watch-connectivity/WatchModule.ts
 import { Platform, NativeEventEmitter } from "react-native";
 import type { Spec } from "./src/native/watch-connectivity/specs/NativeWatchConnectivity";
 import { TurboModuleRegistry } from "react-native";
@@ -14,27 +13,26 @@ interface WatchUpdate {
   logs?: string;
 }
 
-// Retrieve the TurboModule instance
-const watchModule = TurboModuleRegistry.getEnforcing<Spec>(
-  "RCTWatchConnectivitySpec"
-);
+// Try retrieving the TurboModule instance safely
+const watchModule =
+  TurboModuleRegistry.get<Spec>("RCTWatchConnectivitySpec") ?? null;
 
-// Create an event emitter for the TurboModule
-const watchEventEmitter = new NativeEventEmitter(watchModule);
+// Create an event emitter for the TurboModule if it exists
+const watchEventEmitter = watchModule
+  ? new NativeEventEmitter(watchModule)
+  : null;
 
-// Extract constants from the TurboModule
-const { WATCH_NUMBER_EVENT } = watchModule.getConstants();
+// Extract constants safely
+const WATCH_NUMBER_EVENT =
+  watchModule?.getConstants?.().WATCH_NUMBER_EVENT ?? "WATCH_NUMBER_EVENT";
 
 const WatchModule = {
   addListener: (callback: (event: WatchNumberEvent) => void) => {
-    // If for some reason the module isn't available, mimic the old behavior:
-    if (!watchModule) {
-      console.warn("Watch connectivity not available");
+    if (!watchEventEmitter) {
+      console.warn("Watch connectivity not available, listener not added.");
       return { remove: () => {} };
     }
 
-    // Add a listener using NativeEventEmitter, returns EmitterSubscription
-    // which has a `.remove()` method for backward compatibility
     const subscription = watchEventEmitter.addListener(
       WATCH_NUMBER_EVENT,
       (event) => {
@@ -47,11 +45,13 @@ const WatchModule = {
 
   sendUpdateToWatch: async (update: WatchUpdate): Promise<any> => {
     if (!watchModule) {
-      throw new Error("Watch connectivity not available");
+      console.warn("Watch connectivity not available.");
+      return;
     }
 
     if (Platform.OS !== "ios") {
-      throw new Error("Watch connectivity is only available on iOS");
+      console.warn("Watch connectivity only available on iOS.");
+      return;
     }
 
     console.log("Sending update to watch:", update);
@@ -67,7 +67,10 @@ const WatchModule = {
   },
 
   removeAllListeners: () => {
-    // Matches the old behavior of removing all listeners for the event
+    if (!watchEventEmitter) {
+      console.warn("Watch connectivity not available, no listeners to remove.");
+      return;
+    }
     watchEventEmitter.removeAllListeners(WATCH_NUMBER_EVENT);
   },
 };

@@ -1,8 +1,15 @@
-import React, { forwardRef, useImperativeHandle, useMemo } from "react";
-import { View, StyleSheet, StyleProp, ViewStyle } from "react-native";
+import React, { forwardRef, useImperativeHandle, useMemo, useState } from "react";
+import { View, StyleSheet, StyleProp, ViewStyle, Platform } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import Animated, { useSharedValue, useAnimatedStyle, withSpring, runOnJS } from "react-native-reanimated";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  runOnJS,
+  useAnimatedRef,
+} from "react-native-reanimated";
 import * as Haptics from "expo-haptics";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export type TSliderProps = {
   min: number;
@@ -23,7 +30,6 @@ export type TSliderProps = {
   sliderStyle?: StyleProp<ViewStyle>;
   renderIndicatorHeight?: number;
   animationConfig?: {
-    duration?: number;
     damping?: number;
     stiffness?: number;
     mass?: number;
@@ -59,14 +65,17 @@ const RNVerticalSlider = forwardRef<TSliderRef, TSliderProps>(
       renderIndicator = () => null,
       containerStyle = {},
       sliderStyle = {},
-      animationConfig = { damping: 15, stiffness: 120, duration: 100 },
+      animationConfig = { damping: 10, stiffness: 250 },
       snapInterval = 5,
     },
     ref
   ) => {
+    const insets = useSafeAreaInsets();
     const point = useSharedValue<number>(currentValue);
     const disabledProp = useSharedValue<boolean>(disabled);
     const lastSnappedValue = useSharedValue<number>(currentValue);
+    const containerRef = useAnimatedRef<View>();
+    const [containerTop, setContainerTop] = useState(0);
 
     const significantNumbers = useMemo(() => {
       const numbers = [];
@@ -78,84 +87,78 @@ const RNVerticalSlider = forwardRef<TSliderRef, TSliderProps>(
 
     const SNAP_THRESHOLD = step * 1.5;
 
-    const calculateValue = (position: number, velocityY: number, translationY: number): number => {
+    const calculateValue = (position: number): number => {
       "worklet";
-
       let sliderPosition = height - position;
       sliderPosition = Math.min(Math.max(sliderPosition, 0), height);
-
       let value = (sliderPosition / height) * (max - min) + min;
       value = Math.round(value / step) * step;
-      value = Math.min(Math.max(value, min), max);
+      return Math.min(Math.max(value, min), max);
+    };
 
-      const isTap = Math.abs(translationY) < 10;
-
-      if (isTap) {
-        let nearest = value;
-        let minDiff = Number.MAX_VALUE;
-        for (const sig of significantNumbers) {
-          const diff = Math.abs(sig - value);
-          if (diff < minDiff) {
-            nearest = sig;
-            minDiff = diff;
-          }
+    const findNearestSnap = (value: number) => {
+      "worklet";
+      let nearest = value;
+      let minDiff = Number.MAX_VALUE;
+      for (const sig of significantNumbers) {
+        const diff = Math.abs(sig - value);
+        if (diff < minDiff) {
+          nearest = sig;
+          minDiff = diff;
         }
-        value = nearest;
       }
-
-      return value;
+      return nearest;
     };
 
     const baseViewStyle = useMemo(
-      () => ({
-        height,
-        width,
-        borderRadius,
-        backgroundColor: maximumTrackTintColor,
-      }),
+      () => ({ height, width, borderRadius, backgroundColor: maximumTrackTintColor }),
       [borderRadius, height, maximumTrackTintColor, width]
     );
 
     const handleGesture =
-      (type: "BEGIN" | "CHANGE" | "END") => (eventY: number, velocityY: number, translationY: number) => {
+      (type: "BEGIN" | "CHANGE" | "END") =>
+      (eventY: number, velocityY: number, translationY: number, absoluteY: number) => {
         if (disabledProp.value) return;
 
-        const newValue = calculateValue(eventY, velocityY, translationY);
+        const androidOffset = Platform.OS === "android" ? insets.top : 0;
+        const relativeY = absoluteY - containerTop - androidOffset;
+
+        let newValue = calculateValue(relativeY);
+
         const isTap = Math.abs(translationY) < 10;
 
-        let snappedValue = newValue;
-
-        if (isTap) {
-          if (snappedValue !== lastSnappedValue.value) {
-            runOnJS(() => {
-              Haptics.selectionAsync();
-            })();
-            lastSnappedValue.value = snappedValue;
-          }
+        if (isTap && (type === "END" || type === "CHANGE")) {
+          newValue = findNearestSnap(newValue);
         } else {
           for (const sig of significantNumbers) {
             if (Math.abs(newValue - sig) <= SNAP_THRESHOLD) {
-              snappedValue = sig;
-              if (snappedValue !== lastSnappedValue.value) {
-                runOnJS(() => {
-                  Haptics.selectionAsync();
-                })();
-                lastSnappedValue.value = snappedValue;
-              }
+              newValue = sig;
               break;
             }
           }
         }
 
-        point.value = withSpring(snappedValue, animationConfig);
-        runOnJS(type === "BEGIN" || type === "CHANGE" ? onChange : onComplete)(snappedValue);
+        if (Math.abs(newValue - lastSnappedValue.value) >= SNAP_THRESHOLD) {
+          runOnJS(() => {
+            Haptics.selectionAsync();
+          })();
+          lastSnappedValue.value = newValue;
+        }
+
+        if (type === "CHANGE") {
+          point.value = newValue;
+          runOnJS(onChange)(newValue);
+        } else {
+          point.value = withSpring(newValue, animationConfig);
+          runOnJS(type === "END" ? onComplete : onChange)(newValue);
+        }
       };
 
     const panGesture = Gesture.Pan()
-      .onBegin((e) => handleGesture("BEGIN")(e.y, e.velocityY, e.translationY))
-      .onChange((e) => handleGesture("CHANGE")(e.y, e.velocityY, e.translationY))
-      .onEnd((e) => handleGesture("END")(e.y, e.velocityY, e.translationY))
-      .onFinalize((e) => handleGesture("END")(e.y, e.velocityY, e.translationY))
+      .onBegin((e) => handleGesture("BEGIN")(e.y, e.velocityY, e.translationY, e.absoluteY))
+      .onChange((e) => handleGesture("CHANGE")(e.y, e.velocityY, e.translationY, e.absoluteY))
+      .onEnd((e) => handleGesture("END")(e.y, e.velocityY, e.translationY, e.absoluteY))
+      .onFinalize((e) => handleGesture("END")(e.y, e.velocityY, e.translationY, e.absoluteY))
       .runOnJS(true);
 
     useImperativeHandle(ref, () => ({
@@ -183,9 +186,17 @@ const RNVerticalSlider = forwardRef<TSliderRef, TSliderProps>(
       };
     });
 
+    const handleLayout = (event: any) => {
+      setContainerTop(event.nativeEvent.layout.y);
+    };
+
     return (
       <GestureDetector gesture={panGesture}>
-        <View style={[baseViewStyle, containerStyle]}>
+        <View
+          ref={containerRef}
+          onLayout={handleLayout}
+          style={[baseViewStyle, containerStyle]}
+        >
           <View style={[baseViewStyle, styles.box, sliderStyle]}>
             <Animated.View style={[styles.box, slider]} />
           </View>
@@ -199,15 +210,8 @@ const RNVerticalSlider = forwardRef<TSliderRef, TSliderProps>(
 );
 
 const styles = StyleSheet.create({
-  box: {
-    overflow: "hidden",
-    position: "absolute",
-    bottom: 0,
-    width: "100%",
-  },
-  indicator: {
-    position: "absolute",
-  },
+  box: { overflow: "hidden", position: "absolute", bottom: 0, width: "100%" },
+  indicator: { position: "absolute" },
 });
 
 export default RNVerticalSlider;

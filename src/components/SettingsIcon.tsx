@@ -113,7 +113,7 @@ export function ThemedRoundButton({
                   type="small"
                 >
                   &nbsp;&nbsp;&nbsp;
-                  {locked ? "Saved" : "Plates Per Side"}
+                  {locked ? "Saved" : "Plates Per Side"} ✅
                 </ThemedText>
                 {/* &nbsp;&nbsp;
                 <Ionicons

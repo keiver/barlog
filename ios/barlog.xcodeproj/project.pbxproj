@@ -430,7 +430,7 @@
 				CODE_SIGN_ENTITLEMENTS = barlog/barlog.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = 64QR53M8C9;
 				ENABLE_BITCODE = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -471,7 +471,7 @@
 				CODE_SIGN_ENTITLEMENTS = barlog/barlog.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = 64QR53M8C9;
 				INFOPLIST_FILE = barlog/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Barlog;

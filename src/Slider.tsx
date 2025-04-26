@@ -182,6 +182,8 @@ const RNVerticalSlider = forwardRef<TSliderRef, TSliderProps>(
       return {
         backgroundColor: minimumTrackTintColor,
         height: `${heightPercentage}%`,
+        borderTopColor: "#c0392b",
+        borderTopWidth: 1,
       };
     });
 

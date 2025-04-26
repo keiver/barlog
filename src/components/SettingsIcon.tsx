@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity, StyleSheet, ViewStyle, Dimensions, View, useColorScheme } from "react-native";
+import { TouchableOpacity, StyleSheet, ViewStyle, Dimensions, View, useColorScheme, Alert } from "react-native";
 import { TabBarIcon } from "./navigation/TabBarIcon";
 import { ThemedText } from "./ThemedText";
 import { BlurView } from "expo-blur";
@@ -8,7 +8,7 @@ import barbellWeights from "@/src/constants/barbells";
 import { tintColorDark } from "../constants/Colors";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 
 export type ThemedButtonProps = {
   onPress: () => void;
@@ -48,6 +48,11 @@ export function ThemedRoundButton({
     return unit === "kg" ? bar.kg : bar.lbs;
   }, [barbellId, unit]);
 
+  const long = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    Alert.alert("Plateset", logs);
+  };
+
   return (
     <TouchableOpacity
       style={[
@@ -79,7 +84,10 @@ export function ThemedRoundButton({
           </View>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={onLogClicked}>
+        <TouchableOpacity
+          onPress={onLogClicked}
+          onLongPress={long}
+        >
           <View
             style={[styles.barIndicator]}
             id="logs"

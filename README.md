@@ -2,67 +2,85 @@
 
 [![App Store](https://img.shields.io/badge/Download_on_the-App_Store-black.svg?style=flat-square&logo=apple&logoColor=white)](https://apps.apple.com/us/app/barlog/id6737152762)
 [![APK](https://img.shields.io/badge/Download-APK-green.svg?style=flat-square&logo=android&logoColor=white)](https://keiver.dev/lab/barlog)
-[![React Native](https://img.shields.io/badge/React_Native-Latest-blue.svg?style=flat-square&logo=react&logoColor=white)](https://reactnative.dev)
+[![React Native](https://img.shields.io/badge/React_Native-0.76%2B-blue.svg?style=flat-square&logo=react&logoColor=white)](https://reactnative.dev)
+[![Expo](https://img.shields.io/badge/Expo-52.0.0-black.svg?style=flat-square&logo=expo&logoColor=white)](https://expo.dev)
 
-Minimalist plate calculator that shows the optimal weight configuration for your barbell. Perfect for powerlifters, CrossFit athletes, and gym enthusiasts. Now with Apple Watch support for seamless weight tracking during your workouts!
+**Barlog** turns plate‑math into a one‑swipe task. Dial in any target weight with a _snap‑to‑value_ slider and feel a gentle haptic pop when you hit the mark.
+
+> Built for powerlifters, CrossFit® athletes, and garage‑gym tinkerers who hate mental math between sets.
+
+---
 
 <div align="center">
-  <img src="./assets/screenshots/6.png" alt="Barlog App Demo" width="200" />
-  <img src="./assets/screenshots/7.png" alt="Barlog Screenshot" width="200" />
-  <img src="./assets/screenshots/4.png" alt="Barlog Screenshot" width="200" />
-  <img src="./assets/screenshots/3.png" alt="Barlog Screenshot" width="200" />
+  <img src="./assets/screenshots/6.png" alt="Slider in action" width="180" />
+  <img src="./assets/screenshots/7.png" alt="Apple Watch companion" width="180" />
+  <img src="./assets/screenshots/4.png" alt="Plate breakdown" width="180" />
+  <img src="./assets/screenshots/3.png" alt="Dark‑mode view" width="180" />
 </div>
 
-## Features
+---
 
-- **Intuitive Slider**: Full-screen vertical slider for quick weight adjustments
-- **Smart Calculator**: Shows minimum plates needed for target weight
-- **Real-time Updates**: Watch plate configurations update instantly
-- **Unit Toggle**: Switch between lb/kg with one tap
-- **Custom Bar**: Support for different barbell weights
-- **Offline Ready**: No internet required
-- **Dark Mode**: Easy on the eyes
-- **Apple Watch Support**:
-  - Control weight adjustments from your watch
-  - View plate configurations on your wrist
-  - Sync units and settings between devices
-  - Quick reset functionality
-  - Haptic feedback for precise adjustments
+## ✨ Features
 
-## Download
+|                           |                                                                               |
+| ------------------------- | ----------------------------------------------------------------------------- |
+| **Snap‑to Slider**        | Full‑screen, vertical; snaps to significant values with _haptic confirmation_ |
+| **Smart Calculator**      | Displays the **minimal plates per side** in real time                         |
+| **One‑Tap Unit Switch**   | lb ⇆ kg without losing your place                                             |
+| **Custom Barbells**       | 15 lb – 45 lb (7 kg – 20 kg) bars & specialty bars supported                  |
+| **Offline First**         | Works in remote garage gyms—no data needed                                    |
+| **Dark‑Mode Aware**       | Respects system theme & reduced‑motion settings                               |
+| **Apple Watch Companion** | On‑wrist weight control, synced units, and haptic cues                        |
 
-- **iOS + Watch**: [App Store](https://apps.apple.com/us/app/barlog/id6737152762)
-- **Android**: [Download APK](https://github.com/keiver/barup/releases) (Self-hosted)
+---
 
-## Requirements
+## 📲 Download
 
-- iOS 15.1 or later
-- watchOS 9.6 or later (for Apple Watch features)
-- Android 8.0 or later
+| Platform           | Link                                                              |
+| ------------------ | ----------------------------------------------------------------- |
+| **iPhone + Watch** | [App Store ▶︎](https://apps.apple.com/us/app/barlog/id6737152762) |
+| **Android (APK)**  | [Latest Release ⬇︎](https://github.com/keiver/barup/releases)     |
 
-## Development
+---
 
-Built with:
+## 🛠️ Tech Stack
 
-- React Native + Expo
-- WatchConnectivity framework for Apple Watch integration
-- TypeScript for type safety
-- Custom native modules for watch communication
+- **React Native 0.76** + **Expo SDK 52**
+- **TypeScript**
+- **react‑native‑reanimated** • **gesture‑handler** • **react‑native‑svg**
+- Custom **TurboModules** for WatchConnectivity
 
-## Support
+---
 
-For bug reports, feature requests, or general inquiries:
+## 🚀 Quick Start
 
-- Email: support@keiver.dev
-- Create an issue in this repository
+```bash
+# Clone & install deps
+$ git clone https://github.com/keiver/barup.git && cd barup
+$ pnpm install   # or yarn / npm i
 
-## Credits
+# Run on device / simulator
+$ pnpm ios        # iOS
+$ pnpm android    # Android
+```
 
-Built with help from:
+The project ships with the **new architecture** and **Hermes** enabled. See `package.json` for all scripts.
 
-- [rn-vertical-slider](https://github.com/sacmii/rn-vertical-slider) (sacmii)
-- Inspired by [Bar Is Loaded](https://apps.apple.com/us/app/bar-is-loaded-gym-calculator/id1509374210)
+---
 
-## License
+## 🤝 Contributing
 
-See the LICENSE file for details.
+Bug reports and pull requests are welcome. Please follow the conventional‑commit style and run `pnpm lint` before opening a PR.
+
+---
+
+## 🏷️ Credits
+
+- [`rn‑vertical‑slider`](https://github.com/sacmii/rn-vertical-slider) • sacmii
+- Inspired by [`Bar Is Loaded`](https://apps.apple.com/us/app/bar-is-loaded-gym-calculator/id1509374210)
+
+---
+
+## 📄 License
+
+[MIT](./LICENSE)

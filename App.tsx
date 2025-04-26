@@ -153,19 +153,15 @@ export default function RootLayout() {
     [reset, setUnit, isLoading]
   );
 
-  const onLogClicked = useCallback(() => {
-    setBarbellCollapsed((prev) => {
-      if (prev) {
-        logManager.addLog({
-          weight,
-          unit,
-          barbellId,
-          plateDescription: plateDescription,
-        });
-      }
-
-      return !prev;
+  const onLogClicked = useCallback(async () => {
+    await logManager.addLog({
+      weight,
+      unit,
+      barbellId,
+      plateDescription: plateDescription,
     });
+
+    setBarbellCollapsed((v) => !v);
   }, [weight, unit, barbellId, logManager, plateDescription, setBarbellCollapsed]);
 
   const onItemTapped = useCallback(
@@ -228,27 +224,15 @@ export default function RootLayout() {
       logs: plateDescription,
       label: `${unit === "kg" ? convert(weight, "kg") : weight.toString()} ${unit}`,
     });
-  }, [weight, sendUpdate, unit, barbellId]);
+
+    setBarbellCollapsed(false);
+  }, [weight, sendUpdate, unit, barbellId, setBarbellCollapsed]);
 
   return (
     <View style={{ flex: 1, backgroundColor: "transparent" }}>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <SafeAreaProvider>
-          <GestureHandlerRootView
-            style={styles.flexOne}
-            {...useAccessibility({
-              label: "Barbell weight selector",
-              role: "adjustable",
-              hint: "Swipe up or down to adjust the weight",
-              liveRegion: "polite",
-              value: {
-                text: `${weight} ${unit}`,
-                now: weight,
-                min: 0,
-                max: unit === "kg" ? 363 : 800,
-              },
-            })}
-          >
+          <GestureHandlerRootView style={styles.flexOne}>
             <StatusBar style="light" />
             <ThemedView style={styles.container}>
               {modalVisible || logVisible ? null : (
@@ -274,7 +258,6 @@ export default function RootLayout() {
                   key={barKey}
                   platesPerSide={plates}
                   unit={unit}
-                  collapsed={barbellCollapsed}
                 />
               )}
 
@@ -312,7 +295,7 @@ export default function RootLayout() {
                 isVisible={logVisible}
                 onClose={() => setLogVisible(false)}
                 title="Log"
-                description="Saved weights. To add new ones, tap ✅ on toolbar."
+                description="Saved weights. To add new ones, tap ✅ on toolbar. Long press to see details."
                 buttonLabel="Close"
                 version={false}
               >

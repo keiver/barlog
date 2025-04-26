@@ -113,7 +113,7 @@ export function describePlateSet(plateSet: PlateSet, unit: Unit): string {
       const wNum = parseFloat(weight);
       return `${count} × ${UNITS[unit].format(wNum)} ${unit}`;
     })
-    .join(" ┼ ");
+    .join(" 🔘 ");
 }
 
 export function debounce<T extends (...args: any[]) => any>(

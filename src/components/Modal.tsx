@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   overlay: {
     height: "auto",
     paddingTop: height / 2 - 225,
-    backgroundColor: "rgba(0,0,0,.1)",
+    backgroundColor: "transparent",
     zIndex: 222,
     elevation: 222,
   },

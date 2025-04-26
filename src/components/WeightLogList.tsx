@@ -1,5 +1,5 @@
-import React, { Fragment } from "react";
-import { FlatList, View, StyleSheet, TouchableOpacity, ListRenderItem } from "react-native";
+import React, { useCallback } from "react";
+import { FlatList, Alert, View, StyleSheet, TouchableOpacity, ListRenderItem } from "react-native";
 import { ThemedText } from "@/src/components/ThemedText";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, { useAnimatedStyle, withTiming, useSharedValue } from "react-native-reanimated";
@@ -8,6 +8,7 @@ import barbellWeights from "../constants/barbells";
 import { KG_TO_LB } from "../libs/helpers";
 import { TabBarIcon } from "./navigation/TabBarIcon";
 import { tintColorDark } from "../constants/Colors";
+import * as Haptics from "expo-haptics";
 
 interface BarbellWeight {
   id: string;
@@ -56,6 +57,11 @@ const LogItem: React.FC<{
     return `${log.weight}`;
   }, [log]);
 
+  const long = useCallback(() => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    Alert.alert("Plates", log.plateDescription);
+  }, [log.plateDescription]);
+
   const bar = React.useCallback(() => {
     return (
       <View style={styles.barbellInfo}>
@@ -80,6 +86,7 @@ const LogItem: React.FC<{
         style={styles.logItem}
         onPress={() => onClick(log)}
         disabled={isDeleting}
+        onLongPress={long}
       >
         <View style={styles.mainContent}>
           <View style={styles.logHeader}>

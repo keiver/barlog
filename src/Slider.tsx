@@ -78,9 +78,7 @@ const RNVerticalSlider = forwardRef<TSliderRef, TSliderProps>(
     const [containerTop, setContainerTop] = useState(0);
 
     useEffect(() => {
-      runOnJS(() => {
-        Haptics.selectionAsync();
-      })();
+      Haptics.selectionAsync();
     }, [currentValue]);
 
     const significantNumbers = useMemo(() => {
@@ -144,13 +142,6 @@ const RNVerticalSlider = forwardRef<TSliderRef, TSliderProps>(
           }
         }
 
-        // if (Math.abs(newValue - lastSnappedValue.value) >= SNAP_THRESHOLD) {
-        //   runOnJS(() => {
-        //     Haptics.selectionAsync();
-        //   })();
-        //   lastSnappedValue.value = newValue;
-        // }
-
         if (type === "CHANGE") {
           point.value = newValue;
           runOnJS(onChange)(newValue);
@@ -182,6 +173,8 @@ const RNVerticalSlider = forwardRef<TSliderRef, TSliderProps>(
       return {
         backgroundColor: minimumTrackTintColor,
         height: `${heightPercentage}%`,
+        borderTopColor: "#c0392b",
+        borderTopWidth: 1,
       };
     });
 

@@ -143,6 +143,7 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
               {
                 height: insets.bottom < value ? insets.bottom : value,
                 backgroundColor: getSafeAreaColor(),
+                opacity: isDark ? 0.5 : 1,
               },
             ]}
           />

@@ -1,4 +1,4 @@
-import React, { forwardRef, useImperativeHandle, useMemo, useState } from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useState } from "react";
 import { View, StyleSheet, StyleProp, ViewStyle, Platform } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
@@ -77,6 +77,12 @@ const RNVerticalSlider = forwardRef<TSliderRef, TSliderProps>(
     const containerRef = useAnimatedRef<View>();
     const [containerTop, setContainerTop] = useState(0);
 
+    useEffect(() => {
+      runOnJS(() => {
+        Haptics.selectionAsync();
+      })();
+    }, [currentValue]);
+
     const significantNumbers = useMemo(() => {
       const numbers = [];
       for (let i = Math.ceil(min / snapInterval) * snapInterval; i <= max; i += snapInterval) {
@@ -138,12 +144,12 @@ const RNVerticalSlider = forwardRef<TSliderRef, TSliderProps>(
           }
         }
 
-        if (Math.abs(newValue - lastSnappedValue.value) >= SNAP_THRESHOLD) {
-          runOnJS(() => {
-            Haptics.selectionAsync();
-          })();
-          lastSnappedValue.value = newValue;
-        }
+        // if (Math.abs(newValue - lastSnappedValue.value) >= SNAP_THRESHOLD) {
+        //   runOnJS(() => {
+        //     Haptics.selectionAsync();
+        //   })();
+        //   lastSnappedValue.value = newValue;
+        // }
 
         if (type === "CHANGE") {
           point.value = newValue;

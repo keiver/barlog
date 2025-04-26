@@ -124,7 +124,7 @@ const Barbell: React.FC<BarbellProps> = ({ platesPerSide, unit, collapsed = fals
               },
             ]}
           >
-            {React.isValidElement(<Component pointerEvents="auto" />) && <Component pointerEvents="auto" />}
+            <Component pointerEvents="auto" />
           </Animated.View>
         );
       })}

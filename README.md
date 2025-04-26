@@ -12,10 +12,18 @@
 ---
 
 <div align="center">
-  <img src="./assets/screenshots/6.png" alt="Slider in action" width="180" />
-  <img src="./assets/screenshots/7.png" alt="Apple Watch companion" width="180" />
-  <img src="./assets/screenshots/4.png" alt="Plate breakdown" width="180" />
-  <img src="./assets/screenshots/3.png" alt="Dark‑mode view" width="180" />
+  <img src="./assets/screenshots/1.png" alt="Slider in action" width="180" />
+  <img src="./assets/screenshots/2.png" alt="Apple Watch companion" width="180" />
+  <img src="./assets/screenshots/3.png" alt="Plate breakdown" width="180" />
+</div>
+
+---
+
+<div align="center">
+
+  <img src="./assets/screenshots/4.png" alt="Slider in action" width="180" />
+  <img src="./assets/screenshots/5.png" alt="Apple Watch companion" width="180" />
+  <img src="./assets/screenshots/6.png" alt="Plate breakdown" width="180" />
 </div>
 
 ---
@@ -42,6 +50,13 @@
 | **Android (APK)**  | [Latest Release ⬇︎](https://github.com/keiver/barup/releases)     |
 
 ---
+
+<div align="center">
+  <img src="./assets/screenshots/7.png" alt="Dark‑mode view" width="180" />
+  <img src="./assets/screenshots/8.png" alt="Slider in action" width="180" />
+  <img src="./assets/screenshots/9.png" alt="Apple Watch companion" width="180" />
+  <!-- <img src="./assets/screenshots/10.png" alt="Plate breakdown" width="180" /> -->
+</div>
 
 ## 🛠️ Tech Stack
 

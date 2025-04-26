@@ -50,7 +50,7 @@ export function ThemedRoundButton({
 
   const long = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    Alert.alert("Plateset", logs);
+    Alert.alert("Plates", logs);
   };
 
   return (

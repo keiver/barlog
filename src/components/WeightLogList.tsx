@@ -59,7 +59,7 @@ const LogItem: React.FC<{
 
   const long = useCallback(() => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    Alert.alert("Plateset", log.plateDescription);
+    Alert.alert("Plates", log.plateDescription);
   }, [log.plateDescription]);
 
   const bar = React.useCallback(() => {

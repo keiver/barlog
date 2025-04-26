@@ -232,21 +232,7 @@ export default function RootLayout() {
     <View style={{ flex: 1, backgroundColor: "transparent" }}>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <SafeAreaProvider>
-          <GestureHandlerRootView
-            style={styles.flexOne}
-            {...useAccessibility({
-              label: "Barbell weight selector",
-              role: "adjustable",
-              hint: "Swipe up or down to adjust the weight",
-              liveRegion: "polite",
-              value: {
-                text: `${weight} ${unit}`,
-                now: parseInt(weight.toFixed(0), 10),
-                min: 0,
-                max: unit === "kg" ? 363 : 800,
-              },
-            })}
-          >
+          <GestureHandlerRootView style={styles.flexOne}>
             <StatusBar style="light" />
             <ThemedView style={styles.container}>
               {modalVisible || logVisible ? null : (
@@ -309,7 +295,7 @@ export default function RootLayout() {
                 isVisible={logVisible}
                 onClose={() => setLogVisible(false)}
                 title="Log"
-                description="Saved weights. To add new ones, tap ✅ on toolbar."
+                description="Saved weights. To add new ones, tap ✅ on toolbar. Long press to see details."
                 buttonLabel="Close"
                 version={false}
               >

@@ -99,6 +99,13 @@ export function ThemedRoundButton({
                 >
                   {locked ? "" : "Load"}&nbsp;&nbsp;
                 </ThemedText> */}
+                <ThemedText
+                  lightColor={tintColorDark}
+                  darkColor={tintColorDark}
+                  type="small"
+                >
+                  Load &nbsp;&nbsp;&nbsp;
+                </ThemedText>
                 {logs || ""}
                 <ThemedText
                   lightColor={tintColorDark}
@@ -106,7 +113,7 @@ export function ThemedRoundButton({
                   type="small"
                 >
                   &nbsp;&nbsp;&nbsp;
-                  {locked ? "Saved" : "Plates Per Side"}
+                  {locked ? "Saved" : "Plates Per Side"} ✅
                 </ThemedText>
                 {/* &nbsp;&nbsp;
                 <Ionicons

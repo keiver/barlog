@@ -108,12 +108,6 @@ const SettingsBarbellWeight: React.FC<SettingsBarbellWeightProps> = ({ barbellId
     [selectedBarbell, isDark, unit]
   );
 
-  const sorted = React.useMemo(() => {
-    // selectedBarbell is always first
-    const filtered = sizes?.filter((size) => size !== barbellId);
-    return [barbellId, ...filtered];
-  }, [sizes, barbellId]);
-
   return (
     <>
       <TouchableOpacity
@@ -174,7 +168,7 @@ const SettingsBarbellWeight: React.FC<SettingsBarbellWeightProps> = ({ barbellId
         <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
           <View style={[styles.modalContent]}>
             <ParallaxScrollView style={styles.scrollView}>
-              <View>{sorted.map((item: any) => renderItem({ item }))}</View>
+              <View>{sizes?.map((item: any) => renderItem({ item }))}</View>
             </ParallaxScrollView>
           </View>
         </TouchableWithoutFeedback>

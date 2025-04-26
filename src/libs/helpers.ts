@@ -111,7 +111,7 @@ export function describePlateSet(plateSet: PlateSet, unit: Unit): string {
   return entries
     .map(([weight, count]) => {
       const wNum = parseFloat(weight);
-      return `${count} × ${UNITS[unit].format(wNum)}`;
+      return `${count} × ${UNITS[unit].format(wNum)} ${unit}`;
     })
     .join(" ┼ ");
 }

@@ -1,10 +1,8 @@
 import * as React from "react";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
-import { StyleSheet, View, useColorScheme } from "react-native";
-import Animated from "react-native-reanimated";
+import { StyleSheet, Text, View, useColorScheme } from "react-native";
 import { Colors, tintColorDark, tintColorLight } from "@/src/constants/Colors";
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 type WeightIconProps = {
   unit: "lb" | "kg";
@@ -26,21 +24,19 @@ const WeightIcon: React.FC<WeightIconProps> = ({ unit, selected, onPress }) => {
   const renderIcon = () => {
     return (
       <View style={[styles.iconContainer, selected ? styles.selected : {}]}>
-        <GestureHandlerRootView>
-          <TouchableOpacity
-            onPress={onPress}
-            hitSlop={20}
-          >
-            <Animated.Text>
-              <MaterialCommunityIcons
-                name={unit === "kg" ? "weight-kilogram" : "weight-pound"}
-                size={48}
-                color={getColor()}
-                style={[]}
-              />
-            </Animated.Text>
-          </TouchableOpacity>
-        </GestureHandlerRootView>
+        <TouchableOpacity
+          onPress={onPress}
+          hitSlop={20}
+        >
+          <Text>
+            <MaterialCommunityIcons
+              name={unit === "kg" ? "weight-kilogram" : "weight-pound"}
+              size={48}
+              color={getColor()}
+              style={[]}
+            />
+          </Text>
+        </TouchableOpacity>
       </View>
     );
   };

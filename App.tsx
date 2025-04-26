@@ -2,7 +2,6 @@ import React, { useEffect, useCallback, useMemo } from "react";
 import { StyleSheet, useColorScheme, View } from "react-native";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
-import { RNVSliderRef } from "rn-vertical-slider";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { configureReanimatedLogger, ReanimatedLogLevel } from "react-native-reanimated";
@@ -26,6 +25,8 @@ import { calculatePlates, convert, describePlateSet, findMatchingById } from "@/
 import VerticalRuler from "@/src/components/Scale";
 import LogManager from "@/src/libs/LogManager";
 import WeightLogList from "@/src/components/WeightLogList";
+import { RNVSliderRef } from "./src/Slider";
+import { useAccessibility } from "./src/hooks/useAccessibility";
 
 if (!__DEV__) {
   // This is a hack to disable console logs
@@ -231,7 +232,21 @@ export default function RootLayout() {
     <View style={{ flex: 1, backgroundColor: "transparent" }}>
       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         <SafeAreaProvider>
-          <GestureHandlerRootView style={styles.flexOne}>
+          <GestureHandlerRootView
+            style={styles.flexOne}
+            {...useAccessibility({
+              label: "Barbell weight selector",
+              role: "adjustable",
+              hint: "Swipe up or down to adjust the weight",
+              liveRegion: "polite",
+              value: {
+                text: `${weight} ${unit}`,
+                now: weight,
+                min: 0,
+                max: unit === "kg" ? 363 : 800,
+              },
+            })}
+          >
             <StatusBar style="light" />
             <ThemedView style={styles.container}>
               {modalVisible || logVisible ? null : (

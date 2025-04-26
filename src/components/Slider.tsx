@@ -8,7 +8,6 @@ import {
   useWindowDimensions,
   View,
 } from "react-native";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import Animated, { ReduceMotion } from "react-native-reanimated";
 import RnVerticalSlider, { RNVSliderRef } from "../Slider";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -109,7 +108,7 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
     };
 
     return (
-      <GestureHandlerRootView style={styles.root}>
+      <View style={styles.root}>
         <View style={styles.wrapper}>
           <RnVerticalSlider
             key={key}
@@ -148,7 +147,7 @@ const Slider = React.forwardRef<RNVSliderRef, SliderProps>(
             ]}
           />
         </View>
-      </GestureHandlerRootView>
+      </View>
     );
   }
 );

@@ -1,5 +1,5 @@
 import React, { useEffect, useCallback, useMemo } from "react";
-import { StyleSheet, useColorScheme, View } from "react-native";
+import { LogBox, StyleSheet, useColorScheme, View } from "react-native";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { StatusBar } from "expo-status-bar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -36,6 +36,8 @@ if (!__DEV__) {
     (console[key] as any) = () => {};
   });
 }
+
+LogBox.ignoreAllLogs();
 
 const initialBarbellId = "1"; // 20kg/45lb Olympic bar
 

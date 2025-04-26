@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="500"
+   height="150"
+   viewBox="0 0 500 150"
+   version="1.1"
+   id="svg58"
+   sodipodi:docname="barbell-up.svg"
+   inkscape:version="1.2 (dc2aeda, 2022-05-15)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview60"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     showgrid="false"
+     inkscape:zoom="1.5733333"
+     inkscape:cx="246.29237"
+     inkscape:cy="-1.2711864"
+     inkscape:window-width="1800"
+     inkscape:window-height="1026"
+     inkscape:window-x="0"
+     inkscape:window-y="44"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg58" />
+  <defs
+     id="defs45">
+    <linearGradient
+       id="chromeGradient"
+       x1="0%"
+       x2="0%"
+       y1="0%"
+       y2="100%">
+      <stop
+         offset="0%"
+         style="stop-color:#757778"
+         id="stop2" />
+      <stop
+         offset="9.609%"
+         style="stop-color:#757778"
+         id="stop4" />
+      <stop
+         offset="19.218%"
+         style="stop-color:#adadb9"
+         id="stop6" />
+      <stop
+         offset="26.547%"
+         style="stop-color:#adadb9"
+         id="stop8" />
+      <stop
+         offset="33.876%"
+         style="stop-color:#e9eff3"
+         id="stop10" />
+      <stop
+         offset="40.717%"
+         style="stop-color:#e9eff3"
+         id="stop12" />
+      <stop
+         offset="47.557%"
+         style="stop-color:#9fa4b6"
+         id="stop14" />
+      <stop
+         offset="50.814%"
+         style="stop-color:#9fa4b6"
+         id="stop16" />
+      <stop
+         offset="54.072%"
+         style="stop-color:#b8becc"
+         id="stop18" />
+      <stop
+         offset="57.003%"
+         style="stop-color:#b8becc"
+         id="stop20" />
+      <stop
+         offset="59.935%"
+         style="stop-color:#c6cbd2"
+         id="stop22" />
+      <stop
+         offset="70.358%"
+         style="stop-color:#c6cbd2"
+         id="stop24" />
+      <stop
+         offset="80.782%"
+         style="stop-color:#b1b1be"
+         id="stop26" />
+      <stop
+         offset="90.391%"
+         style="stop-color:#b1b1be"
+         id="stop28" />
+      <stop
+         offset="100%"
+         style="stop-color:#767779"
+         id="stop30" />
+    </linearGradient>
+    <linearGradient
+       id="fadeGradient"
+       x1="0%"
+       x2="100%"
+       y1="0%"
+       y2="0%">
+      <stop
+         offset="0%"
+         style="stop-color:#000"
+         id="stop33" />
+      <stop
+         offset="10%"
+         style="stop-color:#ddd"
+         id="stop35" />
+      <stop
+         offset="100%"
+         style="stop-color:#ddd"
+         id="stop37" />
+    </linearGradient>
+    <pattern
+       id="knurlingPattern"
+       width="4"
+       height="4"
+       patternTransform="rotate(45)"
+       patternUnits="userSpaceOnUse">
+      <path
+         fill="#ddd"
+         d="M0 0h2v4H0z"
+         opacity=".4"
+         id="path40" />
+      <path
+         fill="#ddd"
+         d="M0 0h4v2H0z"
+         opacity=".4"
+         id="path42" />
+    </pattern>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#chromeGradient"
+       id="linearGradient520"
+       x1="-0.085179815"
+       y1="-41.823289"
+       x2="-0.085179815"
+       y2="41.823289"
+       gradientTransform="scale(2.9349676,0.34071926)"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#chromeGradient"
+       id="linearGradient522"
+       x1="-0.13132249"
+       y1="-67.105793"
+       x2="-0.13132249"
+       y2="67.105793"
+       gradientTransform="scale(1.9037104,0.52528997)"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
+  <g
+     id="shadowContainer"
+     transform="rotate(-90,287.5,37.5)">
+    <g
+       id="g55">
+      <path
+         fill="url(#chromeGradient)"
+         stroke="#8a8a8a"
+         stroke-width="0.5"
+         d="M 0,-14 H 245 V 14 H 0 Z"
+         id="path47"
+         style="fill:url(#linearGradient520)" />
+      <path
+         fill="url(#knurlingPattern)"
+         d="M 0,-10 H 45 V 10 H 0 Z m 50,0 H 245 V 10 H 50 Z"
+         id="path49" />
+      <g
+         id="sleeveContents"
+         transform="translate(245)">
+        <path
+           fill="url(#chromeGradient)"
+           stroke="#8a8a8a"
+           stroke-width="0.5"
+           d="M 0,-35 H 30 V 35 H 0 Z m 30,10 H 255 V 25 H 30 Z"
+           id="path51"
+           style="fill:url(#linearGradient522)" />
+        <g
+           id="plates"
+           transform="translate(30)" />
+      </g>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,150 @@
+<svg
+	xmlns="http://www.w3.org/2000/svg" width="1200" height="400" viewBox="0 0 2400 800">
+	<defs>
+		<rect id="pwc" width="27" height="240" y="-120" fill="url(#whiteGradient)" stroke="#48514F" stroke-opacity=".5" stroke-width="1" rx="6" ry="6"/>
+		<rect id="prc" width="23" height="216" y="-108" fill="url(#redGradient)" stroke="#6F2C2A" stroke-opacity=".5" stroke-width="1" rx="6" ry="6"/>
+		<rect id="pbc" width="22" height="193" y="-96.5" fill="url(#blueGradient)" stroke="#1D447D" stroke-opacity=".5" stroke-width="1" rx="6" ry="6"/>
+		<rect id="pyc" width="20" height="170" y="-85" fill="url(#yellowGradient)" stroke="#6F652A" stroke-opacity=".5" stroke-width="1" rx="4" ry="4"/>
+		<rect id="pgc" width="19" height="148" y="-74" fill="url(#greenGradient)" stroke="#3F5A49" stroke-opacity=".5" stroke-width="1" rx="4" ry="4"/>
+		<rect id="pwc2" width="16" height="127" y="-63.5" fill="url(#whiteGradient)" stroke="#48514F" stroke-opacity=".5" stroke-width="1" rx="4" ry="4"/>
+		<rect id="pcc2" width="7" height="112" y="-56" fill="url(#chromeGradient)" stroke="#48514F" stroke-opacity=".5" stroke-width="1" rx="4" ry="4"/>
+		<linearGradient id="chromeGradient" x1="0%" x2="0%" y1="0%" y2="100%">
+			<stop offset="0%" style="stop-color:#757778"/>
+			<stop offset="9.609%" style="stop-color:#757778"/>
+			<stop offset="19.218%" style="stop-color:#adadb9"/>
+			<stop offset="26.547%" style="stop-color:#adadb9"/>
+			<stop offset="33.876%" style="stop-color:#e9eff3"/>
+			<stop offset="40.717%" style="stop-color:#e9eff3"/>
+			<stop offset="47.557%" style="stop-color:#9fa4b6"/>
+			<stop offset="50.814%" style="stop-color:#9fa4b6"/>
+			<stop offset="54.072%" style="stop-color:#b8becc"/>
+			<stop offset="57.003%" style="stop-color:#b8becc"/>
+			<stop offset="59.935%" style="stop-color:#c6cbd2"/>
+			<stop offset="70.358%" style="stop-color:#c6cbd2"/>
+			<stop offset="80.782%" style="stop-color:#b1b1be"/>
+			<stop offset="90.391%" style="stop-color:#b1b1be"/>
+			<stop offset="100%" style="stop-color:#767779"/>
+		</linearGradient>
+		<linearGradient id="redGradient" x1="0%" x2="0%" y1="0%" y2="100%">
+			<stop offset="0%" style="stop-color:#893734"/>
+			<stop offset="4.839%" style="stop-color:#8e332b"/>
+			<stop offset="9.677%" style="stop-color:#923833"/>
+			<stop offset="15.806%" style="stop-color:#9c4944"/>
+			<stop offset="21.936%" style="stop-color:#be9298"/>
+			<stop offset="26.129%" style="stop-color:#ceb2b3"/>
+			<stop offset="30.323%" style="stop-color:#cab3b2"/>
+			<stop offset="39.355%" style="stop-color:#8b4241"/>
+			<stop offset="48.387%" style="stop-color:#843734"/>
+			<stop offset="74.194%" style="stop-color:#6f3534"/>
+			<stop offset="100%" style="stop-color:#160405"/>
+		</linearGradient>
+		<linearGradient id="blueGradient" x1="0%" x2="0%" y1="0%" y2="100%">
+			<stop offset="0%" style="stop-color:#1d447d"/>
+			<stop offset="4.839%" style="stop-color:#194f85"/>
+			<stop offset="9.677%" style="stop-color:#26598c"/>
+			<stop offset="15.806%" style="stop-color:#365c91"/>
+			<stop offset="21.936%" style="stop-color:#7c8bac"/>
+			<stop offset="26.129%" style="stop-color:#99a4c1"/>
+			<stop offset="30.323%" style="stop-color:#a0a9c4"/>
+			<stop offset="39.355%" style="stop-color:#3e5b88"/>
+			<stop offset="48.387%" style="stop-color:#174074"/>
+			<stop offset="74.194%" style="stop-color:#283e66"/>
+			<stop offset="100%" style="stop-color:#030812"/>
+		</linearGradient>
+		<linearGradient id="yellowGradient" x1="0%" x2="0%" y1="0%" y2="100%">
+			<stop offset="0%" style="stop-color:#c6b868"/>
+			<stop offset="4.839%" style="stop-color:#d5bf75"/>
+			<stop offset="9.677%" style="stop-color:#d6c076"/>
+			<stop offset="15.806%" style="stop-color:#d7c378"/>
+			<stop offset="21.936%" style="stop-color:#d9ca95"/>
+			<stop offset="26.129%" style="stop-color:#e5d6b1"/>
+			<stop offset="30.323%" style="stop-color:#e2d1ad"/>
+			<stop offset="39.355%" style="stop-color:#ccb76e"/>
+			<stop offset="48.387%" style="stop-color:#c0ac58"/>
+			<stop offset="74.194%" style="stop-color:#ad9448"/>
+			<stop offset="100%" style="stop-color:#2a1c04"/>
+		</linearGradient>
+		<linearGradient id="greenGradient" x1="0%" x2="0%" y1="0%" y2="100%">
+			<stop offset="0%" style="stop-color:#486754"/>
+			<stop offset="4.839%" style="stop-color:#3d6b4e"/>
+			<stop offset="9.677%" style="stop-color:#447356"/>
+			<stop offset="15.806%" style="stop-color:#4c7a5d"/>
+			<stop offset="21.936%" style="stop-color:#8ba596"/>
+			<stop offset="26.129%" style="stop-color:#cfd8d2"/>
+			<stop offset="30.323%" style="stop-color:#bec8bf"/>
+			<stop offset="39.355%" style="stop-color:#527c60"/>
+			<stop offset="48.387%" style="stop-color:#396549"/>
+			<stop offset="74.194%" style="stop-color:#395542"/>
+			<stop offset="100%" style="stop-color:#0c130e"/>
+		</linearGradient>
+		<linearGradient id="whiteGradient" x1="0%" x2="0%" y1="0%" y2="100%">
+			<stop offset="0%" style="stop-color:#d9dddc"/>
+			<stop offset="4.839%" style="stop-color:#cdd4d4"/>
+			<stop offset="9.677%" style="stop-color:#d6dddf"/>
+			<stop offset="15.806%" style="stop-color:#d8dada"/>
+			<stop offset="21.936%" style="stop-color:#d8dcdc"/>
+			<stop offset="26.129%" style="stop-color:#d1d7d9"/>
+			<stop offset="30.323%" style="stop-color:#ccd2d4"/>
+			<stop offset="39.355%" style="stop-color:#acb6b9"/>
+			<stop offset="48.387%" style="stop-color:#9ba8a8"/>
+			<stop offset="74.194%" style="stop-color:#939da0"/>
+			<stop offset="100%" style="stop-color:#6e7476"/>
+		</linearGradient>
+		<g id="pr">
+			<rect width="58" height="450" y="-225" fill="url(#redGradient)" rx="8" ry="8"/>
+			<rect width="54" height="446" x="2" y="-223" fill="transparent" stroke="#6F2C2A" stroke-opacity=".5" stroke-width="4" rx="8" ry="8"/>
+		</g>
+		<g id="pb">
+			<rect width="50" height="450" y="-225" fill="url(#blueGradient)" rx="8" ry="8"/>
+			<rect width="46" height="446" x="2" y="-223" fill="transparent" stroke="#1D447D" stroke-opacity=".5" stroke-width="4" rx="8" ry="8"/>
+		</g>
+		<g id="py">
+			<rect width="39" height="450" y="-225" fill="url(#yellowGradient)" rx="8" ry="8"/>
+			<rect width="35" height="446" x="2" y="-223" fill="transparent" stroke="#6F652A" stroke-opacity=".5" stroke-width="4" rx="8" ry="8"/>
+		</g>
+		<g id="pg">
+			<rect width="35" height="450" y="-225" fill="url(#greenGradient)" rx="8" ry="8"/>
+			<rect width="31" height="446" x="2" y="-223" fill="transparent" stroke="#3F5A49" stroke-opacity=".5" stroke-width="4" rx="8" ry="8"/>
+		</g>
+		<g id="pk" filter="saturate(10%) brightness(80%)">
+			<rect width="26" height="450" y="-225" fill="url(#blueGradient)" rx="8" ry="8"/>
+			<rect width="22" height="446" x="2" y="-223" fill="transparent" stroke="#3F5A49" stroke-opacity=".5" stroke-width="4" rx="8" ry="8"/>
+		</g>
+		<pattern id="knurlingPattern" width="4" height="4" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+			<path fill="#fff" d="M0 0h2v4H0z" opacity=".4"/>
+			<path fill="#fff" d="M0 0h4v2H0z" opacity=".4"/>
+		</pattern>
+		<filter id="dropshadow" width="120%" height="800%" y="-.3">
+			<feGaussianBlur in="SourceAlpha" stdDeviation="10"/>
+			<feOffset dy="150" result="offsetblur"/>
+			<feComponentTransfer>
+				<feFuncA slope=".5" type="linear"/>
+			</feComponentTransfer>
+			<feMerge>
+				<feMergeNode/>
+				<feMergeNode in="SourceGraphic"/>
+			</feMerge>
+		</filter>
+	</defs>
+	<g id="shadowContainer" filter="url(#dropshadow)" transform="translate(100 350)">
+		<path fill="url(#chromeGradient)" stroke="#8a8a8a" stroke-width=".5" d="M0-14h1310v28H0z" transform="translate(435)"/>
+		<path fill="url(#knurlingPattern)" d="M0-10h195v20H0zM200-10h245v20H200zM595-10h120v20H595zM865-10h245v20H865zM1115-10h195v20h-195z" transform="translate(435)"/>
+		<g id="sleeveContents" transform="translate(1745)">
+			<path fill="url(#chromeGradient)" stroke="#8a8a8a" stroke-width=".5" d="M0-35h30v70H0zM30-25h415v50H30z"/>
+			<g id="plates" transform="translate(30)">
+				<use href="#pr"/>
+				<use x="58" href="#pb"/>
+				<use x="108" href="#py"/>
+				<use x="147" href="#pg"/>
+				<use x="182" href="#pwc"/>
+				<use x="209" href="#prc"/>
+				<use x="232" href="#pbc"/>
+				<use x="254" href="#pyc"/>
+				<use x="273" href="#pgc"/>
+				<use x="292" href="#pwc2"/>
+				<use x="308" href="#pcc2"/>
+			</g>
+		</g>
+		<use href="#sleeveContents" transform="matrix(-1 0 0 1 2180 0)"/>
+	</g>
+</svg>

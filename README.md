@@ -12,18 +12,10 @@
 ---
 
 <div align="center">
-  <img src="./assets/screenshots/1.png" alt="Slider in action" width="180" />
-  <img src="./assets/screenshots/2.png" alt="Apple Watch companion" width="180" />
-  <img src="./assets/screenshots/3.png" alt="Plate breakdown" width="180" />
-</div>
-
----
-
-<div align="center">
-
-  <img src="./assets/screenshots/4.png" alt="Slider in action" width="180" />
-  <img src="./assets/screenshots/5.png" alt="Apple Watch companion" width="180" />
-  <img src="./assets/screenshots/6.png" alt="Plate breakdown" width="180" />
+  <img src="./assets/screenshots/1.png" alt="Barlog initial view" width="180" />
+  <img src="./assets/screenshots/2.png" alt="Barlog preview screenshot" width="180" />
+  <img src="./assets/screenshots/3.png" alt="Barlog preview screenshot" width="180" />
+  <img src="./assets/screenshots/9.png" alt="Barlog preview screenshot" width="180" />
 </div>
 
 ---
@@ -35,8 +27,8 @@
 | **Snap‑to Slider**        | Full‑screen, vertical; snaps to significant values with _haptic confirmation_ |
 | **Smart Calculator**      | Displays the **minimal plates per side** in real time                         |
 | **One‑Tap Unit Switch**   | lb ⇆ kg without losing your place                                             |
-| **Custom Barbells**       | 15 lb – 45 lb (7 kg – 20 kg) bars & specialty bars supported                  |
-| **Offline First**         | Works in remote garage gyms—no data needed                                    |
+| **Custom Barbells**       | Multiple bar options                                                          |
+| **Offline First**         | Works in remote garage gyms — no data needed                                  |
 | **Dark‑Mode Aware**       | Respects system theme & reduced‑motion settings                               |
 | **Apple Watch Companion** | On‑wrist weight control, synced units, and haptic cues                        |
 
@@ -52,11 +44,13 @@
 ---
 
 <div align="center">
-  <img src="./assets/screenshots/7.png" alt="Dark‑mode view" width="180" />
-  <img src="./assets/screenshots/8.png" alt="Slider in action" width="180" />
-  <img src="./assets/screenshots/9.png" alt="Apple Watch companion" width="180" />
-  <!-- <img src="./assets/screenshots/10.png" alt="Plate breakdown" width="180" /> -->
+  <img src="./assets/screenshots/4.png" alt="Barlog preview screenshot" width="180" />
+  <img src="./assets/screenshots/5.png" alt="Barlog preview screenshot" width="180" />
+  <img src="./assets/screenshots/6.png" alt="Barlog preview screenshot" width="180" />
+  <img src="./assets/screenshots/7.png" alt="Barlog preview screenshot" width="180" />
 </div>
+
+---
 
 ## 🛠️ Tech Stack
 
@@ -72,11 +66,11 @@
 ```bash
 # Clone & install deps
 $ git clone https://github.com/keiver/barup.git && cd barup
-$ pnpm install   # or yarn / npm i
+$ npm install   # or yarn / npm i
 
 # Run on device / simulator
-$ pnpm ios        # iOS
-$ pnpm android    # Android
+$ npx run ios        # iOS
+$ npx run android    # Android
 ```
 
 The project ships with the **new architecture** and **Hermes** enabled. See `package.json` for all scripts.
